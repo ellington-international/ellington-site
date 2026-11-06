@@ -32,7 +32,7 @@ export function HomeContent({
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden text-white">
+      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden text-white on-photo">
         <HeroSlideshow />
         {/* Dark overlay on photos so hero text stays legible (white text on photos) */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/55 z-10" />

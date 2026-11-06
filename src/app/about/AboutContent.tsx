@@ -22,7 +22,7 @@ export default function AboutPage() {
   return (
     <div>
       {/* HERO — full-bleed image, small-caps subtitle */}
-      <section className="relative h-[68svh] min-h-[440px] flex items-center justify-center overflow-hidden text-white">
+      <section className="relative h-[68svh] min-h-[440px] flex items-center justify-center overflow-hidden text-white on-photo">
         <Image
           src="/about/hero.jpg"
           alt="Ellington · Côte d'Azur"

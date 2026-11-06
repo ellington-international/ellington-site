@@ -28,7 +28,7 @@ export function LocationsIndexContent() {
   return (
     <div>
       {/* HERO — full-bleed image */}
-      <section className="relative h-[60svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white">
+      <section className="relative h-[60svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white on-photo">
         <Image
           src="/locations/hero.jpg"
           alt="Saint-Tropez"

@@ -11,7 +11,7 @@ export default function SellPage() {
   return (
     <div className="bg-white">
       {/* HERO — full-bleed image, transparent nav overlays at top */}
-      <section className="relative h-[60svh] min-h-[400px] flex items-center justify-center overflow-hidden text-white">
+      <section className="relative h-[60svh] min-h-[400px] flex items-center justify-center overflow-hidden text-white on-photo">
         <Image
           src="/sell/hero.jpg"
           alt="Villa de prestige sur la Côte d'Azur"

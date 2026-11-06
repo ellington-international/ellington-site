@@ -67,32 +67,8 @@
   --color-brand-navy: var(--brand-navy);
   --font-sans: var(--font-inter);
   --font-serif: var(--font-cormorant);
-
-  /* ── Type scale (Figma) — desktop sizes; mobile sizes noted for restyling.
-     Cormorant for h1–h4 / titles, Inter for body & UI.
-     Available as utilities: text-h1, text-h2, text-h3, text-h4,
-     text-card-title, text-sub, text-highlight, text-body-lg, text-body,
-     text-body-sm, text-button. */
-  --text-h1: 4rem;              /* 64 · mobile 36 */
-  --text-h1--line-height: 1.05;
-  --text-h2: 3rem;              /* 48 · mobile 30 */
-  --text-h2--line-height: 1.1;
-  --text-h3: 2rem;              /* 32 · mobile 22 */
-  --text-h3--line-height: 1.2;
-  --text-h4: 1.5rem;            /* 24 · mobile 18 */
-  --text-h4--line-height: 1.3;
-  --text-card-title: 2.25rem;   /* 36 */
-  --text-card-title--line-height: 1.2;
-  --text-sub: 1.875rem;         /* 30 · logo / sub-header */
-  --text-highlight: 2rem;       /* 32 */
-  --text-body-lg: 1.125rem;     /* 18 · mobile 16 */
-  --text-body-lg--line-height: 1.6;
-  --text-body: 1rem;            /* 16 · line-height 32 */
-  --text-body--line-height: 2;
-  --text-body-sm: 0.875rem;     /* 14 · mobile 12 */
-  --text-button: 0.75rem;       /* 12 · mobile 10 · uppercase + tracking */
-  --text-button--line-height: 1;
-  --text-button--letter-spacing: 0.18em;
+  /* Type sizes are NOT Tailwind tokens: use the .type-* classes below, which
+     follow the Figma text styles (one class per style, desktop + mobile). */
 }
 
 * {
@@ -102,10 +78,10 @@
 
 html, body {
   background: var(--surface-white);
-  /* Default text colour = brand blue (same role as the old navy). The Figma
-     split "headings brand/blue, body copy text/body" is applied per text style
-     in redesign step 2 — not here, because hero headings over photos inherit
-     their white from the hero container and a global rule would override it. */
+  /* Default text colour = brand blue (same role as the old navy). Figma
+     colours per role (body copy text/body, labels text/muted…) come from the
+     .type-* classes below, not from a global rule: many elements inherit white
+     from photo heroes / blue bands, and a global rule would override that. */
   color: var(--brand-blue);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 300; /* Inter Light — Figma body default */
@@ -122,78 +98,162 @@ html, body {
   }
 }
 
-/* ── Figma typography system — exact named styles (colour: var(--foreground) = #000).
-   Apply these classes to harmonise type across the whole site.
-   Desktop sizes below; headings scale down on mobile. */
-@layer components {
-  .type-h1,
-  .type-h2,
-  .type-h3,
-  .type-h4 {
-    font-family: var(--font-serif), Georgia, serif;
-    letter-spacing: 0;
-  }
-  /* Client spec (Feedback 4): h1 52/40, h2 40/36, h3 30, h4 22, card-title 20 */
-  .type-h1 { font-weight: 500; font-size: 52px; line-height: 1.05; letter-spacing: 0.1em; text-transform: uppercase; }
-  .type-h2 { font-weight: 600; font-size: 40px; line-height: 1.1; text-transform: uppercase; }
-  .type-h3 { font-weight: 500; font-style: italic; font-size: 30px; line-height: 1.15; }
-  .type-h4 { font-weight: 500; font-size: 22px; line-height: 1.25; }
-  .type-card-title { font-family: var(--font-serif), Georgia, serif; font-weight: 500; font-size: 20px; line-height: 1.25; }
+/* ── Figma typography (collection "Type" + 16 text styles) ─────────────────
+   One class per Figma text style. Sizes switch from the Desktop to the Mobile
+   mode of the Figma "Type" collection below 768px (Tailwind `md`).
+   Colours: each class uses a "tone" variable, so a whole area can switch to
+   white by adding the `on-photo` class to its container (photo heroes). A
+   colour utility on the element itself (text-white, text-muted…) still wins,
+   because these classes live in @layer components. */
+:root {
+  /* Figma "Type" collection — Desktop mode */
+  --fs-h1: 80px;
+  --fs-h2: 56px;
+  --fs-title: 36px;
+  --fs-h3: 24px;
+  --fs-figure: 44px;
+  --fs-number: 64px;
+  --fs-subtitle: 26px;
+  --fs-price: 20px;
+  --fs-body: 15px;
+  --fs-value: 15px;
+  --fs-input: 14px;
+  --fs-small: 13px;
+  --fs-eyebrow: 12px;
+  --fs-label: 11px;
+  --fs-button: 12px;
 
-  .type-body-lg,
-  .type-body,
-  .type-body-sm,
-  .type-button,
-  .type-nav,
-  .type-caption {
-    font-family: var(--font-sans), system-ui, sans-serif;
-  }
-  .type-body-lg { font-weight: 300; font-size: 18px; line-height: 1; }
-  .type-body { font-weight: 200; font-size: 16px; line-height: 32px; }
-  .type-body-sm { font-weight: 300; font-size: 14px; line-height: 1; }
-  .type-button { font-weight: 300; font-size: 12px; line-height: 1; letter-spacing: 2px; text-transform: uppercase; }
-  .type-nav { font-weight: 300; font-size: 12px; line-height: 1; letter-spacing: 2px; }
-  .type-caption { font-weight: 300; font-size: 12px; line-height: 1; letter-spacing: 2px; }
+  /* Text tones (default = on white). Overridden by .on-photo. */
+  --tone-heading: var(--brand-blue);
+  --tone-body: var(--body-text);
+  --tone-muted: var(--muted-text);
+  --tone-accent: var(--brand-accent);
+}
 
-  /* Standard section header blocks (Feedback 4):
-     eyebrow = 10px semi-bold gold · sub-header = 12px .2em uppercase muted */
-  .type-eyebrow {
-    font-family: var(--font-sans), system-ui, sans-serif;
-    font-weight: 600; font-size: 10px; line-height: 1;
-    letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold);
-  }
-  .type-subhead {
-    font-family: var(--font-sans), system-ui, sans-serif;
-    font-weight: 300; font-size: 12px; line-height: 1.6;
-    letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
-  }
-
-  @media (max-width: 768px) {
-    .type-h1 { font-size: 40px; }
-    .type-h2 { font-size: 36px; }
-    .type-h3 { font-size: 26px; }
-    .type-h4 { font-size: 20px; }
-    .type-body-lg { font-size: 15px; }
+/* Figma "Type" collection — Mobile mode (only the sizes that differ) */
+@media (width < 48rem) {
+  :root {
+    --fs-h1: 48px;
+    --fs-h2: 40px;
+    --fs-title: 24px;
+    --fs-h3: 21px;
+    --fs-figure: 34px;
+    --fs-number: 48px;
+    --fs-subtitle: 22px;
   }
 }
 
-/* ── Body copy & controls — client spec (Feedback 4): all <p> 14px,
-   buttons 12px, form fields 13px. Applies to elements without an explicit
-   Tailwind size utility so intentional overrides still win. */
+@layer components {
+  /* Text on a photo (hero images): every .type-* inside turns white.
+     Figma: labels on photos are white at 85 %. */
+  .on-photo {
+    --tone-heading: #ffffff;
+    --tone-body: #ffffff;
+    --tone-muted: rgb(255 255 255 / 0.85);
+    color: #ffffff;
+  }
+
+  /* Serif styles — Cormorant Garamond. Sentence case (no uppercase). */
+  .type-h1,
+  .type-h2,
+  .type-title,
+  .type-h3,
+  .type-figure,
+  .type-number,
+  .type-subtitle,
+  .type-price {
+    font-family: var(--font-serif), Georgia, serif;
+    letter-spacing: 0;
+    color: var(--tone-heading);
+  }
+  /* Heading/H1 — Medium Italic 80/48, lh 1.05 */
+  .type-h1 { font-size: var(--fs-h1); font-weight: 500; font-style: italic; line-height: 1.05; }
+  /* Heading/H2 — Medium Italic 56/40, lh 1.1 */
+  .type-h2 { font-size: var(--fs-h2); font-weight: 500; font-style: italic; line-height: 1.1; }
+  /* Heading/Title — Medium 36/24, lh 1.2 */
+  .type-title { font-size: var(--fs-title); font-weight: 500; font-style: normal; line-height: 1.2; }
+  /* Heading/H3 — Medium 24/21, lh 1.25 (also card titles) */
+  .type-h3 { font-size: var(--fs-h3); font-weight: 500; font-style: normal; line-height: 1.25; }
+  /* Heading/Figure — Medium 44/34, lh 1.0 (key figures) */
+  .type-figure { font-size: var(--fs-figure); font-weight: 500; font-style: normal; line-height: 1; }
+  /* Number/Display — Bold Italic 64/48, lh 1.0 (numbers use the accent) */
+  .type-number { font-size: var(--fs-number); font-weight: 700; font-style: italic; line-height: 1; color: var(--tone-accent); }
+  /* Text/Subtitle — Medium 26/22, lh 1.3, upright */
+  .type-subtitle { font-size: var(--fs-subtitle); font-weight: 500; font-style: normal; line-height: 1.3; }
+  /* Text/Price — Regular 20, lh 1.4, champagne */
+  .type-price { font-size: var(--fs-price); font-weight: 400; font-style: normal; line-height: 1.4; color: var(--tone-accent); }
+
+  /* Sans styles — Inter */
+  .type-body,
+  .type-value,
+  .type-input,
+  .type-small,
+  .type-eyebrow,
+  .type-label,
+  .type-button {
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-style: normal;
+  }
+  /* Text/Body — Light 15, lh 1.7 */
+  .type-body { font-size: var(--fs-body); font-weight: 300; line-height: 1.7; letter-spacing: 0; color: var(--tone-body); }
+  /* Text/Value — Light 15, lh 1.5 (values in detail lists) */
+  .type-value { font-size: var(--fs-value); font-weight: 300; line-height: 1.5; letter-spacing: 0; color: var(--tone-heading); }
+  /* Text/Input — Light 14, lh 1.4 (inputs, tags) */
+  .type-input { font-size: var(--fs-input); font-weight: 300; line-height: 1.4; letter-spacing: 0; color: var(--tone-body); }
+  /* Text/Small — Light 13, lh 1.6 */
+  .type-small { font-size: var(--fs-small); font-weight: 300; line-height: 1.6; letter-spacing: 0; color: var(--tone-muted); }
+  /* Caps — Inter Regular, UPPERCASE, .2em tracking */
+  .type-eyebrow,
+  .type-label,
+  .type-button {
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  /* Caps/Eyebrow — 12, lh 1.4 */
+  .type-eyebrow { font-size: var(--fs-eyebrow); line-height: 1.4; color: var(--tone-heading); }
+  /* Caps/Label — 11, lh 1.4 */
+  .type-label { font-size: var(--fs-label); line-height: 1.4; color: var(--tone-muted); }
+  /* Caps/Button — 12, lh 1.0 (colour comes from the button / link) */
+  .type-button { font-size: var(--fs-button); line-height: 1; }
+
+  /* ── Legacy class names (pre-redesign) mapped to the nearest Figma style.
+     Removed once the components using them are redone (Phases 2 + 4). */
+  .type-h4,
+  .type-card-title { /* → Heading/H3 (Figma card titles and small headings) */
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: var(--fs-h3); font-weight: 500; font-style: normal;
+    line-height: 1.25; letter-spacing: 0; color: var(--tone-heading);
+  }
+  .type-nav { /* → Caps/Button (Figma nav links) */
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: var(--fs-button); font-weight: 400; line-height: 1;
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .type-subhead { /* → Text/Subtitle (Figma section intro lines) */
+    font-family: var(--font-serif), Georgia, serif;
+    font-size: var(--fs-subtitle); font-weight: 500; font-style: normal;
+    line-height: 1.3; letter-spacing: 0; color: var(--tone-heading);
+  }
+}
+
+/* ── Defaults for elements without a .type-* class or size utility ────────
+   Paragraphs follow Text/Body (15 / 1.7), form fields Text/Input (14),
+   buttons Caps/Button size (12). Size only — colour stays inherited. */
 @layer base {
   p {
-    font-size: 14px;
-    line-height: 1.75;
+    font-size: var(--fs-body);
+    line-height: 1.7;
   }
   button {
     font-family: inherit; /* buttons default to a system font — align to Inter */
-    font-size: 12px;
+    font-size: var(--fs-button);
   }
   input,
   select,
   textarea {
     font-family: inherit;
-    font-size: 13px;
+    font-size: var(--fs-input);
   }
 }
 

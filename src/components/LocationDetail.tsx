@@ -39,7 +39,7 @@ export function LocationDetail({
   return (
     <div>
       {/* HERO — full-bleed image, centered title + small-caps subtitle */}
-      <section className="relative h-[62svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white">
+      <section className="relative h-[62svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white on-photo">
         <Image
           src={mainImage}
           alt={loc.name}
