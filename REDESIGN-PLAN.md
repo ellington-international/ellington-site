@@ -1,0 +1,396 @@
+# Ellington redesign plan
+
+Source of truth: Figma file `HuwxKn1GP5t95FTtrBwtEK` (approved by the client).
+Pages: **Website — Desktop** (1440 px frames) and **Website — Mobile** (390 px frames).
+Branch: `redesign`. Written 6 November 2026.
+
+Each step below is small enough to check in the browser (`npm run dev`) before
+moving on. Do one step, check desktop and mobile against the Figma frame, commit, then go to the next.
+
+---
+
+## 0. Map of the project (for orientation)
+
+| What | Where |
+|---|---|
+| Pages (routes) | `src/app/<route>/page.tsx`. Most pages are a thin server file plus a client `…Content.tsx` that renders the UI |
+| Shared layout (header, footer, fonts, `<html lang>`) | `src/app/layout.tsx` |
+| Components | `src/components/*.tsx` |
+| Colours, type scale, global CSS | `src/app/globals.css` (Tailwind 4, configured inside the CSS. There is no `tailwind.config.js`) |
+| Fonts | `src/app/layout.tsx` via `next/font/google`: Cormorant Garamond (serif) + Inter (sans) |
+| UI translations FR/EN/NL | `src/lib/i18n.ts` (one big `dict` with `fr`, `en`, `nl`) |
+| Current language | `src/components/LanguageProvider.tsx` (browser `localStorage`) + `LanguageToggle.tsx` |
+| Hard-coded per-language strings (outside i18n) | `HomeContent.tsx`, `BlogIndexContent.tsx`, `BlogPostShell.tsx`, `PropertiesBrowser.tsx`, `ContactForm.tsx`, `LocationDetail.tsx`, `LocationsIndexContent.tsx` |
+| Blog articles | `content/blog/*.mdx` (French only), read by `src/lib/blog.ts` (server) / `blog-shared.ts` (client-safe) |
+| Location (village) texts | `src/lib/properties.ts` → `locations` array (9 villages, FR + EN fields, **no NL**); rich Saint-Tropez content in `src/lib/location-content.ts` (FR + EN, **no NL**) |
+| Location images | `public/locations/…` |
+| Apimo (listings) | `src/lib/apimo.ts` (API calls + mapping) → `src/lib/properties.ts` (`getProperties`, `getProperty`, mock fallback) |
+| Supabase (login + favourites) | `src/lib/supabase/{client,server,proxy}.ts`, `src/app/actions/{auth,favorites}.ts`, `src/app/auth/callback/route.ts`, `proxy.ts`, `supabase/schema.sql` |
+| Contact form | `src/components/ContactForm.tsx` (FormSubmit → marc@ellington-international.com) |
+| Secrets | `.env.local` (git-ignored). Template in `.env.example` |
+
+---
+
+## 1. Figma tokens vs. current code
+
+### 1.1 Colours (Figma collection "Color", one mode)
+
+| Figma variable | Value | Role in Figma | Current code (`globals.css`) |
+|---|---|---|---|
+| `brand/blue` | `#154166` | headings, buttons, links, logo | `--accent` / `--foreground` / `--brand-navy` = `#1a2744` |
+| `brand/blue-deep` | `#0f3352` | hover, footer base | `--accent-hover` = `#0f1726` |
+| `brand/accent` | `#978a7a` | champagne. Fine accents only (hover underline, numbers, step lines, quote line, active chip) | `--gold` = `#c9a96e` (+ `--gold-hover`) |
+| `text/body` | `#3d5670` | body copy | none. Body uses `--foreground` `#1a2744` |
+| `text/muted` | `#5b7189` | small text, labels | `--muted` `#9a9a9a`, `--muted-strong` `#5a6b86` |
+| `surface/white` | `#ffffff` | page background | `--background` (+ `--background-elev`, `--background-card`) |
+| `surface/light` | `#e8eef4` | page heads, closing bands | `--panel` `#ebeef5` |
+| `line/hairline` | `#d5dee7` | hairlines, borders, inputs | `--border` `#d9d9d9`, `--border-strong` `#c2c2c2` |
+| — | — | not in Figma | `--link` `#004bc1`, `--link-hover` (remove: links use `brand/blue`) |
+
+In short: every colour changes slightly, and Figma separates **heading blue** from **body blue-grey**, which the code does not do today.
+
+### 1.2 Typography (Figma collection "Type", modes Desktop / Mobile + 16 text styles)
+
+| Figma text style | Font | Desktop / Mobile | Line height | Closest current class |
+|---|---|---|---|---|
+| Heading/H1 | Cormorant Medium *Italic* | 80 / 48 | 1.05 | `.type-h1` 52/40, **uppercase**, 0.1em tracking |
+| Heading/H2 | Cormorant Medium *Italic* | 56 / 40 | 1.1 | `.type-h2` 40/36, SemiBold, **uppercase** |
+| Heading/Title | Cormorant Medium | 36 / 24 | 1.2 | none |
+| Heading/H3 (+ "· Underline") | Cormorant Medium | 24 / 21 | 1.25 | `.type-h3` 30/26 italic, `.type-h4` 22/20 |
+| Heading/Figure | Cormorant Medium | 44 / 34 | 1.0 | none |
+| Number/Display | Cormorant Bold *Italic* | 64 / 48 | 1.0 | none |
+| Text/Subtitle | Cormorant Medium | 26 / 22 | 1.3 | none (`.type-subhead` is a different thing: 12 px Inter caps) |
+| Text/Price | Cormorant Regular | 20 | 1.4 | `.type-card-title` 20 Medium |
+| Text/Body | Inter Light | 15 | 1.7 | global `p` 14/1.75, `.type-body` 16/32 weight 200 |
+| Text/Value | Inter Light | 15 | 1.5 | none |
+| Text/Input | Inter Light | 14 | 1.4 | global `input` 13 |
+| Text/Small | Inter Light | 13 | 1.6 | `.type-body-sm` 14 |
+| Caps/Eyebrow | Inter Regular, UPPER, 0.2em | 12 | 1.4 | `.type-eyebrow` 10 SemiBold, 0.3em, gold |
+| Caps/Label | Inter Regular, UPPER, 0.2em | 11 | 1.4 | `.type-caption` 12, 2px |
+| Caps/Button | Inter Regular, UPPER, 0.2em | 12 | 1.0 | `.type-button` 12 Light, 2px |
+
+Other findings:
+- The code has **two competing type scales**: Tailwind `--text-h1…` tokens in `@theme` (64/48/32…) and the `.type-*` classes (52/40/30…). The redesign replaces both with one scale taken from Figma.
+- Headings in Figma are **sentence case**, not uppercase.
+- **Decided:** follow the Figma **text styles and variables** (italic H1/H2, 80/48 and 56/40, price Cormorant 20). The notes on the Figma *Foundations* page ("H1 64/40, no italic, price Inter 16") are outdated. Ignore them.
+- Fonts: same two families, so `layout.tsx` only needs its weights adjusted (Cormorant 400, 500, 500 italic, 700 italic. Weights 300/600 can go).
+
+### 1.3 Layout & spacing (Figma collection "Layout", modes Desktop / Mobile)
+
+| Variable | Desktop | Mobile | Current code |
+|---|---|---|---|
+| `frame/width` | 1440 | 390 | — |
+| `wrap/max` (content width) | 1240 | 334 | ad-hoc `max-w-*` per component |
+| `space/margin` (side margin) | 100 | **28** (decided. Its Figma description saying 20 is outdated) | ad-hoc `px-*` |
+| `space/gutter` | 72 | 20 | — |
+| `space/section` (vertical section padding) | 144 | 96 | ad-hoc `py-*` |
+| `space/gap` | 32 | 20 | — |
+| `space/stack` | 24 | 20 | — |
+| `space/sm` / `space/xs` | 14 / 8 | 14 / 8 | — |
+| `nav/height` | 80 | 68 | — |
+| `button/pad-x` / `pad-y` | 22 / 14 | 22 / 14 | — |
+| `radius/none` | 0 | 0 | mostly square already |
+
+The code has no spacing tokens today. Every section picks its own Tailwind padding.
+**Breakpoint proposal:** Mobile values below `768px` (Tailwind `md`, already used in `globals.css`), Desktop values from `768px`. The 1240 px wrap is centred on wider screens.
+
+### 1.4 Figma components → code
+
+| Figma component | Code today |
+|---|---|
+| Navigation (4 variants: over photo / solid × desktop/mobile) + "00 Menu — Mobile" | `Header.tsx`, `LanguageToggle.tsx`, `AuthMenu.tsx`, `Logo.tsx` |
+| Footer (2) | `Footer.tsx` |
+| Button (8), Link (4), Nav link (4) | no shared component. Classes repeated inline → create `src/components/ui/Button.tsx` (+ `TextLink`) |
+| Filter field (2), Dropdown option (2), Search field (16) | `HeroSearch.tsx`, `PropertiesBrowser.tsx` (one native `<select>` today) |
+| Input (4) | `ContactForm.tsx`, `NewsletterForm.tsx`, `AuthForm.tsx` |
+| Property card (2) | `PropertyCard.tsx` |
+| Journal card (2) | `BlogCard.tsx` |
+| Village card (2) | inside `LocationsIndexContent.tsx` |
+| Gallery (8) | `PropertyGallery.tsx` |
+| Chip (4), Tag, Stat, Detail row, Info box, Line item (2) | inline markup in several pages |
+| Thank-you overlays (request, newsletter) | **missing**. Success is shown inline today |
+
+---
+
+## 2. Step-by-step plan
+
+Legend: **[D]** check against Desktop frame, **[M]** check against Mobile frame.
+
+### Phase 1. Foundations: colours, type, spacing
+1. **Colour tokens.** ✅ *done, waiting for your check.* In `globals.css`, the 8 Figma colours are the only real values. The old names (`--foreground`, `--accent`, `--gold`, `--panel`, `--link`, …) are kept as **aliases** pointing to them so existing pages don't break. Each alias is removed when the components using it are redone in Phases 2 and 4. New Tailwind classes: `bg-brand-blue`, `bg-brand-blue-deep`, `text-brand-accent`, `text-body-text`, `text-muted`, `bg-surface`, `bg-surface-light`, `border-hairline`. Default page text stays brand blue (it was navy). *Check:* layout unchanged, colours shift to the new blue / champagne / hairlines.
+2. **Type scale.** Delete the old `--text-*` tokens and rewrite the `.type-*` classes as one class per Figma text style (`.type-h1`, `.type-h2`, `.type-title`, `.type-h3`, `.type-figure`, `.type-number`, `.type-subtitle`, `.type-price`, `.type-body`, `.type-value`, `.type-input`, `.type-small`, `.type-eyebrow`, `.type-label`, `.type-button`), with mobile sizes under `768px`. Remove the global `p { 14px }` override. **Also apply the colours per style here**: headings brand/blue, body text/body (`#3d5670`), small/labels text/muted. Add an `on-photo` modifier (white) for hero text, because hero headings currently inherit white from their container and a colour on the heading would override it. *Check:* a temporary `/styleguide` page (delete before merge) next to the Figma Foundations page.
+3. **Fonts.** Trim Cormorant weights in `layout.tsx` to what the styles use.
+4. **Spacing tokens.** Add CSS variables / Tailwind theme values for `wrap`, `margin`, `section`, `gap`, `stack`, `nav-height`, plus a reusable `.container-wrap` (max 1240, side margin 100/28).
+
+### Phase 2. Shared parts
+5. **Button + text link** component (`ui/Button.tsx`, 8 Figma variants: primary blue / outline / on-photo / text-arrow…). Swap it in everywhere as pages are redone.
+6. **Navigation.** `Header.tsx`: transparent over photo, solid on scroll, 80/68 px high, links Buy · Sell · Locations · About, FR | EN | NL, Contact button, Login. **[M]** full-screen menu = frame "00 Menu — Mobile" (Buy, Sell, Locations, About, Journal, button, close).
+7. **Footer.** `Footer.tsx`: 4 columns (brand + address, Explore, Contact, Hours) + bottom bar (©, Legal, Privacy, Manage cookies, Site by Z.Development). Remove the "Our regions" column (not in Figma). Footer colour `brand/blue-deep`. Also remove `/rentals` from `src/app/sitemap.ts` (the page itself stays, decision 4).
+8. **Dropdown filter.** One custom accessible dropdown (Filter field + Dropdown option): label above, white box, keyboard + click-outside. Used by the hero search (Home) and the Buy page: Location, Property type, Budget, **Bedrooms** (new in the hero), Search button.
+9. **Cards.** `PropertyCard` (village caps label, title, price in Text/Price, beds · baths · m² · land icons), `BlogCard` (category, title, excerpt, date · reading time), Village card. Mobile swipe carousel with "← Swipe →".
+10. **Small parts.** Chip, Tag, Stat, Detail row, Info box, section header (eyebrow + H2 + subtitle), closing band (light blue) and blue band.
+11. **Thank-you overlay** (new): one `ThankYouOverlay` component, two variants:
+    - request: eyebrow "Request received", "Thank you", "Your message is with us. A member of our team will reply to you personally.", Close
+    - newsletter: eyebrow "Newsletter", "Thank you", "You're on our list for new properties and stories from the Golfe.", Close
+    Shown after a successful `ContactForm` / `NewsletterForm` submit (the Sell valuation and village consultation requests also go through the contact form). Focus trap, Esc closes, scroll lock.
+
+### Phase 3. Fix the language system (before redoing pages, see §5)
+12. Language in the URL (§5). Every page and component is touched in Phase 4 anyway, so this is the cheapest moment.
+
+### Phase 4. Pages (one step each, desktop + mobile)
+13. **Home** `/` (`HomeContent.tsx`) → frames "01 Home". Hero + search, The Ellington standard (3 features), Featured properties, **Our signature** (new section replacing "Exceptional addresses"), Journal (+ Browse by category), Newsletter.
+14. **Buy** `/properties` (`PropertiesPageContent`, `PropertiesBrowser`) → "02 Buy". Photo hero, filter bar, count, 3-col grid. **Remove "Sort by"** (decision 5). Listings stay in the default order.
+15. **Property detail** `/properties/[id]` (`PropertyDetailContent`, `PropertyGallery`) → "03 Property". Gallery with counter, key stats, description, features, property details, **new energy block** (§4), interested / advisor / confidential sidebar, similar properties. Restyle `loading.tsx` skeleton to match.
+16. **Sell** `/sell` (`SellContent.tsx`) → "04 Sell". Hero + button, Why Ellington?, 4 numbered steps, 4 trust cards, light-blue closing band. "Request a valuation" buttons → `/contact?subject=valuation` (decision 6).
+17. **Locations index** `/locations` (`LocationsIndexContent`) → "05 Locations". Intro "The Golfe de Saint-Tropez" + 9 village cards.
+18. **Village page: one template for all 9 villages** `/locations/[slug]` (`LocationDetail`) → "06 Village" (decision 11). Every village gets the same sections as Saint-Tropez: hero, The village (intro + Average price + Properties), Culture & experiences, The area, Investment & market, blue band, Properties in this region. **You provide Marc's texts for all villages at this step.** Unify the data into one shape per village (merge `location-content.ts` into the village data, FR/EN/NL). `averagePrice` and `propertyCount` are static text in the data file, so the placeholder figures can be replaced later (decision 8). "Request a consultation" → `/contact?subject=consultation&village=<slug>`. **"Our favourite places"**: keep the data and the component code but don't render the section (a `SHOW_FAVOURITE_PLACES = false` flag), to be restyled and switched on later (decision 9).
+19. **About** `/about` (`AboutContent.tsx`) → "07 About". Intro + 4 key figures, Our story (drop-cap "E"), 3 values, photo strip, team, closing band.
+20. **Journal** `/fr/blog` (`BlogIndexContent`) → "08 Journal". Category chips, cards, "French only" notice. See §5 for how `/blog` (EN) and `/nl/blog` behave.
+21. **Article** `/fr/blog/[slug]` (`BlogPostShell`, `mdx.tsx`) → "08.1–08.3". Hero, article typography, blue band, Keep reading.
+22. **Contact** `/contact` (`ContactPageContent`, `ContactForm`) → "09 Contact". Form + contact info + confidential box + overlay. **Drop the Subject select and the consent checkbox** and keep a short privacy note linking to the privacy page (decision 7). Pre-filled subject (decision 6): read `?subject=valuation|consultation` (+ `village`) from the URL. Show a small line above the form ("Valuation request" / "Consultation about Ramatuelle"), start the message with a matching sentence, and send it to FormSubmit as the e-mail subject (`_subject`). So there's no visible select, but Marc still sees what the request is about.
+23. **Pages not in Figma**: restyle with the new tokens only, no new layout: `/legal`, `/privacy`, `/login`, `/signup`, `/mes-favoris`, cookie banner, `/rentals` (kept for now, out of the sitemap. The client confirms later).
+
+### Phase 5. Wrap-up
+24. Remove unused classes/tokens, run `npm run lint` and `npm run build`, test FR/EN/NL on every page, check no hydration warnings in the console, Lighthouse on Home + Property.
+25. Update `HANDOFF.md` §12 (colours, fonts, language system).
+
+---
+
+## 3. New pages & sections that don't exist yet
+
+| New | Where in Figma | Notes |
+|---|---|---|
+| **Thank-you overlays** (request + newsletter) | "10 Overlay — …" | Replace inline success messages |
+| **Village page template, Figma version** | "06 Village", "06.2–06.9" | Route `/locations/[slug]` already exists for all 9 villages, but the layout is different. New sections: The village (intro + **Average price** + **Properties** stats), Culture & experiences, The area, Investment & market, blue band "Your local expert in this region" + Request a consultation, Properties in this region (+ empty state). |
+| Village rich sections for the 8 other villages | hidden in Figma ("waiting for content from Marc") | **Decided:** one template, same sections as Saint-Tropez for every village. Marc's texts arrive at step 18. Today only Saint-Tropez has rich content. |
+| Village data fields | — | Add `averagePrice` (e.g. "€8M+", static placeholder) and the new intro text to each village in `properties.ts`, keep `propertyCount` static too. Add **NL** to all village texts (none exist today). |
+| **Energy performance block, new design** | "03 Property" → Energy performance | Two A–G scales with labels under the bars **plus the numeric values** (kWh/m²/year, kg CO₂/m²/year) and the cost line. See §4. |
+| **Our signature** section (Home) | "01 Home" | Photo + quote + text + Learn more → About |
+| **Browse by category** row (Home journal) | "01 Home" | Links to `/blog?category=…` |
+| **Intro + key figures**, **photo strip** (About) | "07 About" | |
+| **Hero search with Bedrooms filter** | "01 Home" | Bedrooms filter exists only on the Buy page today |
+| **Mobile menu** design | "00 Menu — Mobile" | Includes Journal |
+| "Request a valuation" / "Request a consultation" | Sell, Village | Link to `/contact?subject=…` with the subject pre-filled (decision 6, see step 22) |
+
+Removed by Figma (exist today): Home "Exceptional addresses / Our regions" section, Home 4th feature card, About values 4–6, footer "Our regions" column, contact "Subject" select and consent checkbox, contact advisor block ("— Marc"), diagnostic date line in the energy block, Buy page "Sort by". **Exception:** village "Our favourite places" is hidden, not deleted (decision 9).
+
+---
+
+## 4. Energy data from Apimo `regulations`
+
+**Today:** `apimo.ts` reads a `dpe` object (`consumption_class`, `emission_class`, `minimum_energy_cost`, `maximum_energy_cost`, `date`) and maps only the **letters** and **cost range** onto `Property` (`energyClass`, `ghgClass`, `energyCostMin/Max`, `energyDiagnosticDate`). The numeric consumption/emission values are not mapped. In practice the data often only appears inside the free-text description ("Performance énergétique : B(109) A(3) … entre 3040€ et 4190€"), as the Figma sample shows.
+
+**Target:** read the energy data from the property's **`regulations`** array in the Apimo API (entries `{ type, value, date? }` whose `type` refers to Apimo's *property_regulation* catalog).
+
+Steps:
+1. Fetch one real property (server-side, with `.env.local`) and log its `regulations` array. Fetch the `property_regulation` catalog to get the IDs for: DPE consumption value (kWh/m²/yr), DPE class, GES emission value (kg CO₂/m²/yr), GES class, min/max annual energy cost, cost reference year, diagnostic date.
+2. Add `regulations?: { type: number; value: string; date?: string }[]` to `ApimoProperty` and a `mapRegulations()` helper in `apimo.ts`.
+3. Extend `Property` in `types.ts`: `energyValue?: number`, `ghgValue?: number`, `energyCostYear?: number` (keep the existing fields).
+4. Priority: `regulations` → old `dpe` block → nothing ("Diagnostic in progress" state). Compute the class from the value if Apimo gives only the number (official DPE/GES thresholds).
+5. Add the same fields to a couple of mock properties so the block can be checked without Apimo.
+6. Rebuild `EnergyDiagnostics.tsx` to the Figma design. Labels go into `i18n.ts` for FR/EN/NL: "Energy class (DPE)", "Greenhouse gas emissions (GES)", "{n} kWh/m²/year", "{n} kg CO₂/m²/year", "Estimated annual energy costs for standard use: €{min} – €{max} ({year} prices)."
+
+---
+
+## 5. Language bug (hydration + SEO)
+
+**What happens now:** `layout.tsx` renders `<html lang="fr">`, and `LanguageProvider` always starts in `"fr"` on the server. After loading, the browser reads `localStorage` / `navigator.language` and switches to EN or NL. So:
+- the HTML Google receives is **always French**, and EN/NL are invisible to search engines (no `/en` URLs, no `hreflang`);
+- the first paint is French, then the text flips (flash), and any component that renders differently on server vs. client produces **hydration errors**;
+- workarounds such as the `mounted` trick in `Header.tsx` exist only because of this.
+
+**Decided fix: language in the URL**, following the Next.js 16 guide `node_modules/next/dist/docs/01-app/02-guides/internationalization.md`:
+
+| Language | URL | Example |
+|---|---|---|
+| English (default) | no prefix | `/properties`, `/sell` |
+| French | `/fr/` | `/fr/properties`, `/fr/sell` |
+| Dutch | `/nl/` | `/nl/properties`, `/nl/sell` |
+
+1. Move the routes under `src/app/[lang]/…` (same files and names, one folder deeper). `[lang]/layout.tsx` renders `<html lang={lang}>`. Auth callback, server actions, `robots.ts`, `sitemap.ts` and the favicon files stay at the root.
+2. `proxy.ts`: URLs starting with `/fr` or `/nl` pass through. Any other URL is **rewritten** (not redirected) internally to `/en/…`, so the visitor keeps seeing `/properties`. A direct visit to `/en/…` redirects to the unprefixed URL. The existing Supabase `updateSession` call is kept.
+3. `LanguageProvider` gets `lang` from the layout (server) as a prop, so server and client render the same language: no more flash or hydration errors. `localStorage` and the `mounted` work-arounds go. `LanguageToggle` links to the same page in the other language. **No automatic redirect based on the browser language** (Google must always get the same page for the same URL). A one-time, dismissible "Voir en français / Bekijk in het Nederlands" hint can be added later if wanted.
+4. `generateStaticParams` returns `en/fr/nl`. Every page gets `generateMetadata` per language with `alternates.canonical` and `alternates.languages` (hreflang `en`, `fr`, `nl`, `x-default` → EN). The sitemap lists all three versions.
+5. Internal links use a small helper `href(lang, "/properties")` so they keep their language.
+6. **Blog: French only, under `/fr/blog`.** Articles live only at `/fr/blog/[slug]`. `/blog` (EN) and `/nl/blog` show the journal index in EN/NL with the Figma notice "Articles are currently published in French only…", and the cards link to `/fr/blog/[slug]`. `/blog/[slug]` and `/nl/blog/[slug]` redirect (301) to `/fr/blog/[slug]`. Articles are excluded from the EN/NL hreflang.
+7. Old URLs → `/fr/` (301), to keep the current French Google ranking. ⚠️ **This conflicts with point 1 (open question A in §6):** the old French URLs are exactly the unprefixed URLs (`/properties`, `/sell`, …) that become the English pages, so they can't also redirect to `/fr/`.
+
+This moves folders one level deeper but keeps the same files, components and data sources.
+
+---
+
+## 6. Decisions (6 November 2026)
+
+| # | Topic | Decision |
+|---|---|---|
+| 1 | Language | Language in the URL: English default without prefix, `/fr/`, `/nl/`. Old URLs → `/fr/` (but see question A). Blog French-only under `/fr/blog`. |
+| 2 | Type | Follow the Figma text styles (italic H1/H2, 80/48 and 56/40). Foundations notes are outdated. |
+| 3 | Mobile margin | 28 px. |
+| 4 | `/rentals` | Keep the page, remove it from the sitemap. The client confirms later. |
+| 5 | Sort by | Remove from the Buy page. |
+| 6 | Request buttons | "Request a valuation" / "Request a consultation" → `/contact` with the subject pre-filled. |
+| 7 | Contact form | Drop the Subject select and consent checkbox. Keep a short privacy note linking to the privacy page. (Decisions 6 + 7 together: subject passed in the URL, shown as a line above the form and sent as the e-mail subject. See step 22.) |
+| 8 | Village figures | Average price + properties are static text per village in the data file (placeholders to replace later). |
+| 9 | Our favourite places | Keep content and code, hide the section (flag), switch back on later. |
+| 10 | Translations | I draft FR and NL for all new copy. The client reviews. |
+| 11 | Village pages | One template for all villages with the same sections as Saint-Tropez. Marc's texts are provided at step 18. |
+
+### Still open
+**A. Old URLs vs. English default (needed before step 12).** Today Google has the French pages indexed at `/properties`, `/sell`, etc. If English becomes the unprefixed default, those addresses start showing English, so they can't redirect to `/fr/`. Options:
+- **A1.** English unprefixed as decided, no redirects for these pages. French moves to `/fr/…` and hreflang tells Google where it went. Google normally transfers the French ranking within a few weeks, but there is a temporary dip. Only URLs that disappear (e.g. `/blog/[slug]` → `/fr/blog/[slug]`) get a 301.
+- **A2.** French stays unprefixed (old URLs unchanged, ranking safe), English under `/en/`, Dutch under `/nl/`.
+- **A3.** All three prefixed (`/fr/`, `/en/`, `/nl/`). The old unprefixed URLs redirect 301 to `/fr/…` (ranking kept, exactly as in your point "redirect old URLs to /fr/"), and English lives at `/en/…`.
+
+A3 is the only option that satisfies "redirect old URLs to /fr/" literally. A1 is the only one that keeps English without a prefix.
+
+---
+
+## 7. Copy changes (Figma English is approved → FR + NL to translate)
+
+Unless noted, the "Current" column is the current **EN** text in `src/lib/i18n.ts`. Each new line needs FR and NL versions: **I draft them in `i18n.ts` during the step that uses them, and the client reviews** (decision 10). Drafted FR/NL strings get a `// TODO client review` comment so they're easy to find.
+Property titles/descriptions in the Figma frames come from Apimo and are **not** copy changes.
+
+### Global
+- English copy says **"Golfe de Saint-Tropez"** / "the Golfe" everywhere, never "Gulf of Saint-Tropez" (`i18n.ts`, `properties.ts`, `BlogPostShell.tsx`, `BlogIndexContent.tsx`). NL currently says "Golf van Saint-Tropez" → use "Golfe de Saint-Tropez".
+- Headings become sentence case: "Property details", "Send us a message", "Contact information", "Office hours", "Commercial operations manager".
+- `common.callUs` is a placeholder number (`+33 4 93 12 34 56`). Figma uses `+33 6 74 75 07 03` everywhere.
+- Locations intro currently says "your renowned real estate partner **since 1987**". This conflicts with "Founded in 2023" and is replaced (see Locations).
+
+### Navigation & footer
+| Element | Current | Figma |
+|---|---|---|
+| Footer brand column | tagline only | tagline + "Espace Lemarquis · Quartier Bertaud 83580 Gassin · France" |
+| Footer contact city | "French Riviera, France" | "Gassin · Var · France" |
+| Footer columns | Explore / Contact / Hours / Our regions | Explore (Buy, Sell, Locations, About, Journal) / Contact / Hours |
+| Footer credit | — | "Site by Z.Development" |
+
+### Home
+| Element | Current | Figma |
+|---|---|---|
+| Hero eyebrow | Luxury Real Estate · French Riviera | *(none)* |
+| Hero title | Discover Elegance | Where the Riviera becomes home |
+| Hero subtitle | Exclusive Properties in the French Riviera | Villas, estates and waterfront houses around Saint-Tropez. |
+| Search labels | …, Budget "All budgets" | Location "All", Property type "All types", Budget "All prices", **Bedrooms** "All", Search |
+| Hero | — | "Scroll" cue |
+| Why: eyebrow | The Ellington Standard | The Ellington standard |
+| Why: title | Why choose Ellington | Honest advice, local roots, and a written update every month. |
+| Why: subtitle | Unparalleled expertise in luxury real estate across the French Riviera. | *(none)* |
+| Feature 1 | Trusted advisors: A confidential, discreet approach… | **Honest advice**: We tell you what we really think about price — you keep the final word. |
+| Feature 2 | Exclusive network: Privileged access to off-market… | **Local roots**: Based in Gassin, from Les Issambres to Le Lavandou. |
+| Feature 3 | International clientele: Buyers from over 10 countries… | **Buyers from around the world**: We advise in French, English and Dutch. |
+| Feature 4 | Bespoke service… | *(removed)* |
+| Featured subtitle | A curated selection of the rarest properties in our portfolio, refreshed weekly. | A selection of the exceptional homes we currently represent. |
+| Regions section | Our regions / Exceptional addresses / From Monaco to Saint-Tropez… / View all our regions | *(removed)* |
+| Signature quote | — | “Honest advice, from the first visit to the final signature.” |
+| Signature eyebrow / title | — / Not Your Ordinary Local Expert. | Our signature / Not your ordinary local expert. |
+| Signature text | expertP1–P3 ("Born in the heart of the Gulf… Its founder, having grown up in the region…") | "Founded in 2023 in the Golfe de Saint-Tropez by two partners who share a passion for property and architecture." / "We focus on exceptional villas and estates, and stay close to our clients from the first visit to the signature at the notary." / Learn more → |
+| Journal (hard-coded in `HomeContent.tsx`) | The Journal / … | The journal / Stories from the Golfe / Buyer's guides, market analyses and Riviera lifestyle — our editorial selection. / View all articles → / Browse by category |
+| Newsletter eyebrow / title | Stay informed / Stay informed | Newsletter / Stay informed |
+| Newsletter disclaimer | No spam — unsubscribe at any time. | *(none)* |
+| Newsletter success | Thank you, your subscription is confirmed. (inline) | Overlay: Newsletter / Thank you / You're on our list for new properties and stories from the Golfe. / Close |
+
+### Buy
+| Element | Current | Figma |
+|---|---|---|
+| Eyebrow | Portfolio | *(none)* |
+| Title | Properties for sale (split) | Properties for sale |
+| Subtitle | Discover the exceptional properties curated by Ellington across the entire French Riviera. | Exceptional homes across the French Riviera. |
+| Bedrooms label (hard-coded EN/FR only) | Bedrooms / Chambres | Bedrooms (needs NL) |
+
+### Property detail
+| Element | Current | Figma |
+|---|---|---|
+| Details title | Property Details | Property details |
+| DPE label | Energy performance diagnostic | Energy class (DPE) |
+| GES label | Greenhouse gas emission index | Greenhouse gas emissions (GES) |
+| Values | — | 109 kWh/m²/year · 3 kg CO₂/m²/year |
+| Cost line | Estimated annual energy expenses for standard use: between €X and €Y per year | Estimated annual energy costs for standard use: €X – €Y (2023 prices). |
+| Diagnostic date | Diagnostic completed after July 1, 2021 — … | *(none)* |
+| Similar | Similar properties | Similar properties + View all → |
+| Sidebar hours | — | Office hours: Monday – Friday · 9am – 6pm, Saturday · 10am – 4pm |
+
+### Sell
+| Element | Current | Figma |
+|---|---|---|
+| Eyebrow | Sell with Ellington | *(none)* |
+| Hero lead | Local expertise. International reach. Tailored excellence. | An honest valuation, the right buyers, and clear updates until the signature. |
+| Why Ellington? p1 | Born in the heart of the Gulf… a signature. | Founded in 2023 in the Golfe de Saint-Tropez by two partners who share a passion for property and architecture. |
+| p2 | Its founder, having grown up in the region… | From our office in Gassin we work the Golfe de Saint-Tropez every day, from Les Issambres to Le Lavandou. Knowing which domains, streets and views buyers ask for is what lets us set a realistic price and find the right buyer. |
+| p3 | Fluent in French, English, and Dutch… | Our buyers come from all over the world. We work in French, English and Dutch, and share every new listing directly with the active buyers registered with us. |
+| p4 | We approach every sale with discretion… | We tell you honestly what we think your property will sell for — even if it is not what you hoped to hear — and you always keep the final word. |
+| Process eyebrow | — | Our method (+ "Step 01…04" labels) |
+| Step 1 | Tailored valuation… | **Honest valuation**: We visit, compare with recent sales in the area and give you a realistic price — and tell you if we think expectations are too high. |
+| Step 2 | Targeted exposure… | **Presentation**: Once you entrust us with the sale, we prepare photos, a full description and the documents buyers will ask for. |
+| Step 3 | Bespoke marketing… | **The right buyers**: Your property goes first to the active buyers registered with us, then to partner agencies and international portals. |
+| Step 4 | Negotiation & completion… | **Offers & signature**: We accompany every visit, negotiate offers and coordinate diagnostics and the notary until the final signature. |
+| Trust eyebrow | — | Our promise |
+| Trust 1 | Discretion… | **Honest pricing**: We advise on price honestly, even if it means disagreeing with you. You keep the final word. |
+| Trust 2 | International network… | **Monthly reports**: A written update every month: visits, feedback, offers and what we suggest adjusting. |
+| Trust 3 | Dedicated support… | **Discretion**: If you prefer, your property is only shown to qualified buyers — off the public portals. |
+| Trust 4 | Tailored approach… | **One small team**: You deal with the same people from valuation to signature. |
+| CTA subtitle | Whether you are considering selling or simply exploring your options… | Thinking about selling, or simply curious what your property is worth today? We will give you an honest figure. |
+| CTA button | Request your confidential valuation | Request your confidential valuation → |
+
+### Locations index
+| Element | Current | Figma |
+|---|---|---|
+| Hero | eyebrow "The French Riviera", "Our Locations", "Explore the most prestigious locations along the Côte d'Azur…" | "Our locations" / "The villages of the Golfe de Saint-Tropez." |
+| Section title | — | The Golfe de Saint-Tropez |
+| Intro | Discover Ellington, your renowned real estate partner since 1987… | From the hilltop villages of Gassin and Ramatuelle to the canals of Port Grimaud and the quieter bays of Cavalaire and Rayol-Canadel, every village around the Golfe has its own character, its own pace and its own kind of home. Choose a village to see what life there is like and which properties we currently represent. |
+| Grimaud tagline | Medieval character in the heart of the Gulf | Medieval character at the heart of the Golfe |
+| Sainte-Maxime tagline | Family-friendly elegance on the northern shore | Refined family living on the northern shore |
+| "Region i / total", "View properties →" | shown | *(not in Figma)* |
+
+### Village pages (all 9). Intro text is **new for every village**
+| Village | Figma intro (replaces `descriptionEn`) | Avg. price | Properties |
+|---|---|---|---|
+| Saint-Tropez | Saint-Tropez continues to attract a discerning international clientele, drawn by its superyachts, art galleries and world-class restaurants. Behind the summer spectacle lies a preserved Provençal village — its citadel, its orange-red bell tower and the legendary Place des Lices speak to an authenticity that resists the passage of time. | €8M+ | 40+ |
+| Ramatuelle | Ramatuelle is a medieval village perched on the peninsula south of Saint-Tropez. Its vine-covered lanes, sweeping sea panoramas and proximity to Pampelonne make it one of the most coveted addresses for discerning buyers on the Riviera. | €5M+ | 25+ |
+| Gassin | Perched at 200 metres, Gassin is one of France's Most Beautiful Villages. Its extraordinary 360° views over the Golfe de Saint-Tropez and its authentic Provençal character attract buyers who prize tranquillity and timeless beauty. | €4M+ | 20+ |
+| Grimaud | Grimaud is a medieval village crowned by its 11th-century castle, overlooking the Golfe de Saint-Tropez. It combines remarkable historical character with modern luxury in a setting of unique prestige. | €3.5M+ | 18+ |
+| Port Grimaud | Port Grimaud is a unique lakeside village where every home has direct access to the sea via private canals. Created by architect François Spoerry, this architectural masterpiece offers an unmatched intimacy with the Mediterranean. | €2.5M+ | 35+ |
+| Sainte-Maxime | Facing Saint-Tropez across the Golfe, Sainte-Maxime offers all the pleasures of the Côte d'Azur with a refined family atmosphere, excellent amenities and a rich cultural calendar throughout the year. | €2M+ | 45+ |
+| La Croix-Valmer | La Croix-Valmer enjoys some of the finest natural beaches on the Riviera. Nestled between vineyards and the sea, it offers exceptional properties in one of the most naturally preserved settings on the coast. | €1.8M+ | 22+ |
+| Cavalaire-sur-Mer | Cavalaire-sur-Mer stretches along a magnificent three-kilometre bay. Its authentic character, its marina and its fine sand beaches make it an outstanding address for buyers seeking value and Mediterranean beauty. | €1.5M+ | 30+ |
+| Rayol-Canadel-sur-Mer | Rayol-Canadel-sur-Mer is one of the most exclusive resorts on the Côte d'Azur — a protected enclave of remarkable landscapes and crystal-clear waters, preserved from mass tourism. | €2M+ | 15+ |
+
+Shared village-page texts (new): "← Back to locations", "The village", "Average price", "Properties", "Lifestyle / Culture & experiences", "Discover / The area", "Market / Investment & market", "Exceptional properties with strong asset potential in Saint-Tropez.", band "Your local expert in this region" / "We live and work in the Golfe — ask us anything about this village." / "Request a consultation", "Properties in this region", "View all →", "No properties in this region at the moment."
+Saint-Tropez activity 1: "…in the **Golfe** de Saint-Tropez" (was "Gulf of"). Its other rich texts (lifestyle paragraph 1, gastronomy, highlights, real estate list) match `location-content.ts`.
+
+### About
+| Element | Current | Figma |
+|---|---|---|
+| Hero subtitle | Born in the heart of the Gulf of Saint-Tropez, built on trust. | Founded in 2023 in the Golfe de Saint-Tropez. |
+| Intro | — | Small by choice, local by nature. / A young, independent agency for exceptional homes on the Riviera. |
+| Key figures | 30+ Years on the Riviera · 10+ Countries worldwide · 9 Exclusive regions · 3 Languages spoken | 2023 Founded in the Golfe · 3 Languages · FR, EN, NL · 9 Villages in the Golfe · Monthly Written owner reports |
+| Story subtitle | — | Founded in the Golfe de Saint-Tropez by two partners with a passion for property and architecture. |
+| Story p1 | Born in the heart of the Gulf… Its founder, having grown up in the region… | Ellington was founded in 2023 by two partners with a shared passion for property and architecture. From our office in Gassin we cover the Golfe de Saint-Tropez, from Les Issambres to Le Lavandou, and take on exceptional properties further along the Riviera. |
+| Story p2 | Driven by a deeply international mindset… | Our clients come from all over the world. We work in French, English and Dutch, so nothing gets lost between buyer, seller and notary. |
+| Story p3 | Choosing Ellington means partnering with a trusted advisor… | Our approach is simple: be available, be discreet, and give honest advice. If we think a price is wrong, we say so — the decision always stays with you. |
+| Values (6 → 3) | Integrity, Excellence, Discretion, Global reach, Local roots, Bespoke service | **Honesty**: Straight answers on price and market, even when they are not the easy ones. You keep the final word. · **Discretion**: Your plans, your property and your details stay between us — off the public portals if you prefer. · **Local roots**: We live and work in the Golfe and know its villages, domains and views. |
+| Photo strip | — | Saint-Tropez · Ramatuelle · Gassin · Grimaud · Port-Grimaud · Sainte-Maxime · Croix-Valmer · Cavalaire · Rayol-Canadel |
+| Team title | Agency Team | The team |
+| Marc bio | …knowledge of the Gulf of Saint-Tropez… | …knowledge of the Golfe de Saint-Tropez… |
+| Sophia role | Commercial Operations Manager | Commercial operations manager |
+| Closing band | A question? / Let's find your property / Whether you wish to buy, sell or value — our team is at your service. | Let's find your property / Buying, selling or valuing — tell us what you have in mind. / View properties · Contact us |
+
+### Journal & articles (strings hard-coded in `BlogIndexContent.tsx` / `BlogPostShell.tsx`, FR/EN only, **NL missing**)
+| Element | Current | Figma |
+|---|---|---|
+| Hero | The Journal / Stories from the Gulf | Stories from the Golfe / Buyer's guides, market analyses and Riviera life. |
+| Filter | All articles + categories | All articles · Buyer's guides · Market analysis · Architecture & heritage · Lifestyle · Tax & legal |
+| Notice | (EN only) | Articles are currently published in French only — English versions coming soon. / Contact us · marc@ellington-international.com |
+| Article band / end | Confidential, off-market expertise across the Gulf of Saint-Tropez. | Blue band + "Keep reading" (check exact copy in 08.1–08.3 during step 21) |
+
+Article titles/excerpts in Figma match the 3 MDX files. Article bodies were not compared line by line. Do that in step 21.
+
+### Contact
+| Element | Current | Figma |
+|---|---|---|
+| Hero | Contact / Get in touch / We're here to answer your questions and guide you through your luxury real estate journey. | Get in touch / We reply personally to every message. |
+| Form title | Send Us a Message | Send us a message |
+| Labels | First name, Last name, Email address, Phone number, Subject *, Message | First name *, Last name *, Email address *, Phone number, Message * (no Subject) |
+| Consent checkbox | shown | *(none)*. Disclaimer text stays |
+| Advisor block | Your contact / … — Marc | *(none)* |
+| Info titles | Contact Information, Office Hours | Contact information, Office hours (Mon–Fri : 9am – 6pm, Sat : 10am – 4pm. No Sunday line) |
+| Success | Thank you. / Your message has been received… (inline) | Overlay: Request received / Thank you / Your message is with us. A member of our team will reply to you personally. / Close |
