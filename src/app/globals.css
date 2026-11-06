@@ -1,30 +1,54 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Client design-system palette (Figma) ──────────────────────────────
-     CORE     : Primary #FFFFFF · Secondary #000000 · Dark Accent #0D316C
-     NEUTRAL  : Primary #E4EEFF · Secondary #9A9A9A · Accent #004BC1 · Accent-light #D9D9D9
-  */
-  --background: #ffffff;        /* Core Primary — white page background */
-  --background-elev: #ffffff;   /* white sections */
-  --background-card: #ffffff;   /* white cards */
-  --panel: #ebeef5;             /* Light blue accent panels (footer, info boxes, filter bar) — client #ebeef5 */
-  --foreground: #1a2744;        /* navy typography (client palette #1a2744) */
-  --muted: #9a9a9a;             /* Neutral Secondary — gray */
-  --muted-strong: #5a6b86;      /* deeper blue-gray for secondary text */
-  --border: #d9d9d9;            /* Neutral Accent-light — hairline gray */
-  --border-strong: #c2c2c2;     /* stronger hairline */
-  --accent: #1a2744;            /* Navy — buttons & key accents (client #1a2744) */
-  --accent-hover: #0f1726;      /* deeper navy on hover (navy buttons) */
-  --link: #004bc1;              /* Blue accent — links, property pages (Figma "blue is accent") */
-  --link-hover: #003a99;        /* darker blue on press */
-  --gold: #c9a96e;              /* Gold accent (client #c9a96e) — reserved for sub-titles / eyebrows only */
-  --gold-hover: #b8975a;        /* deeper gold on hover */
-  /* Shield dark navy — used by the logo to stay branded regardless of theme */
-  --brand-navy: #1a2744;
+  /* ── Figma colour variables (collection "Color") — the ONLY real values ──
+     Names mirror Figma: brand/blue → --brand-blue, text/body → --body-text
+     (not --text-body: Tailwind reserves --text-* for font sizes).
+     Never add a colour here that is not in Figma. */
+  --brand-blue: #154166;        /* brand/blue — headings, buttons, links, logo */
+  --brand-blue-deep: #0f3352;   /* brand/blue-deep — hover state, footer base */
+  --brand-accent: #978a7a;      /* brand/accent — champagne. Fine accents only: hover underline, numbers, step lines, quote line, active chip. Never large areas. */
+  --body-text: #3d5670;         /* text/body — body copy */
+  --muted-text: #5b7189;        /* text/muted — small text, labels */
+  --surface-white: #ffffff;     /* surface/white — page background */
+  --surface-light: #e8eef4;     /* surface/light — light blue bands: page heads, closing bands */
+  --line-hairline: #d5dee7;     /* line/hairline — hairlines, borders, input outlines */
+
+  /* ── Legacy aliases (pre-redesign names) ─────────────────────────────────
+     Kept so existing components keep working while they are redone.
+     Each alias is deleted once nothing uses it (REDESIGN-PLAN.md, Phases 2–5).
+     Do NOT use these names in new code — use the Figma names above. */
+  --background: var(--surface-white);
+  --background-elev: var(--surface-white);
+  --background-card: var(--surface-white);
+  --panel: var(--surface-light);
+  --foreground: var(--brand-blue);       /* was navy #1a2744; used for titles/links */
+  --muted: var(--muted-text);            /* was grey #9a9a9a */
+  --muted-strong: var(--body-text);      /* was #5a6b86 (secondary copy) */
+  --border: var(--line-hairline);
+  --border-strong: var(--line-hairline); /* Figma has a single hairline colour */
+  --accent: var(--brand-blue);
+  --accent-hover: var(--brand-blue-deep);
+  --link: var(--brand-blue);             /* old bright blue #004bc1 is not in Figma */
+  --link-hover: var(--brand-blue-deep);
+  --gold: var(--brand-accent);           /* gold #c9a96e → champagne */
+  --gold-hover: var(--brand-accent);     /* no hover shade in Figma; buttons redone in step 5 */
+  --brand-navy: var(--brand-blue);
 }
 
 @theme inline {
+  /* Figma colours as Tailwind utilities:
+     bg-brand-blue, bg-brand-blue-deep, text-brand-accent, text-body-text,
+     text-muted, bg-surface, bg-surface-light, border-hairline */
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-deep: var(--brand-blue-deep);
+  --color-brand-accent: var(--brand-accent);
+  --color-body-text: var(--body-text);
+  --color-surface: var(--surface-white);
+  --color-surface-light: var(--surface-light);
+  --color-hairline: var(--line-hairline);
+
+  /* Legacy utilities (text-foreground, bg-accent, text-link, …) */
   --color-background: var(--background);
   --color-background-elev: var(--background-elev);
   --color-background-card: var(--background-card);
@@ -77,8 +101,12 @@
 }
 
 html, body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-white);
+  /* Default text colour = brand blue (same role as the old navy). The Figma
+     split "headings brand/blue, body copy text/body" is applied per text style
+     in redesign step 2 — not here, because hero headings over photos inherit
+     their white from the hero container and a global rule would override it. */
+  color: var(--brand-blue);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 300; /* Inter Light — Figma body default */
   font-feature-settings: "ss01", "cv11";
