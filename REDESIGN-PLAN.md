@@ -118,7 +118,7 @@ Legend: **[D]** check against Desktop frame, **[M]** check against Mobile frame.
 
 ### Phase 1. Foundations: colours, type, spacing
 1. **Colour tokens.** ✅ *done, waiting for your check.* In `globals.css`, the 8 Figma colours are the only real values. The old names (`--foreground`, `--accent`, `--gold`, `--panel`, `--link`, …) are kept as **aliases** pointing to them so existing pages don't break. Each alias is removed when the components using it are redone in Phases 2 and 4. New Tailwind classes: `bg-brand-blue`, `bg-brand-blue-deep`, `text-brand-accent`, `text-body-text`, `text-muted`, `bg-surface`, `bg-surface-light`, `border-hairline`. Default page text stays brand blue (it was navy). *Check:* layout unchanged, colours shift to the new blue / champagne / hairlines.
-2. **Type scale.** Delete the old `--text-*` tokens and rewrite the `.type-*` classes as one class per Figma text style (`.type-h1`, `.type-h2`, `.type-title`, `.type-h3`, `.type-figure`, `.type-number`, `.type-subtitle`, `.type-price`, `.type-body`, `.type-value`, `.type-input`, `.type-small`, `.type-eyebrow`, `.type-label`, `.type-button`), with mobile sizes under `768px`. Remove the global `p { 14px }` override. **Also apply the colours per style here**: headings brand/blue, body text/body (`#3d5670`), small/labels text/muted. Add an `on-photo` modifier (white) for hero text, because hero headings currently inherit white from their container and a colour on the heading would override it. *Check:* a temporary `/styleguide` page (delete before merge) next to the Figma Foundations page.
+2. **Type scale.** ✅ *done, waiting for your check.* Delete the old `--text-*` tokens and rewrite the `.type-*` classes as one class per Figma text style (`.type-h1`, `.type-h2`, `.type-title`, `.type-h3`, `.type-figure`, `.type-number`, `.type-subtitle`, `.type-price`, `.type-body`, `.type-value`, `.type-input`, `.type-small`, `.type-eyebrow`, `.type-label`, `.type-button`), with mobile sizes under `768px`. Remove the global `p { 14px }` override. **Also apply the colours per style here**: headings brand/blue, body text/body (`#3d5670`), small/labels text/muted. Add an `on-photo` modifier (white) for hero text, because hero headings currently inherit white from their container and a colour on the heading would override it. *Check:* a temporary `/styleguide` page (delete before merge) next to the Figma Foundations page.
 3. **Fonts.** Trim Cormorant weights in `layout.tsx` to what the styles use.
 4. **Spacing tokens.** Add CSS variables / Tailwind theme values for `wrap`, `margin`, `section`, `gap`, `stack`, `nav-height`, plus a reusable `.container-wrap` (max 1240, side margin 100/28).
 
@@ -145,7 +145,7 @@ Legend: **[D]** check against Desktop frame, **[M]** check against Mobile frame.
 17. **Locations index** `/locations` (`LocationsIndexContent`) → "05 Locations". Intro "The Golfe de Saint-Tropez" + 9 village cards.
 18. **Village page: one template for all 9 villages** `/locations/[slug]` (`LocationDetail`) → "06 Village" (decision 11). Every village gets the same sections as Saint-Tropez: hero, The village (intro + Average price + Properties), Culture & experiences, The area, Investment & market, blue band, Properties in this region. **You provide Marc's texts for all villages at this step.** Unify the data into one shape per village (merge `location-content.ts` into the village data, FR/EN/NL). `averagePrice` and `propertyCount` are static text in the data file, so the placeholder figures can be replaced later (decision 8). "Request a consultation" → `/contact?subject=consultation&village=<slug>`. **"Our favourite places"**: keep the data and the component code but don't render the section (a `SHOW_FAVOURITE_PLACES = false` flag), to be restyled and switched on later (decision 9).
 19. **About** `/about` (`AboutContent.tsx`) → "07 About". Intro + 4 key figures, Our story (drop-cap "E"), 3 values, photo strip, team, closing band.
-20. **Journal** `/fr/blog` (`BlogIndexContent`) → "08 Journal". Category chips, cards, "French only" notice. See §5 for how `/blog` (EN) and `/nl/blog` behave.
+20. **Journal** `/fr/blog` (`BlogIndexContent`) → "08 Journal". Category chips, cards, "French only" notice. See §5 for how `/en/blog` and `/nl/blog` behave.
 21. **Article** `/fr/blog/[slug]` (`BlogPostShell`, `mdx.tsx`) → "08.1–08.3". Hero, article typography, blue band, Keep reading.
 22. **Contact** `/contact` (`ContactPageContent`, `ContactForm`) → "09 Contact". Form + contact info + confidential box + overlay. **Drop the Subject select and the consent checkbox** and keep a short privacy note linking to the privacy page (decision 7). Pre-filled subject (decision 6): read `?subject=valuation|consultation` (+ `village`) from the URL. Show a small line above the form ("Valuation request" / "Consultation about Ramatuelle"), start the message with a matching sentence, and send it to FormSubmit as the e-mail subject (`_subject`). So there's no visible select, but Marc still sees what the request is about.
 23. **Pages not in Figma**: restyle with the new tokens only, no new layout: `/legal`, `/privacy`, `/login`, `/signup`, `/mes-favoris`, cookie banner, `/rentals` (kept for now, out of the sitemap. The client confirms later).
@@ -199,21 +199,33 @@ Steps:
 - the first paint is French, then the text flips (flash), and any component that renders differently on server vs. client produces **hydration errors**;
 - workarounds such as the `mounted` trick in `Header.tsx` exist only because of this.
 
-**Decided fix: language in the URL**, following the Next.js 16 guide `node_modules/next/dist/docs/01-app/02-guides/internationalization.md`:
+**Decided fix: all three languages prefixed in the URL (option A3, 6 November 2026)**, following the Next.js 16 guide `node_modules/next/dist/docs/01-app/02-guides/internationalization.md`:
 
 | Language | URL | Example |
 |---|---|---|
-| English (default) | no prefix | `/properties`, `/sell` |
+| English | `/en/` | `/en/properties`, `/en/sell` |
 | French | `/fr/` | `/fr/properties`, `/fr/sell` |
 | Dutch | `/nl/` | `/nl/properties`, `/nl/sell` |
 
-1. Move the routes under `src/app/[lang]/…` (same files and names, one folder deeper). `[lang]/layout.tsx` renders `<html lang={lang}>`. Auth callback, server actions, `robots.ts`, `sitemap.ts` and the favicon files stay at the root.
-2. `proxy.ts`: URLs starting with `/fr` or `/nl` pass through. Any other URL is **rewritten** (not redirected) internally to `/en/…`, so the visitor keeps seeing `/properties`. A direct visit to `/en/…` redirects to the unprefixed URL. The existing Supabase `updateSession` call is kept.
-3. `LanguageProvider` gets `lang` from the layout (server) as a prop, so server and client render the same language: no more flash or hydration errors. `localStorage` and the `mounted` work-arounds go. `LanguageToggle` links to the same page in the other language. **No automatic redirect based on the browser language** (Google must always get the same page for the same URL). A one-time, dismissible "Voir en français / Bekijk in het Nederlands" hint can be added later if wanted.
-4. `generateStaticParams` returns `en/fr/nl`. Every page gets `generateMetadata` per language with `alternates.canonical` and `alternates.languages` (hreflang `en`, `fr`, `nl`, `x-default` → EN). The sitemap lists all three versions.
+**Redirect rules (in `proxy.ts`):**
+
+| Incoming URL | Goes to | Type |
+|---|---|---|
+| `/` (bare domain) | `/fr/` or `/nl/` if the visitor's `lang` cookie (set by the language toggle) or browser language (`Accept-Language`) prefers French or Dutch, otherwise `/en/` | **307 temporary** (the result depends on the visitor), with `Vary: Accept-Language, Cookie` |
+| Any other unprefixed page URL (old site URLs: `/properties`, `/properties/123`, `/sell`, `/locations/gassin`, `/blog/<slug>`, …) | same path under `/fr/` (query string kept) | **301 permanent**, so the current French Google ranking moves to `/fr/` |
+| `/en/blog/<slug>`, `/nl/blog/<slug>` | `/fr/blog/<slug>` | 301 (articles are French-only) |
+| `/fr/…`, `/en/…`, `/nl/…` | unchanged | — |
+
+Never redirected: `/_next/*`, `/auth/callback`, server actions, `/robots.txt`, `/sitemap.xml`, favicons/icons, `/llms.txt`, and **every static file** (anything with a file extension, e.g. `/locations/gassin.jpg` and `/brand/logo.png`; note that `public/locations/` shares its prefix with the `/locations` page route, so the extension check matters).
+
+Implementation:
+1. Move the routes under `src/app/[lang]/…` (same files and names, one folder deeper). `[lang]/layout.tsx` renders `<html lang={lang}>` and calls `notFound()` for anything other than `en`/`fr`/`nl`. Auth callback, server actions, `robots.ts`, `sitemap.ts` and the favicon files stay at the root.
+2. `proxy.ts` applies the table above, then the existing Supabase `updateSession` call.
+3. `LanguageProvider` gets `lang` from the layout (server) as a prop, so server and client render the same language: no more flash or hydration errors. `localStorage` and the `mounted` work-arounds go. `LanguageToggle` links to the same page in the other language and sets the `lang` cookie (used only for the bare-domain redirect). Browser-language detection happens **only on `/`**. A prefixed URL always shows its own language.
+4. `generateStaticParams` returns `en/fr/nl`. Every page gets `generateMetadata` per language with `alternates.canonical` and `alternates.languages` (hreflang `en`, `fr`, `nl`, plus `x-default` → `/`, the bare-domain chooser). The sitemap lists all three versions of every page (no unprefixed URLs, no `/rentals`).
 5. Internal links use a small helper `href(lang, "/properties")` so they keep their language.
-6. **Blog: French only, under `/fr/blog`.** Articles live only at `/fr/blog/[slug]`. `/blog` (EN) and `/nl/blog` show the journal index in EN/NL with the Figma notice "Articles are currently published in French only…", and the cards link to `/fr/blog/[slug]`. `/blog/[slug]` and `/nl/blog/[slug]` redirect (301) to `/fr/blog/[slug]`. Articles are excluded from the EN/NL hreflang.
-7. Old URLs → `/fr/` (301), to keep the current French Google ranking. ⚠️ **This conflicts with point 1 (open question A in §6):** the old French URLs are exactly the unprefixed URLs (`/properties`, `/sell`, …) that become the English pages, so they can't also redirect to `/fr/`.
+6. **Blog: French only.** Articles live only at `/fr/blog/[slug]`. `/en/blog` and `/nl/blog` show the journal index in EN/NL with the Figma notice "Articles are currently published in French only…", and the cards link to `/fr/blog/[slug]`. Articles are excluded from the EN/NL hreflang.
+7. SEO note: every old inner page keeps its French ranking through the 301 to `/fr/…`. The homepage is the exception, because `/` becomes a per-visitor 307. Google usually crawls without a French browser language, so it will be sent to `/en/`. French searchers are pointed to `/fr/` by hreflang, but the French homepage may dip briefly while Google re-indexes. After launch: submit the new sitemap in Search Console and watch the "Pages" report for redirect errors.
 
 This moves folders one level deeper but keeps the same files, components and data sources.
 
@@ -223,7 +235,7 @@ This moves folders one level deeper but keeps the same files, components and dat
 
 | # | Topic | Decision |
 |---|---|---|
-| 1 | Language | Language in the URL: English default without prefix, `/fr/`, `/nl/`. Old URLs → `/fr/` (but see question A). Blog French-only under `/fr/blog`. |
+| 1 | Language | **A3**: all three languages prefixed (`/en/`, `/fr/`, `/nl/`). The bare domain `/` goes to `/en/`, or to `/fr/` / `/nl/` when the visitor's browser language is French or Dutch. Old unprefixed URLs redirect (301) to `/fr/`. Blog French-only under `/fr/blog`. Details in §5. |
 | 2 | Type | Follow the Figma text styles (italic H1/H2, 80/48 and 56/40). Foundations notes are outdated. |
 | 3 | Mobile margin | 28 px. |
 | 4 | `/rentals` | Keep the page, remove it from the sitemap. The client confirms later. |
@@ -235,13 +247,8 @@ This moves folders one level deeper but keeps the same files, components and dat
 | 10 | Translations | I draft FR and NL for all new copy. The client reviews. |
 | 11 | Village pages | One template for all villages with the same sections as Saint-Tropez. Marc's texts are provided at step 18. |
 
-### Still open
-**A. Old URLs vs. English default (needed before step 12).** Today Google has the French pages indexed at `/properties`, `/sell`, etc. If English becomes the unprefixed default, those addresses start showing English, so they can't redirect to `/fr/`. Options:
-- **A1.** English unprefixed as decided, no redirects for these pages. French moves to `/fr/…` and hreflang tells Google where it went. Google normally transfers the French ranking within a few weeks, but there is a temporary dip. Only URLs that disappear (e.g. `/blog/[slug]` → `/fr/blog/[slug]`) get a 301.
-- **A2.** French stays unprefixed (old URLs unchanged, ranking safe), English under `/en/`, Dutch under `/nl/`.
-- **A3.** All three prefixed (`/fr/`, `/en/`, `/nl/`). The old unprefixed URLs redirect 301 to `/fr/…` (ranking kept, exactly as in your point "redirect old URLs to /fr/"), and English lives at `/en/…`.
-
-A3 is the only option that satisfies "redirect old URLs to /fr/" literally. A1 is the only one that keeps English without a prefix.
+### Resolved
+**A. Old URLs vs. English default.** Resolved 6 November 2026: option **A3** chosen (see decision 1 and §5).
 
 ---
 
