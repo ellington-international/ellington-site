@@ -10,16 +10,21 @@ import { JsonLd } from "@/components/JsonLd";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
 
+// Fonts from the Figma text styles. Both are Google *variable* fonts: one file
+// per style covers every weight, so no `weight` list is needed.
+// Inter (sans) — Light 300 for text, Regular 400 for caps/labels/buttons.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
+// Cormorant Garamond (serif) — Regular 400 (price), Medium 500 (headings,
+// italic for H1/H2), Bold Italic 700 (Number/Display). Variable 300–700, in
+// normal + italic: 2 files instead of the previous 10 static ones.
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   display: "swap",
 });
