@@ -10,6 +10,7 @@ import { BlogCard } from "@/components/BlogCard";
 import type { Property } from "@/lib/types";
 import { useLanguage } from "@/components/LanguageProvider";
 import { CATEGORY_LABELS, type BlogCategory, type Post } from "@/lib/blog-shared";
+import { cardGridCls } from "@/components/ui/card";
 
 const CATEGORIES_ORDER: BlogCategory[] = [
   "guides-achat",
@@ -116,18 +117,21 @@ export function HomeContent({
             </Link>
           </div>
 
-          {/* mobile: scroll-snap horizontal — desktop: grid */}
-          <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth -mx-6 md:mx-0 px-6 md:px-0 pb-3 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {/* Figma "Track (horizontal scroll)": a swipe carousel on every
+              screen size. Mobile: one card (86 %) with the next one peeking,
+              20px apart. Tablet 2, desktop 3 cards visible, 32px apart.
+              Snaps card by card; "← Swipe →" underneath. */}
+          <div className="-mx-6 md:-mx-10 px-6 md:px-10 scroll-px-6 md:scroll-px-10 flex gap-[20px] md:gap-gap overflow-x-auto snap-x snap-mandatory overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {featured.map((p, i) => (
               <div
                 key={p.id}
-                className="flex-none w-[82%] sm:w-[55%] md:w-auto snap-center md:snap-align-none"
+                className="flex-none snap-start w-[86%] md:w-[calc((100%-var(--space-gap))/2)] lg:w-[calc((100%-2*var(--space-gap))/3)]"
               >
-                <PropertyCard property={p} priority={i < 3} />
+                <PropertyCard property={p} priority={i < 3} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 86vw" />
               </div>
             ))}
           </div>
-          <p className="md:hidden mt-4 text-center text-[10px] tracking-[0.22em] uppercase text-muted">
+          <p className="type-label text-muted text-center mt-[40px]" aria-hidden>
             {t.common.swipeHint}
           </p>
         </div>
@@ -234,15 +238,10 @@ export function HomeContent({
               </Link>
             </div>
 
-            {/* Recent posts — same scroll-snap pattern as Featured properties on mobile */}
-            <div className="flex md:grid md:grid-cols-3 gap-5 md:gap-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-smooth -mx-6 md:mx-0 px-6 md:px-0 pb-3 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {/* Recent posts — Figma "Grid 3 col" / mobile "Grid 1 col" */}
+            <div className={cardGridCls}>
               {recentPosts.map((p, i) => (
-                <div
-                  key={p.slug}
-                  className="flex-none w-[82%] sm:w-[55%] md:w-auto snap-center md:snap-align-none"
-                >
-                  <BlogCard post={p} priority={i === 0} />
-                </div>
+                <BlogCard key={p.slug} post={p} priority={i === 0} />
               ))}
             </div>
 

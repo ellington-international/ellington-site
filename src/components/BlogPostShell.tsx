@@ -6,6 +6,7 @@ import type { Post } from "@/lib/blog-shared";
 import { formatDate } from "@/lib/blog-shared";
 import { BlogCard } from "./BlogCard";
 import { useLanguage } from "./LanguageProvider";
+import { cardGridCls } from "@/components/ui/card";
 
 export function BlogPostShell({
   post,
@@ -117,7 +118,7 @@ export function BlogPostShell({
           <h2 className="font-serif text-3xl md:text-4xl mb-10">
             <em className="italic">{relatedTitle}</em>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className={cardGridCls}>
             {related.map((p) => (
               <BlogCard key={p.slug} post={p} />
             ))}

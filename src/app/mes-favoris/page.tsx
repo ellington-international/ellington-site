@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getProperties } from "@/lib/properties";
 import { PropertyCard } from "@/components/PropertyCard";
 import { LogoutButton } from "@/components/LogoutButton";
+import { cardGridCls } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Mes favoris",
@@ -60,7 +61,7 @@ export default async function MesFavorisPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className={cardGridCls}>
             {favorites.map((p) => (
               <PropertyCard key={p.id} property={p} initialFavored />
             ))}

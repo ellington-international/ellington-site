@@ -9,6 +9,7 @@ import { formatPriceShort } from "@/lib/properties";
 import { localizeFeature } from "@/lib/amenities";
 import { useLanguage } from "./LanguageProvider";
 import type { Property } from "@/lib/types";
+import { cardGridCls } from "@/components/ui/card";
 
 export function PropertyDetailContent({
   property,
@@ -307,7 +308,7 @@ export function PropertyDetailContent({
               {t.propertyDetail.similar}{" "}
               <em className="not-italic">{t.propertyDetail.similarAccent}</em>
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className={cardGridCls}>
               {similar.map((p) => (
                 <PropertyCard
                   key={p.id}

@@ -6,146 +6,95 @@ import type { Property } from "@/lib/types";
 import { formatPriceShort } from "@/lib/properties";
 import { useLanguage } from "./LanguageProvider";
 import { FavoriteButton } from "./FavoriteButton";
-import { Logo } from "./Logo";
+import {
+  cardImageCls,
+  cardLinkCls,
+  cardPhotoCls,
+  cardTitleHoverCls,
+  formatArea,
+} from "./ui/card";
 
+// Figma "Property card" (2048:447): photo 4:5, location eyebrow, title (max
+// 2 lines), price, specs on a hairline. Specs = icon + number, as on the
+// Figma pages; the full words are read out to screen readers.
+// Spacing ≈ ¾ of Figma on client request (photo → text 15, lines 10). The
+// title only takes the lines it needs; price + specs sit at the bottom of the
+// card (mt-auto) so they line up across a row of cards.
+// Kept from before (not drawn in Figma): the favourite heart and the
+// "Exclusive" label on the photo.
 export function PropertyCard({
   property,
   priority = false,
   initialFavored = false,
+  sizes = "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 90vw",
 }: {
   property: Property;
   priority?: boolean;
   initialFavored?: boolean;
+  sizes?: string;
 }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const cover = property.pictures[0];
+
+  const specs = [
+    property.bedrooms > 0 && { icon: "bedrooms", value: String(property.bedrooms), label: t.propertyDetail.bedrooms },
+    property.bathrooms > 0 && { icon: "bathrooms", value: String(property.bathrooms), label: t.propertyDetail.bathrooms },
+    property.area > 0 && { icon: "living", value: formatArea(property.area, lang), label: t.propertyDetail.area },
+    property.landArea && { icon: "land", value: formatArea(property.landArea, lang), label: t.propertyDetail.landArea },
+  ].filter(Boolean) as { icon: string; value: string; label: string }[];
+
   return (
-    <Link
-      href={`/properties/${property.id}`}
-      className="group flex flex-col h-full"
-    >
-      {/* IMAGE */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-[var(--background-card)]">
+    <Link href={`/properties/${property.id}`} className={`${cardLinkCls} flex flex-col gap-[15px] h-full`}>
+      <div className={`${cardPhotoCls} aspect-[4/5]`}>
         {cover && (
           <Image
             src={cover.url}
             alt={cover.alt ?? property.title}
             fill
-            sizes="(min-width: 768px) 50vw, 100vw"
+            sizes={sizes}
             priority={priority}
-            className="object-cover transition-transform duration-[1500ms] group-hover:scale-105"
+            className={cardImageCls}
           />
         )}
-        {/* Brand watermark — small, discreet fade-in on hover so it doesn't
-            compete with the header logo (client: option C) */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[var(--accent)]/0 group-hover:bg-[var(--accent)]/15 transition-colors duration-700">
-          <Logo
-            invert
-            priority={false}
-            sizes="56px"
-            className="w-9 md:w-11 opacity-0 scale-90 group-hover:opacity-40 group-hover:scale-100 transition-all duration-700"
-          />
-        </div>
         {property.isExclusive && (
-          <span className="absolute top-4 left-4 text-[10px] tracking-[0.22em] uppercase px-3 py-1.5 bg-accent text-white">
+          // Not in Figma: square label in Caps/Label, white with brand/blue text
+          <span className="type-label absolute top-[14px] left-[14px] px-[10px] py-[6px] bg-surface text-brand-blue">
             {t.propertyDetail.exclusive}
           </span>
         )}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-[14px] right-[14px]">
           <FavoriteButton propertyId={property.id} initialFavored={initialFavored} />
         </div>
       </div>
 
-      {/* INFO — bordered box (Figma) */}
-      <div className="border border-[var(--border)] group-hover:border-[var(--border-strong)] transition p-6 flex flex-col flex-1">
-        <div className="flex items-center gap-1.5 text-[var(--gold)] text-[10px] tracking-[0.22em] uppercase mb-3">
-          <PinIcon />
-          {property.city}
-        </div>
-        {/* Title — card box title 20px, serif italic; single line, hover link (client) */}
-        <h3 className="type-card-title italic text-foreground group-hover:text-link transition mb-2 line-clamp-1">
+      <div className="flex flex-col gap-[10px] flex-1">
+        <p className="type-eyebrow text-muted">{property.city}</p>
+        <h3 className={`type-h3 line-clamp-2 ${cardTitleHoverCls}`}>
           {property.title}
         </h3>
-        <p className="text-sm text-muted mb-5">
+        <div className="mt-auto flex flex-col gap-[10px]">
+        <p className="type-price">
           {formatPriceShort(property.price)}
           {property.pricePeriod && (
-            <span className="ml-1">
-              /{property.pricePeriod === "week" ? t.priceUnit.week : t.priceUnit.month}
+            <span>
+              {" "}/{property.pricePeriod === "week" ? t.priceUnit.week : t.priceUnit.month}
             </span>
           )}
         </p>
-        <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted">
-          {property.bedrooms > 0 && (
-            <span className="flex items-center gap-1.5">
-              <StatIcon name="bed" />
-              {property.bedrooms}
-            </span>
-          )}
-          {property.bathrooms > 0 && (
-            <span className="flex items-center gap-1.5">
-              <StatIcon name="bath" />
-              {property.bathrooms}
-            </span>
-          )}
-          {property.area > 0 && (
-            <span className="flex items-center gap-1.5">
-              <StatIcon name="area" />
-              {property.area}m²
-            </span>
-          )}
-          {property.landArea && (
-            <span className="flex items-center gap-1.5">
-              <StatIcon name="land" />
-              {property.landArea}m²
-            </span>
-          )}
+        {specs.length > 0 && (
+          <ul className="border-t border-hairline pt-[10px] flex flex-wrap gap-x-[16px] gap-y-[6px]">
+            {specs.map((s) => (
+              <li key={s.icon} className="type-small flex items-center gap-[6px] whitespace-nowrap">
+                {/* eslint-disable-next-line @next/next/no-img-element -- 16px static icon from Figma */}
+                <img src={`/ui/icons/${s.icon}.svg`} alt="" width={16} height={16} className="shrink-0" />
+                <span className="sr-only">{s.label}: </span>
+                {s.value}
+              </li>
+            ))}
+          </ul>
+        )}
         </div>
       </div>
     </Link>
-  );
-}
-
-function PinIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <path d="M12 2c-3.5 0-6 2.5-6 6 0 4 6 12 6 12s6-8 6-12c0-3.5-2.5-6-6-6z" />
-      <circle cx="12" cy="8" r="2" />
-    </svg>
-  );
-}
-
-function StatIcon({ name }: { name: "bed" | "bath" | "area" | "land" }) {
-  const p = {
-    width: 15,
-    height: 15,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.3,
-  };
-  if (name === "bed")
-    return (
-      <svg {...p}>
-        <path d="M3 18v-6a3 3 0 013-3h12a3 3 0 013 3v6M3 14h18M7 11V8a1 1 0 011-1h3a1 1 0 011 1v3" />
-      </svg>
-    );
-  if (name === "bath")
-    return (
-      <svg {...p}>
-        <path d="M4 12h16v5a3 3 0 01-3 3H7a3 3 0 01-3-3v-5zM6 12V7a2 2 0 012-2h2v3" />
-      </svg>
-    );
-  if (name === "land")
-    return (
-      <svg {...p}>
-        <rect x="4" y="4" width="16" height="16" />
-        <path d="M7 16l3-3.5 2.5 3L16 11l3 5" />
-      </svg>
-    );
-  return (
-    <svg {...p}>
-      <rect x="4" y="4" width="16" height="16" />
-      <path d="M4 9h3M4 15h3M9 4v3M15 4v3M9 20v-3M15 20v-3M17 9h3M17 15h3" />
-    </svg>
   );
 }

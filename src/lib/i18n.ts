@@ -31,6 +31,8 @@ const dictRaw = {
     },
     common: {
       backToPortfolio: "Retour au portefeuille",
+      addFavorite: "Ajouter aux favoris",
+      removeFavorite: "Retirer des favoris",
       contactUs: "Nous contacter",
       callUs: "+33 4 93 12 34 56",
       readMore: "Découvrir →",
@@ -644,6 +646,8 @@ const dictRaw = {
     },
     common: {
       backToPortfolio: "Back to portfolio",
+      addFavorite: "Add to favorites",
+      removeFavorite: "Remove from favorites",
       contactUs: "Contact us",
       callUs: "+33 4 93 12 34 56",
       readMore: "Discover →",
@@ -1257,6 +1261,8 @@ const dictRaw = {
     },
     common: {
       backToPortfolio: "Terug naar portfolio",
+      addFavorite: "Toevoegen aan favorieten", // TODO client review
+      removeFavorite: "Verwijderen uit favorieten", // TODO client review
       contactUs: "Neem contact op",
       callUs: "+33 4 93 12 34 56",
       readMore: "Ontdekken →",

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { BlogCard } from "./BlogCard";
 import { useLanguage } from "./LanguageProvider";
 import { CATEGORY_LABELS, type BlogCategory, type Post } from "@/lib/blog-shared";
+import { cardGridCls } from "@/components/ui/card";
 
 const CATEGORIES_ORDER: (BlogCategory | "all")[] = [
   "all",
@@ -103,7 +104,7 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className={cardGridCls}>
             {filtered.map((p, i) => (
               <BlogCard key={p.slug} post={p} priority={i < 3} />
             ))}

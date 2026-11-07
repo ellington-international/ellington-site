@@ -8,6 +8,7 @@ import { useLanguage } from "./LanguageProvider";
 import { Dropdown } from "./ui/Dropdown";
 import { Button } from "./ui/Button";
 import { PRICE_RANGES, filterOptions } from "@/lib/filters";
+import { cardGridCls } from "@/components/ui/card";
 
 // Case- and accent-insensitive normalisation so "ramatuelle", "Ramatuelle"
 // and "RAMATUELLE" all match (client feedback).
@@ -120,6 +121,7 @@ function PropertiesBrowserInner({
         </div>
       </div>
 
+      {/* Results: Figma "Grid 3 col" (gap 32, rows 56) / mobile "Grid 1 col" (rows 36) */}
       <div id="results" className="max-w-[1400px] mx-auto px-6 md:px-10 scroll-mt-28">
         <p className="text-sm text-muted mb-8">
           {t.search.results(filtered.length)}
@@ -138,7 +140,7 @@ function PropertiesBrowserInner({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className={cardGridCls}>
             {filtered.map((p, i) => (
               <PropertyCard key={p.id} property={p} priority={i < 3} />
             ))}

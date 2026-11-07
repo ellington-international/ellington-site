@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { locations } from "@/lib/properties";
 import { useLanguage } from "@/components/LanguageProvider";
+import { VillageCard } from "@/components/VillageCard";
+import { cardGridCls } from "@/components/ui/card";
 
 // Card display order (Figma).
 const ORDER = [
@@ -69,39 +70,17 @@ export function LocationsIndexContent() {
           />
         </div>
 
-        {/* CARDS GRID — name + italic tagline overlaid bottom-left on image (maquette) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {ordered.map((loc) => {
-            const tagline = isEn ? loc.taglineEn ?? loc.tagline : loc.tagline;
-            return (
-              <Link
-                key={loc.slug}
-                href={`/locations/${loc.slug}`}
-                data-reveal
-                className="group relative block aspect-[2/1] overflow-hidden border border-[var(--border)] hover:border-[var(--border-strong)] transition"
-              >
-                <Image
-                  src={loc.image}
-                  alt={loc.name}
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover transition-transform duration-[1500ms] group-hover:scale-105"
-                />
-                {/* Bottom gradient so the white text stays legible over any photo */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent transition group-hover:from-black/80" />
-                <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
-                  <h2 className="font-sans font-bold uppercase tracking-[0.14em] text-base md:text-lg text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)]">
-                    {loc.name}
-                  </h2>
-                  {tagline && (
-                    <p className="mt-1.5 font-serif italic text-sm md:text-[15px] text-white/85 drop-shadow-[0_1px_8px_rgba(0,0,0,0.6)]">
-                      {tagline}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
+        {/* CARDS — Figma "Village card" in "Grid 3 col" / mobile "Grid 1 col" */}
+        <div className={cardGridCls}>
+          {ordered.map((loc) => (
+            <VillageCard
+              key={loc.slug}
+              href={`/locations/${loc.slug}`}
+              name={loc.name}
+              tagline={isEn ? loc.taglineEn ?? loc.tagline : loc.tagline}
+              image={loc.image}
+            />
+          ))}
         </div>
       </div>
     </div>
