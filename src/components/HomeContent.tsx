@@ -41,7 +41,7 @@ export function HomeContent({
           <h1 className="type-h1 mb-6">
             {t.home.titleBefore}
           </h1>
-          <p className="font-serif italic text-xl md:text-3xl text-white/90 mb-12">
+          <p className="type-subtitle mb-12">
             {t.home.subtitle}
           </p>
 

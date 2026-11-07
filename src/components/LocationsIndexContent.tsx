@@ -42,7 +42,7 @@ export function LocationsIndexContent() {
           <h1 className="type-h1 mb-6">
             {t.locationsPage.titleBefore} {t.locationsPage.titleAccent}
           </h1>
-          <p className="font-serif italic text-lg md:text-xl text-white/90 leading-relaxed">
+          <p className="type-subtitle">
             {t.locationsPage.subtitle}
           </p>
         </div>

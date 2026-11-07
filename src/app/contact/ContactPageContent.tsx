@@ -12,7 +12,7 @@ export default function ContactPage() {
           <h1 className="type-h1 mb-6">
             {t.contactPage.titleBefore} {t.contactPage.titleAccent}
           </h1>
-          <p className="font-serif italic text-lg md:text-xl text-muted-strong">
+          <p className="type-subtitle">
             {t.contactPage.subtitle}
           </p>
         </header>

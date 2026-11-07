@@ -21,7 +21,7 @@ export default function AboutPage() {
   const { t } = useLanguage();
   return (
     <div>
-      {/* HERO — full-bleed image, small-caps subtitle */}
+      {/* HERO — full-bleed image, Text/Subtitle */}
       <section className="relative h-[68svh] min-h-[440px] flex items-center justify-center overflow-hidden text-white on-photo">
         <Image
           src="/about/hero.jpg"
@@ -36,7 +36,7 @@ export default function AboutPage() {
           <h1 className="type-h1 mb-5">
             {t.aboutPage.titleBefore} {t.aboutPage.titleAccent}
           </h1>
-          <p className="text-[12px] tracking-[0.2em] uppercase text-white/85">
+          <p className="type-subtitle">
             {t.aboutPage.heroSubtitle}
           </p>
         </div>

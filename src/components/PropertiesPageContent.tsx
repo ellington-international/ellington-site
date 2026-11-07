@@ -18,7 +18,7 @@ export function PropertiesPageContent({
         <h1 className="type-h1 mb-5">
           {t.propertiesPage.titleBefore} {t.propertiesPage.titleAccent}
         </h1>
-        <p className="font-serif italic text-lg md:text-xl text-muted-strong max-w-2xl mx-auto">
+        <p className="type-subtitle max-w-2xl mx-auto">
           {t.propertiesPage.subtitle}
         </p>
       </div>

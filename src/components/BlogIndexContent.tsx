@@ -68,7 +68,7 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
             {titleBefore}{" "}
             <em className="italic">{titleAccent}</em>
           </h1>
-          <p className="text-muted-strong text-lg leading-relaxed">{subtitle}</p>
+          <p className="type-subtitle">{subtitle}</p>
         </header>
 
         {/* Category filter */}

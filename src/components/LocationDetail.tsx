@@ -38,7 +38,7 @@ export function LocationDetail({
 
   return (
     <div>
-      {/* HERO — full-bleed image, centered title + small-caps subtitle */}
+      {/* HERO — full-bleed image, centered title + Text/Subtitle */}
       <section className="relative h-[62svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white on-photo">
         <Image
           src={mainImage}
@@ -52,7 +52,7 @@ export function LocationDetail({
         <div className="relative z-20 text-center px-6">
           <h1 className="type-h1 mb-4">{loc.name}</h1>
           {subtitle && (
-            <p className="text-[11px] md:text-xs tracking-[0.32em] uppercase text-white/85">
+            <p className="type-subtitle">
               {subtitle}
             </p>
           )}

@@ -25,7 +25,7 @@ export default function SellPage() {
           <h1 className="type-h1 mb-6">
             {t.sellPage.titleBefore} {t.sellPage.titleAccent}
           </h1>
-          <p className="font-serif italic text-lg md:text-xl text-white/90 leading-relaxed mb-10">
+          <p className="type-subtitle mb-10">
             {t.sellPage.lead}
           </p>
           <Link
