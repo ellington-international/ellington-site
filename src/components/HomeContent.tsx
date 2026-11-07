@@ -22,9 +22,11 @@ const CATEGORIES_ORDER: BlogCategory[] = [
 export function HomeContent({
   posts,
   featured,
+  cities,
 }: {
   posts: Post[];
   featured: Property[];
+  cities: string[];
 }) {
   const { t, lang } = useLanguage();
   const recentPosts = posts.slice(0, 3);
@@ -32,12 +34,16 @@ export function HomeContent({
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden text-white on-photo">
-        <HeroSlideshow />
+      {/* No overflow-hidden on the section: an open filter dropdown may reach
+          below the hero. The slideshow clips itself. */}
+      <section className="relative min-h-[100svh] flex items-center justify-center text-white on-photo">
+        <div className="absolute inset-0 overflow-hidden">
+          <HeroSlideshow />
+        </div>
         {/* Dark overlay on photos so hero text stays legible (white text on photos) */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/55 z-10" />
 
-        <div className="relative z-20 text-center px-6 max-w-5xl mx-auto fade-in pt-20 sm:pt-0">
+        <div className="relative z-20 text-center container-wrap fade-in pt-20 sm:pt-0">
           <h1 className="type-h1 mb-6">
             {t.home.titleBefore}
           </h1>
@@ -45,7 +51,7 @@ export function HomeContent({
             {t.home.subtitle}
           </p>
 
-          <HeroSearch />
+          <HeroSearch cities={cities} />
         </div>
       </section>
 

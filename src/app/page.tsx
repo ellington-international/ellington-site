@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/blog";
-import { getFeaturedProperties } from "@/lib/properties";
+import { getCities, getFeaturedProperties } from "@/lib/properties";
 import { HomeContent } from "@/components/HomeContent";
 
 export const metadata: Metadata = {
@@ -10,9 +10,11 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // Server-side : load posts + properties (Apimo or mock fallback) at build time / ISR
-  const [posts, featured] = await Promise.all([
+  // cities: same list as the Buy page, for the hero search Location filter
+  const [posts, featured, cities] = await Promise.all([
     Promise.resolve(getAllPosts()),
     getFeaturedProperties(),
+    getCities(),
   ]);
-  return <HomeContent posts={posts} featured={featured.slice(0, 6)} />;
+  return <HomeContent posts={posts} featured={featured.slice(0, 6)} cities={cities} />;
 }

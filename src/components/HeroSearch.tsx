@@ -3,35 +3,51 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useLanguage } from "./LanguageProvider";
+import { Dropdown } from "./ui/Dropdown";
+import { textLinkClasses } from "./ui/TextLink";
+import { filterOptions, filterQuery } from "@/lib/filters";
 
-// Minimal hero search bar (Figma) — a single slim field, no filters.
-// Submitting routes to the properties listing, passing the typed term as a
-// city filter when present.
-export function HeroSearch() {
+// Home hero search (Figma "01 Home" › Hero › Filter + Search link):
+// Location · Property type · Budget · Bedrooms on the photo, then a white
+// "Search" text link. Desktop: one row, 980px max, 14px apart.
+// Mobile: 2 × 2, 12px apart. Opens the Buy page with the chosen filters.
+export function HeroSearch({ cities }: { cities: string[] }) {
   const { t } = useLanguage();
   const router = useRouter();
-  const [q, setQ] = useState("");
+  const [city, setCity] = useState("");
+  const [type, setType] = useState("");
+  const [priceIdx, setPriceIdx] = useState(0);
+  const [beds, setBeds] = useState(0);
+
+  const opts = filterOptions(t, cities);
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const term = q.trim();
-    router.push(
-      term ? `/properties?city=${encodeURIComponent(term)}` : "/properties",
-    );
+    router.push(`/properties${filterQuery({ city, type, priceIdx, beds })}`);
   }
 
   return (
-    <form onSubmit={onSubmit} className="max-w-xl mx-auto">
-      <div className="flex items-center gap-4 bg-black/70 backdrop-blur-[6px] border border-white/20 px-6 py-4 transition hover:border-white/40">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t.search.submit}
-          aria-label={t.search.submit}
-          className="flex-1 bg-transparent text-white placeholder-white/65 text-[11px] tracking-[0.22em] uppercase outline-none"
+    <form onSubmit={onSubmit} className="w-full max-w-[980px] mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-[12px] md:gap-[14px] text-left">
+        <Dropdown context="photo" label={t.search.location} value={city} onChange={setCity} options={opts.location} />
+        <Dropdown context="photo" label={t.search.type} value={type} onChange={setType} options={opts.type} />
+        <Dropdown
+          context="photo"
+          label={t.search.budget}
+          value={String(priceIdx)}
+          onChange={(v) => setPriceIdx(Number(v))}
+          options={opts.budget}
         />
-        {/* hidden submit so Enter works without a visible button (Figma) */}
-        <button type="submit" className="sr-only" aria-label={t.search.submit}>
+        <Dropdown
+          context="photo"
+          label={t.search.bedrooms}
+          value={String(beds)}
+          onChange={(v) => setBeds(Number(v))}
+          options={opts.bedrooms}
+        />
+      </div>
+      <div className="flex justify-center pt-[34px]">
+        <button type="submit" className={textLinkClasses({ tone: "white" })}>
           {t.search.submit}
         </button>
       </div>

@@ -111,6 +111,8 @@ const dictRaw = {
       allTypes: "Tous types",
       allBudgets: "Tous budgets",
       allPrices: "Tous les prix",
+      bedrooms: "Chambres",
+      allBedrooms: "Toutes",
       submit: "Rechercher",
       results: (n: number) =>
         `${n} bien${n > 1 ? "s" : ""} disponible${n > 1 ? "s" : ""}`,
@@ -722,6 +724,8 @@ const dictRaw = {
       allTypes: "All types",
       allBudgets: "All budgets",
       allPrices: "All prices",
+      bedrooms: "Bedrooms",
+      allBedrooms: "All",
       submit: "Search",
       results: (n: number) =>
         `${n} propert${n > 1 ? "ies" : "y"} available`,
@@ -1333,6 +1337,8 @@ const dictRaw = {
       allTypes: "Alle types",
       allBudgets: "Alle budgetten",
       allPrices: "Alle prijzen",
+      bedrooms: "Slaapkamers", // TODO client review
+      allBedrooms: "Alle",
       submit: "Zoeken",
       results: (n: number) =>
         `${n} ${n > 1 ? "woningen" : "woning"} beschikbaar`,
