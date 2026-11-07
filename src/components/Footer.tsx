@@ -1,126 +1,126 @@
 "use client";
 
 import Link from "next/link";
-import { Logo } from "./Logo";
+import { LogoLockup } from "./Logo";
 import { useLanguage } from "./LanguageProvider";
 import { ManageCookiesButton } from "./ManageCookiesButton";
+
+// Figma component "Footer" (7:156): brand/blue, white text.
+//   Desktop (7:115): 4 columns (brand 373 + Explore / Contact / Hours, equal
+//   widths, gap 40), padding 96 top / 32 bottom, 56 between columns and the
+//   fine print. Mobile (7:155): stacked, gap 40, padding 64 top.
+//   Fine print: white top line, 22 above the text; © left, links right
+//   (stacked on mobile, gap 12). "Site by Z.Development" left out on request.
+// 2 columns between 768 and 1279px: 4 columns don't fit there.
+
+// Hover is not drawn in Figma: champagne underline, like the other links.
+const linkCls =
+  "hover:underline underline-offset-4 decoration-brand-accent transition-colors";
 
 export function Footer() {
   const { t } = useLanguage();
   const year = new Date().getFullYear();
+
+  const explore = [
+    { href: "/properties", label: t.nav.buy },
+    { href: "/sell", label: t.nav.sell },
+    { href: "/locations", label: t.nav.regionsNav },
+    { href: "/about", label: t.nav.about },
+    { href: "/blog", label: t.nav.journal },
+  ];
+
+  // Figma shows the tagline as two lines, one sentence each.
+  // (Plain split, no regex look-behind, which older iPhone Safari lacks.)
+  const tagline = t.footer.tagline
+    .split(". ")
+    .map((line, i, all) => (i < all.length - 1 ? `${line}.` : line));
+
   return (
-    <footer className="bg-[var(--panel)]">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div>
-            <Link href="/" className="flex items-center gap-3 mb-4">
-              <Logo className="w-6 h-8" />
-              <span className="font-serif text-xl tracking-[0.22em] uppercase">
-                Ellington
-              </span>
+    <footer className="bg-brand-blue text-white">
+      <div className="container-wrap pt-[64px] md:pt-[96px] pb-[32px] flex flex-col gap-[56px]">
+        <div className="grid gap-[40px] md:grid-cols-2 xl:grid-cols-[373fr_249fr_249fr_249fr]">
+          {/* Brand */}
+          <div className="flex flex-col gap-[14px]">
+            <Link
+              href="/"
+              aria-label="Ellington Properties"
+              className="self-start mb-[20px] hover:opacity-80 transition-opacity"
+            >
+              <LogoLockup tone="white" />
             </Link>
-            <p className="text-[10px] text-muted leading-relaxed max-w-xs mb-3">
-              {t.footer.tagline}
+            <p className="type-small text-white">
+              {tagline.map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
             </p>
-            <p className="text-[10px] text-muted/80 leading-relaxed">
-              Espace Lemarquis
-              <br />
-              Quartier Bertaud
+            <p className="type-small text-white">
+              Espace Lemarquis · Quartier Bertaud
               <br />
               83580 Gassin · France
             </p>
           </div>
 
-          <div>
-            <h4 className="text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-5">
-              {t.footer.explore}
-            </h4>
-            <ul className="space-y-3 text-[10px]">
-              <li>
-                <Link href="/properties" className="text-foreground/90 hover:text-link transition">
-                  {t.nav.buy}
-                </Link>
-              </li>
-              <li>
-                <Link href="/sell" className="text-foreground/90 hover:text-link transition">
-                  {t.nav.sell}
-                </Link>
-              </li>
-              <li>
-                <Link href="/locations" className="text-foreground/90 hover:text-link transition">
-                  {t.nav.regionsNav}
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-foreground/90 hover:text-link transition">
-                  {t.nav.about}
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-foreground/90 hover:text-link transition">
-                  {t.nav.journal}
-                </Link>
-              </li>
+          {/* Explore */}
+          <div className="flex flex-col gap-[18px] min-w-0">
+            <h2 className="type-label text-white">{t.footer.explore}</h2>
+            <ul className="type-small text-white flex flex-col gap-[10px]">
+              {explore.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className={linkCls}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-5">
-              {t.footer.contact}
-            </h4>
-            <ul className="space-y-3 text-[10px]">
+          {/* Contact */}
+          <div className="flex flex-col gap-[18px] min-w-0">
+            <h2 className="type-label text-white">{t.footer.contact}</h2>
+            <ul className="type-small text-white flex flex-col gap-[10px]">
               <li>
-                <a href="tel:+33674750703" className="text-foreground/90 hover:text-link transition">
+                <a href="tel:+33674750703" className={linkCls}>
                   +33 6 74 75 07 03
                 </a>
               </li>
               <li>
-                <a href="mailto:marc@ellington-international.com" className="text-foreground/90 hover:text-link transition">
+                <a href="mailto:marc@ellington-international.com" className={linkCls}>
                   marc@ellington-international.com
                 </a>
               </li>
-              <li className="text-muted">{t.footer.cityLabel}</li>
+              <li>{t.footer.cityLabel}</li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-5">
-              {t.footer.hours}
-            </h4>
-            <ul className="space-y-3 text-[10px] text-foreground/90">
+          {/* Hours */}
+          <div className="flex flex-col gap-[18px] min-w-0">
+            <h2 className="type-label text-white">{t.footer.hours}</h2>
+            <ul className="type-small text-white flex flex-col gap-[10px]">
               <li>{t.footer.monFri}</li>
               <li>{t.footer.sat}</li>
-              <li className="text-muted">{t.footer.sun}</li>
+              <li>{t.footer.sun}</li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-muted">
-          <p>{t.footer.rights(year)}</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            <Link href="/legal" className="hover:text-foreground transition">
+        {/* Fine print */}
+        <div className="type-small text-white border-t border-white pt-[22px] flex flex-col gap-[12px] md:flex-row md:justify-between md:items-start">
+          <p className="type-small text-white">{t.footer.rights(year)}</p>
+          <div className="flex flex-wrap gap-x-[20px] gap-y-[8px]">
+            <Link href="/legal" className={linkCls}>
               {t.footer.legal}
             </Link>
-            <Link href="/privacy" className="hover:text-foreground transition">
+            <Link href="/privacy" className={linkCls}>
               {t.footer.privacy}
             </Link>
-            <ManageCookiesButton className="hover:text-foreground transition text-left">
+            {/* type-small again: the base `button` rule would make it 12px */}
+            <ManageCookiesButton className={`${linkCls} type-small text-white text-left`}>
               {t.footer.cookies}
             </ManageCookiesButton>
           </div>
         </div>
-
-        <p className="mt-8 text-center text-[10px] text-muted">
-          Site réalisé par{" "}
-          <a
-            href="https://www.zdevelopment.fr/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-strong hover:text-foreground transition"
-          >
-            Z.Development
-          </a>
-        </p>
       </div>
     </footer>
   );

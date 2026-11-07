@@ -13,7 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }[] = [
     { path: "", changeFrequency: "weekly", priority: 1 },
     { path: "/properties", changeFrequency: "daily", priority: 0.9 },
-    { path: "/rentals", changeFrequency: "weekly", priority: 0.7 },
+    // /rentals is intentionally left out: the page stays, but is not listed (decision 4)
     { path: "/locations", changeFrequency: "monthly", priority: 0.8 },
     { path: "/sell", changeFrequency: "monthly", priority: 0.7 },
     { path: "/about", changeFrequency: "monthly", priority: 0.6 },

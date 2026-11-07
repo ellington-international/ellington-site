@@ -1033,7 +1033,7 @@ const dictRaw = {
       monFri: "Monday – Friday · 9am – 6pm",
       sat: "Saturday · 10am – 4pm",
       sun: "Sunday · by appointment",
-      cityLabel: "French Riviera, France",
+      cityLabel: "Gassin · Var · France",
       legal: "Legal",
       privacy: "Privacy",
       cookies: "Manage cookies",
@@ -1644,7 +1644,7 @@ const dictRaw = {
       monFri: "Maandag – Vrijdag · 9.00 – 18.00",
       sat: "Zaterdag · 10.00 – 16.00",
       sun: "Zondag · op afspraak",
-      cityLabel: "Franse Rivièra, Frankrijk",
+      cityLabel: "Gassin · Var · Frankrijk", // TODO client review
       legal: "Juridisch",
       privacy: "Privacy",
       cookies: "Cookies beheren",
