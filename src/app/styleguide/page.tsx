@@ -1,7 +1,9 @@
-// TEMPORARY design-token check page for the redesign (steps 1–4).
+// TEMPORARY design-token check page for the redesign (steps 1–5).
 // Not linked anywhere, not in the sitemap, noindex. Delete before merging the
 // redesign branch (REDESIGN-PLAN.md step 24).
 import type { Metadata } from "next";
+import { Button, ButtonLink } from "@/components/ui/Button";
+import { TextLink } from "@/components/ui/TextLink";
 
 export const metadata: Metadata = {
   title: "Styleguide (temporary)",
@@ -57,7 +59,7 @@ export default function StyleguidePage() {
       <section className="bg-surface-light">
         <div className="container-wrap section-y">
           <div className="bg-surface border border-hairline p-stack">
-            <p className="type-eyebrow mb-xs">Temporary · redesign steps 1–4</p>
+            <p className="type-eyebrow mb-xs">Temporary · redesign steps 1–5</p>
             <h1 className="type-h2">Styleguide</h1>
             <p className="type-body mt-stack max-w-[60ch]">
               Compare with the Figma page “Foundations”. This white box is the
@@ -95,6 +97,37 @@ export default function StyleguidePage() {
               <p className={t.cls}>{t.sample}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Step 5: Figma "Button" (5:29) and "Link" (2048:48). Hover to see the hover states. */}
+      <section className="container-wrap pb-section">
+        <h2 className="type-title mb-xs">Buttons &amp; links</h2>
+        <p className="type-small mb-stack">Hover each one to see its Figma hover state.</p>
+        <div className="grid md:grid-cols-2">
+          <div className="bg-surface border border-hairline p-stack md:p-gutter flex flex-col gap-stack">
+            <p className="type-label">On white</p>
+            <div className="flex flex-wrap items-center gap-sm">
+              <ButtonLink href="#" variant="primary">Primary</ButtonLink>
+              <ButtonLink href="#" variant="outline">Outline</ButtonLink>
+              <ButtonLink href="#" variant="outline" size="compact">Compact (nav)</ButtonLink>
+              <Button variant="primary" disabled>Disabled</Button>
+            </div>
+            <div>
+              <TextLink href="#">View all →</TextLink>
+            </div>
+          </div>
+          <div className="bg-brand-blue p-stack md:p-gutter flex flex-col gap-stack">
+            <p className="type-label text-white/85">On photo / blue</p>
+            <div className="flex flex-wrap items-center gap-sm">
+              <ButtonLink href="#" variant="white">White</ButtonLink>
+              <ButtonLink href="#" variant="ghost">Ghost</ButtonLink>
+              <ButtonLink href="#" variant="ghost" size="compact">Compact (nav)</ButtonLink>
+            </div>
+            <div>
+              <TextLink href="#" tone="white">View all →</TextLink>
+            </div>
+          </div>
         </div>
       </section>
 

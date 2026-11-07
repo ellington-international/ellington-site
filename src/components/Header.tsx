@@ -7,6 +7,7 @@ import { LogoLockup } from "./Logo";
 import { LanguageToggle } from "./LanguageToggle";
 import { useLanguage } from "./LanguageProvider";
 import { AuthMenu } from "./AuthMenu";
+import { ButtonLink } from "./ui/Button";
 
 // Figma component "Navigation" (7:75), 4 variants:
 //   Transparent (over hero photo: white logo + text) / Solid (white bar,
@@ -124,18 +125,15 @@ export function Header() {
           {/* Desktop: language, Contact button, Login (Figma "Right", gap 28) */}
           <div className="hidden lg:flex items-center gap-[28px]">
             <LanguageToggle overImage={overImage} />
-            {/* Figma Button: Ghost over a photo, Outline on the solid nav.
-                The nav uses a smaller padding (18 × 8) than the default button. */}
-            <Link
+            {/* Figma Button: Ghost over a photo, Outline on the solid nav,
+                with the nav's smaller padding (18 × 8). */}
+            <ButtonLink
               href="/contact"
-              className={`type-button border px-[18px] py-[8px] transition-colors ${
-                overImage
-                  ? "border-white text-white hover:bg-white/10"
-                  : "border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
-              }`}
+              variant={overImage ? "ghost" : "outline"}
+              size="compact"
             >
               {t.nav.contact}
-            </Link>
+            </ButtonLink>
             <AuthMenu overImage={overImage} />
           </div>
 
@@ -192,13 +190,14 @@ export function Header() {
             ))}
 
             {/* Figma: 32px spacer, then the full-width Primary button */}
-            <Link
+            <ButtonLink
               href="/contact"
               onClick={() => setOpen(false)}
-              className="type-button mt-[32px] block w-full text-center px-btn-x py-btn-y border border-brand-blue bg-brand-blue text-white hover:bg-brand-blue-deep hover:border-brand-blue-deep transition-colors"
+              variant="primary"
+              className="mt-[32px] w-full"
             >
               {t.nav.contact}
-            </Link>
+            </ButtonLink>
 
             {/* Not in the Figma frame: the mobile bar has no room for the
                 language switch and Login, so they sit under the button. */}
