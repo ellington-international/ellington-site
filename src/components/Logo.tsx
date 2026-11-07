@@ -10,6 +10,41 @@ import Image from "next/image";
 // la bonne résolution. Par défaut 40px (taille du header). Passer "200px"
 // (ou plus) pour les usages en grand (ex: divider About) afin d'éviter le flou.
 
+/**
+ * Figma component "Logo" (5:16): crest (SVG exported from Figma, 32×38) +
+ * "ELLINGTON" wordmark in Cormorant Garamond Medium 22, tracking .2em.
+ * tone "blue" on white / solid nav, "white" on photos and the blue footer.
+ * Used by the header (redesign step 6); the footer switches to it in step 7.
+ */
+export function LogoLockup({
+  tone = "blue",
+  className = "",
+}: {
+  tone?: "blue" | "white";
+  className?: string;
+}) {
+  return (
+    <span className={`inline-flex items-center gap-[12px] ${className}`}>
+      <Image
+        src={tone === "white" ? "/brand/crest-white.svg" : "/brand/crest-blue.svg"}
+        alt=""
+        width={32}
+        height={38}
+        priority
+        unoptimized
+        className="h-[38px] w-auto shrink-0"
+      />
+      <span
+        className={`font-serif font-medium text-[22px] tracking-[0.2em] uppercase leading-none whitespace-nowrap ${
+          tone === "white" ? "text-white" : "text-brand-blue"
+        }`}
+      >
+        Ellington
+      </span>
+    </span>
+  );
+}
+
 export function Logo({
   className = "",
   invert = false,

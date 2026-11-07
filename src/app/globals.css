@@ -282,6 +282,18 @@ html, body {
   /* Caps/Button — 12, lh 1.0 (colour comes from the button / link) */
   .type-button { font-size: var(--fs-button); line-height: 1; }
 
+  /* Nav link (Figma 2048:416): 6px vertical padding; hover and the current
+     page get a 1px brand/accent (champagne) underline. The border is always
+     there (transparent) so the underline doesn't shift the layout. */
+  .nav-link {
+    display: inline-block;
+    padding-block: 6px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .nav-link:hover,
+  .nav-link[aria-current="page"] { border-bottom-color: var(--brand-accent); }
+
   /* ── Legacy class names (pre-redesign) mapped to the nearest Figma style.
      Removed once the components using them are redone (Phases 2 + 4). */
   .type-h4,

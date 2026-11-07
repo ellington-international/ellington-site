@@ -31,11 +31,11 @@ export function AuthMenu({ overImage = false, variant = "desktop", onNavigate }:
     return variant === "desktop" ? <span className="w-[80px]" aria-hidden /> : null;
   }
 
-  const desktopCls = `text-[13px] tracking-[0.18em] uppercase transition ${
-    overImage ? "text-white/80 hover:text-white" : "text-muted-strong hover:text-foreground"
-  }`;
+  // Figma Navigation › "Login" (7:26 / 7:62): Caps/Button, white over a photo,
+  // brand/blue on the solid nav. Same style in the mobile menu.
+  const desktopCls = `type-button nav-link ${overImage ? "text-white" : "text-brand-blue"}`;
 
-  const mobileCls = "text-sm tracking-[0.18em] uppercase text-muted-strong";
+  const mobileCls = "type-button nav-link text-brand-blue";
 
   const cls = variant === "desktop" ? desktopCls : mobileCls;
 
@@ -47,7 +47,7 @@ export function AuthMenu({ overImage = false, variant = "desktop", onNavigate }:
       onClick={onNavigate}
     >
       <span className="inline-flex items-center gap-2">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
           <path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 4.5 7 4.5c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.5 4 4.5 8C19 16.65 12 21 12 21z" />
         </svg>
         {t.nav.favorites}

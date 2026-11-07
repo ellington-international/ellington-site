@@ -26,6 +26,8 @@ const dictRaw = {
       contact: "Contact",
       login: "Connexion",
       favorites: "Favoris",
+      menu: "Menu",
+      close: "Fermer", // TODO client review
     },
     common: {
       backToPortfolio: "Retour au portefeuille",
@@ -635,6 +637,8 @@ const dictRaw = {
       contact: "Contact",
       login: "Login",
       favorites: "Favorites",
+      menu: "Menu",
+      close: "Close",
     },
     common: {
       backToPortfolio: "Back to portfolio",
@@ -1244,6 +1248,8 @@ const dictRaw = {
       contact: "Contact",
       login: "Inloggen",
       favorites: "Favorieten",
+      menu: "Menu",
+      close: "Sluiten", // TODO client review
     },
     common: {
       backToPortfolio: "Terug naar portfolio",

@@ -3,6 +3,10 @@
 import { LANGS } from "@/lib/i18n";
 import { useLanguage } from "./LanguageProvider";
 
+// Figma Navigation › "Language" (7:20 / 7:56): FR EN NL, Caps/Button, 10px apart,
+// no separators. Solid nav: current language brand/blue, others text/muted.
+// Over a photo: current language white, the other two at 60 % (Figma draws all
+// three white; changed so the active language is visible).
 export function LanguageToggle({
   className = "",
   overImage = false,
@@ -13,35 +17,32 @@ export function LanguageToggle({
   const { lang, setLang } = useLanguage();
   return (
     <div
-      className={`inline-flex items-center text-[12px] tracking-[0.18em] uppercase ${className}`}
+      className={`inline-flex items-center gap-[10px] ${className}`}
       role="group"
       aria-label="Language"
     >
-      {LANGS.map((l, i) => (
-        <span key={l.code} className="flex items-center">
+      {LANGS.map((l) => {
+        const active = lang === l.code;
+        return (
           <button
+            key={l.code}
             type="button"
             onClick={() => setLang(l.code)}
-            className={`transition px-1 py-1 ${
-              lang === l.code
-                ? overImage
+            className={`type-button py-[6px] transition-colors ${
+              overImage
+                ? active
                   ? "text-white"
-                  : "text-accent"
-                : overImage
-                  ? "text-white/50 hover:text-white"
-                  : "text-muted hover:text-foreground"
+                  : "text-white/60 hover:text-white"
+                : active
+                  ? "text-brand-blue"
+                  : "text-muted hover:text-brand-blue"
             }`}
-            aria-pressed={lang === l.code}
+            aria-pressed={active}
           >
             {l.label}
           </button>
-          {i < LANGS.length - 1 && (
-            <span className={`mx-0.5 ${overImage ? "text-white/30" : "text-muted/40"}`}>
-              |
-            </span>
-          )}
-        </span>
-      ))}
+        );
+      })}
     </div>
   );
 }
