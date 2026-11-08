@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHero } from "./PageHero";
 import Image from "next/image";
 import { locations } from "@/lib/properties";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -28,26 +29,15 @@ export function LocationsIndexContent() {
 
   return (
     <div>
-      {/* HERO — full-bleed image */}
-      <section className="relative h-[60svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white on-photo">
-        <Image
-          src="/locations/hero.jpg"
-          alt="Saint-Tropez"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/50 z-10" />
-        <div className="relative z-20 text-center max-w-3xl mx-auto px-6">
-          <h1 className="type-h1 mb-6">
-            {t.locationsPage.titleBefore} {t.locationsPage.titleAccent}
-          </h1>
-          <p className="type-subtitle">
-            {t.locationsPage.subtitle}
-          </p>
-        </div>
-      </section>
+      {/* HERO — Figma "05 Locations" › Hero (11:1406): view over the Golfe,
+          anchored to the top (sky behind the title) */}
+      <PageHero
+        image="/heroes/locations.jpg"
+        position="center top"
+        crop={{ top: 0, left: 0, width: 100, height: 131.75 }}
+        title={t.heroes.locationsTitle}
+        subtitle={t.heroes.locationsSubtitle}
+      />
 
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-20 pb-20">
         {/* INTRO — title placeholder instead of the long text (client) */}

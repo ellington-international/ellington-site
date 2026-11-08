@@ -9,6 +9,7 @@ import { BlogCard } from "@/components/BlogCard";
 import { useLanguage } from "@/components/LanguageProvider";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TextLink } from "@/components/ui/TextLink";
+import { ScrollCue } from "@/components/ui/ScrollCue";
 import { cardGridCls } from "@/components/ui/card";
 import type { Property } from "@/lib/types";
 import type { BlogCategory, Post } from "@/lib/blog-shared";
@@ -45,7 +46,8 @@ export function HomeContent({
             src="/home/hero-home.jpg"
             alt=""
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="100vw"
             className="object-cover"
           />
@@ -60,13 +62,8 @@ export function HomeContent({
           <HeroSearch cities={cities} />
         </div>
 
-        <a
-          href="#ellington-standard"
-          className="absolute z-10 left-1/2 -translate-x-1/2 bottom-[21px] md:bottom-[32px] flex flex-col items-center gap-[12px] group"
-        >
-          <span className="type-label text-white/85 group-hover:text-white transition-colors">{h.scroll}</span>
-          <span className="block w-px h-[36px] md:h-[48px] bg-white/60" aria-hidden />
-        </a>
+        {/* Home mobile frame: 21px from the bottom (inner pages: 104) */}
+        <ScrollCue href="#ellington-standard" label={h.scroll} className="bottom-[21px] md:bottom-[32px]" />
       </section>
 
       {/* THE ELLINGTON STANDARD (2158:1457 / 2158:2911): eyebrow, statement in

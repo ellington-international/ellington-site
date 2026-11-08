@@ -1,10 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import type { Post } from "@/lib/blog-shared";
 import { formatDate } from "@/lib/blog-shared";
 import { BlogCard } from "./BlogCard";
+import { PageHero } from "./PageHero";
+import { textLinkClasses } from "./ui/TextLink";
 import { useLanguage } from "./LanguageProvider";
 import { cardGridCls } from "@/components/ui/card";
 
@@ -26,51 +27,28 @@ export function BlogPostShell({
 
   return (
     <article className="pb-20">
-      {/* HERO */}
-      <header className="relative h-[60svh] min-h-[420px] flex items-end overflow-hidden text-white">
-        <Image
-          src={post.cover}
-          alt={post.coverAlt ?? post.title}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/75 z-10" />
-        <div className="relative z-20 max-w-4xl mx-auto px-6 md:px-10 pb-14 md:pb-20 w-full">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-[11px] tracking-[0.22em] uppercase text-white/80 hover:text-white mb-8"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M15 6l-6 6 6 6" />
-            </svg>
-            {j.back}
-          </Link>
-          <p className="text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] mb-5">
-            {categoryLabel}
-          </p>
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-6">
-            {post.title}
-          </h1>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/75">
-            <span>{post.author ?? j.team}</span>
-            <span className="opacity-50">·</span>
-            <time dateTime={post.publishedAt}>
-              {formatDate(post.publishedAt, lang)}
-            </time>
-            {post.readingTime && (
-              <>
-                <span className="opacity-50">·</span>
-                <span>{j.readingTime.replace("{n}", String(post.readingTime))}</span>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      {/* HERO — Figma "08.1 Article" › Hero (2186:1441): the article's cover,
+          caps line (category · date · reading time) and the title in H2 */}
+      <PageHero
+        image={post.cover}
+        imageAlt={post.coverAlt ?? post.title}
+        titleSize="h2"
+        eyebrow={[
+          categoryLabel,
+          formatDate(post.publishedAt, lang),
+          post.readingTime ? j.readingTime.replace("{n}", String(post.readingTime)) : null,
+        ]
+          .filter(Boolean)
+          .join("  ·  ")}
+        title={post.title}
+      />
 
       {/* CONTENT */}
       <div className="max-w-3xl mx-auto px-6 md:px-10 pt-16 md:pt-24">
+        {/* Figma: "Back to journal" link at the top of the article column */}
+        <Link href="/blog" className={`${textLinkClasses()} inline-block mb-[36px]`}>
+          ← {j.back}
+        </Link>
         <div className="prose-ellington">{children}</div>
 
         {/* TAGS */}

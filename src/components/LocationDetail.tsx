@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHero } from "./PageHero";
 import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { useLanguage } from "./LanguageProvider";
@@ -24,11 +25,6 @@ export function LocationDetail({
   const tr = (fr: string, en: string, nl: string) =>
     lang === "en" ? en : lang === "nl" ? nl : fr;
 
-  const subtitle = rich
-    ? pick(rich.heroSubtitle)
-    : isEn
-      ? loc.taglineEn ?? loc.tagline
-      : loc.tagline;
   const intro = rich
     ? pick(rich.intro)
     : isEn
@@ -39,26 +35,15 @@ export function LocationDetail({
 
   return (
     <div>
-      {/* HERO — full-bleed image, centered title + Text/Subtitle */}
-      <section className="relative h-[62svh] min-h-[420px] flex items-center justify-center overflow-hidden text-white on-photo">
-        <Image
-          src={mainImage}
-          alt={loc.name}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/45 z-10" />
-        <div className="relative z-20 text-center px-6">
-          <h1 className="type-h1 mb-4">{loc.name}</h1>
-          {subtitle && (
-            <p className="type-subtitle">
-              {subtitle}
-            </p>
-          )}
-        </div>
-      </section>
+      {/* HERO — Figma "06 Village" › Hero (12:3): village name + tagline */}
+      {/* Figma: the subtitle is the village's tagline (FR / EN data; NL uses
+          the French one until the village texts come in step 18) */}
+      <PageHero
+        image={mainImage}
+        imageAlt={loc.name}
+        title={loc.name}
+        subtitle={isEn ? loc.taglineEn ?? loc.tagline : loc.tagline}
+      />
 
       {/* BACK LINK */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-8">

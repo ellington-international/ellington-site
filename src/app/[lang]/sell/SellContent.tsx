@@ -1,6 +1,7 @@
 "use client";
 
-import Image from "next/image";
+import { PageHero } from "@/components/PageHero";
+import { TextLink } from "@/components/ui/TextLink";
 import Link from "@/components/LocaleLink";
 import { useLanguage } from "@/components/LanguageProvider";
 
@@ -10,32 +11,18 @@ export default function SellPage() {
     lang === "en" ? "Our method" : lang === "nl" ? "Onze methode" : "Notre méthode";
   return (
     <div className="bg-white">
-      {/* HERO — full-bleed image, transparent nav overlays at top */}
-      <section className="relative h-[60svh] min-h-[400px] flex items-center justify-center overflow-hidden text-white on-photo">
-        <Image
-          src="/sell/hero.jpg"
-          alt="Villa de prestige sur la Côte d'Azur"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/55 z-10" />
-        <div className="relative z-20 text-center max-w-3xl mx-auto px-6">
-          <h1 className="type-h1 mb-6">
-            {t.sellPage.titleBefore} {t.sellPage.titleAccent}
-          </h1>
-          <p className="type-subtitle mb-10">
-            {t.sellPage.lead}
-          </p>
-          <Link
-            href="/contact?subject=valuation"
-            className="inline-block px-8 py-3 border border-white/70 hover:border-white hover:bg-white/10 text-[11px] tracking-[0.22em] uppercase transition text-white"
-          >
-            {t.sellPage.cta}
-          </Link>
-        </div>
-      </section>
+      {/* HERO — Figma "04 Sell" › Hero (11:1164) + white "Request a valuation" link */}
+      <PageHero
+        image="/heroes/sell.jpg"
+        position="20% center"
+        crop={{ top: -7.75, left: -17.65, width: 117.65, height: 155.04 }}
+        title={t.heroes.sellTitle}
+        subtitle={t.heroes.sellSubtitle}
+      >
+        <TextLink href="/contact?subject=valuation" tone="white">
+          {t.heroes.sellCta}
+        </TextLink>
+      </PageHero>
 
       {/* WHY ELLINGTON — bordered card (unchanged) */}
       <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-24">

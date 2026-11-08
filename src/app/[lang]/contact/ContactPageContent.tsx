@@ -1,21 +1,18 @@
 "use client";
 
 import { ContactForm } from "@/components/ContactForm";
+import { PageHero } from "@/components/PageHero";
 import { useLanguage } from "@/components/LanguageProvider";
 
 export default function ContactPage() {
   const { t } = useLanguage();
   return (
-    <div className="pt-32 pb-20">
+    <>
+    {/* HERO — Figma "09 Contact" › Hero (2167:1453); photo from Figma for now */}
+    <PageHero image="/heroes/contact.jpg" title={t.heroes.contactTitle} subtitle={t.heroes.contactSubtitle} />
+    {/* Figma "09 Contact" › Content starts 72px below the hero (mobile 48) */}
+    <div className="pt-[48px] md:pt-[72px] pb-20">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <header className="text-center mb-20 max-w-2xl mx-auto">
-          <h1 className="type-h1 mb-6">
-            {t.contactPage.titleBefore} {t.contactPage.titleAccent}
-          </h1>
-          <p className="type-subtitle">
-            {t.contactPage.subtitle}
-          </p>
-        </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2">
@@ -74,6 +71,7 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

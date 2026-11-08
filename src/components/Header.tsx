@@ -58,12 +58,18 @@ export function Header() {
 
   // Pages whose top section is a full-bleed image hero — the header should
   // start transparent so the image flows behind it, then turn solid on scroll.
+  // (Home hero + PageHero: Buy, Sell, Locations, villages, About, Journal,
+  // articles, Contact. Not the property detail pages.)
   const hasImageHero =
     path === "/" ||
-    path === "/about" ||
+    path === "/properties" ||
     path === "/sell" ||
     path === "/locations" ||
-    path.startsWith("/locations/");
+    path.startsWith("/locations/") ||
+    path === "/about" ||
+    path === "/blog" ||
+    path.startsWith("/blog/") ||
+    path === "/contact";
   const overImage = hasImageHero && !scrolled;
 
   const navLinks = [

@@ -101,6 +101,9 @@ export default async function RootLayout({
   return (
     <html
       lang={lang}
+      // Smooth scrolling (globals.css) only for in-page links like the hero
+      // Scroll cue; page-to-page navigation stays instant (Next.js 16).
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">

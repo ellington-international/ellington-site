@@ -141,6 +141,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Hero "Scroll" cues are anchor links: glide to the section, unless the
+   visitor asked for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
 html, body {
   background: var(--surface-white);
   /* Default text colour = brand blue (same role as the old navy). Figma

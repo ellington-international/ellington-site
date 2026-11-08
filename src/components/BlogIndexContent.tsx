@@ -3,6 +3,7 @@
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BlogCard } from "./BlogCard";
+import { PageHero } from "./PageHero";
 import { useLanguage } from "./LanguageProvider";
 import type { BlogCategory, Post } from "@/lib/blog-shared";
 import { cardGridCls } from "@/components/ui/card";
@@ -54,18 +55,16 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
   const j = t.journal;
 
   return (
-    <div className="pt-32 pb-20">
+    <>
+    {/* HERO — Figma "08 Journal" › Hero (2167:1427); photo from Figma for now */}
+    <PageHero
+      image="/heroes/journal.jpg"
+      title={`${j.titleBefore} ${j.titleAccent}`}
+      subtitle={t.heroes.journalSubtitle}
+    />
+    {/* Figma "08 Journal" › Content starts 72px below the hero (mobile 48) */}
+    <div className="pt-[48px] md:pt-[72px] pb-20">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <header className="text-center mb-16 max-w-3xl mx-auto">
-          <p className="text-[11px] tracking-[0.32em] uppercase text-accent mb-5">
-            {j.eyebrow}
-          </p>
-          <h1 className="font-serif text-5xl md:text-7xl mb-6">
-            {j.titleBefore}{" "}
-            <em className="italic">{j.titleAccent}</em>
-          </h1>
-          <p className="type-subtitle">{j.subtitle}</p>
-        </header>
 
         {/* Category filter */}
         <div className="flex flex-wrap justify-center gap-1 sm:gap-2 mb-12 border-b border-[var(--border)] pb-6">
@@ -120,5 +119,6 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
         </p>
       </div>
     </div>
+    </>
   );
 }

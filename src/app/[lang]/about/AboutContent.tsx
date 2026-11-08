@@ -1,5 +1,6 @@
 "use client";
 
+import { PageHero } from "@/components/PageHero";
 import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { useLanguage } from "@/components/LanguageProvider";
@@ -21,26 +22,8 @@ export default function AboutPage() {
   const { t } = useLanguage();
   return (
     <div>
-      {/* HERO — full-bleed image, Text/Subtitle */}
-      <section className="relative h-[68svh] min-h-[440px] flex items-center justify-center overflow-hidden text-white on-photo">
-        <Image
-          src="/about/hero.jpg"
-          alt="Ellington · Côte d'Azur"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/45 z-10" />
-        <div className="relative z-20 text-center max-w-4xl mx-auto px-6">
-          <h1 className="type-h1 mb-5">
-            {t.aboutPage.titleBefore} {t.aboutPage.titleAccent}
-          </h1>
-          <p className="type-subtitle">
-            {t.aboutPage.heroSubtitle}
-          </p>
-        </div>
-      </section>
+      {/* HERO — Figma "07 About" › Hero (13:3); photo from Figma for now */}
+      <PageHero image="/heroes/about.jpg" title={t.heroes.aboutTitle} subtitle={t.heroes.aboutSubtitle} />
 
       {/* EXPERT BAND (navy) — title placeholder replacing the long intro text */}
       <section className="bg-[var(--accent)] text-white py-16 md:py-20 px-6" data-reveal>

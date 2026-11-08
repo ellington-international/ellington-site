@@ -1,6 +1,7 @@
 "use client";
 
 import { PropertiesBrowser } from "./PropertiesBrowser";
+import { PageHero } from "./PageHero";
 import { useLanguage } from "./LanguageProvider";
 import type { Property } from "@/lib/types";
 
@@ -13,17 +14,20 @@ export function PropertiesPageContent({
 }) {
   const { t } = useLanguage();
   return (
-    <div className="pt-32 pb-20">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 mb-12 text-center">
-        <h1 className="type-h1 mb-5">
-          {t.propertiesPage.titleBefore} {t.propertiesPage.titleAccent}
-        </h1>
-        <p className="type-subtitle max-w-2xl mx-auto">
-          {t.propertiesPage.subtitle}
-        </p>
+    <>
+      {/* Figma "02 Buy" › Hero (2136:1547): photo anchored to its top so the
+          sky stays behind the title */}
+      <PageHero
+        image="/heroes/buy.jpg"
+        position="45% top"
+        crop={{ top: 0, left: -11.73, width: 123.46, height: 144.93 }}
+        title={t.heroes.buyTitle}
+        subtitle={t.heroes.buySubtitle}
+      />
+      {/* Figma "02 Buy" › Content: filters start 72px below the hero (mobile 48) */}
+      <div className="pt-[48px] md:pt-[72px] pb-20">
+        <PropertiesBrowser properties={properties} cities={cities} />
       </div>
-
-      <PropertiesBrowser properties={properties} cities={cities} />
-    </div>
+    </>
   );
 }
