@@ -1,24 +1,24 @@
 "use client";
 
-import Link from "@/components/LocaleLink";
 import Image from "next/image";
+import Link from "@/components/LocaleLink";
 import { PropertyCard } from "@/components/PropertyCard";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { HeroSearch } from "@/components/HeroSearch";
-import { HeroSlideshow } from "@/components/HeroSlideshow";
 import { BlogCard } from "@/components/BlogCard";
-import type { Property } from "@/lib/types";
 import { useLanguage } from "@/components/LanguageProvider";
-import { CATEGORY_LABELS, type BlogCategory, type Post } from "@/lib/blog-shared";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { TextLink } from "@/components/ui/TextLink";
 import { cardGridCls } from "@/components/ui/card";
+import type { Property } from "@/lib/types";
+import type { BlogCategory, Post } from "@/lib/blog-shared";
 
-const CATEGORIES_ORDER: BlogCategory[] = [
-  "guides-achat",
-  "marche",
-  "architecture",
-  "art-de-vivre",
-  "fiscalite",
-];
+// Figma "01 Home — Desktop" (9:2) / "01 Home — Mobile" (9:268):
+// Hero + search · The Ellington standard · Featured properties ·
+// Our signature · Journal + Browse by category · Newsletter.
+
+const CATEGORIES_ORDER: BlogCategory[] = ["guides-achat", "marche", "architecture", "art-de-vivre", "fiscalite"];
+const POINT_ICONS = ["/ui/icons/chat.svg", "/ui/icons/pin.svg", "/ui/icons/globe.svg"];
 
 export function HomeContent({
   posts,
@@ -29,99 +29,83 @@ export function HomeContent({
   featured: Property[];
   cities: string[];
 }) {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
+  const h = t.home;
   const recentPosts = posts.slice(0, 3);
 
   return (
     <>
-      {/* HERO */}
-      {/* No overflow-hidden on the section: an open filter dropdown may reach
-          below the hero. The slideshow clips itself. */}
-      <section className="relative min-h-[100svh] flex items-center justify-center text-white on-photo">
-        <div className="absolute inset-0 overflow-hidden">
-          <HeroSlideshow />
+      {/* HERO (9:3 / 9:269): photo with a flat 30 % black overlay, 820px high
+          (mobile 760). Title H1, subtitle, the four search fields, Search link,
+          Scroll cue at the bottom. No overflow-hidden on the section: an open
+          dropdown may reach below the hero, so the photo clips itself. */}
+      <section className="relative min-h-[760px] md:min-h-[820px] flex flex-col items-center justify-center gap-[24px] pt-nav md:pb-[110px] on-photo">
+        <div className="absolute inset-0 overflow-hidden" aria-hidden>
+          <Image
+            src="/home/hero-home.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/30" />
         </div>
-        {/* Dark overlay on photos so hero text stays legible (white text on photos) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/55 z-10" />
 
-        <div className="relative z-20 text-center container-wrap fade-in pt-20 sm:pt-0">
-          <h1 className="type-h1 mb-6">
-            {t.home.titleBefore}
-          </h1>
-          <p className="type-subtitle mb-12">
-            {t.home.subtitle}
-          </p>
-
+        <div className="relative z-10 container-wrap flex flex-col items-center gap-[24px] text-center">
+          <h1 className="type-h1">{h.title}</h1>
+          <p className="type-subtitle max-w-[640px]">{h.subtitle}</p>
+          {/* Figma spacer 10px (+ the 24px gaps) */}
+          <div className="h-[10px]" aria-hidden />
           <HeroSearch cities={cities} />
         </div>
+
+        <a
+          href="#ellington-standard"
+          className="absolute z-10 left-1/2 -translate-x-1/2 bottom-[21px] md:bottom-[32px] flex flex-col items-center gap-[12px] group"
+        >
+          <span className="type-label text-white/85 group-hover:text-white transition-colors">{h.scroll}</span>
+          <span className="block w-px h-[36px] md:h-[48px] bg-white/60" aria-hidden />
+        </a>
       </section>
 
-      {/* WHY ELLINGTON */}
-      <section className="py-28 md:py-36 px-6 md:px-10">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="text-center mb-20 max-w-3xl mx-auto" data-reveal>
-            <p className="type-eyebrow mb-5">{t.home.whyEyebrow}</p>
-            <h2 className="type-h2 mb-6">
-              {t.home.whyTitleBefore} {t.home.whyTitleAccent}
-            </h2>
-            <p className="type-subhead">{t.home.whySubtitle}</p>
-          </div>
-
-          {/* Light-blue filled boxes on white, with gaps + icons (client prototype) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-            {t.home.features.map((f, i) => (
-              <div
-                key={i}
-                data-reveal
-                style={{ "--reveal-delay": `${i * 90}ms` } as React.CSSProperties}
-                className="bg-[var(--panel)] p-8 md:p-10"
-              >
-                <div className="w-11 h-11 mb-6 flex items-center justify-center text-accent">
-                  <FeatureIcon idx={i} />
-                </div>
-                <h3 className="type-h4 mb-3">{f.title}</h3>
-                <p className="text-sm text-muted-strong leading-relaxed">{f.body}</p>
-              </div>
+      {/* THE ELLINGTON STANDARD (2158:1457 / 2158:2911): eyebrow, statement in
+          H1, three points (56px champagne circle with icon, H3, Text/Small),
+          "Sell with us →". 64px apart (mobile 40); points 64 apart in a row
+          (mobile stacked, 32 apart). */}
+      <section id="ellington-standard" className="bg-surface scroll-mt-nav">
+        <div className="container-wrap section-y flex flex-col items-start gap-[40px] md:gap-[64px]">
+          <p className="type-eyebrow">{h.whyEyebrow}</p>
+          <h2 className="type-h1 max-w-[1000px]">{h.whyStatement}</h2>
+          <ul className="w-full grid grid-cols-1 md:grid-cols-3 gap-[32px] md:gap-[64px]">
+            {h.points.map((p, i) => (
+              <li key={p.title} className="flex flex-col items-start gap-[10px]">
+                <span className="size-[56px] rounded-full border border-brand-accent flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- 28px static icon from Figma */}
+                  <img src={POINT_ICONS[i]} alt="" width={28} height={28} />
+                </span>
+                <h3 className="type-h3">{p.title}</h3>
+                <p className="type-small text-muted">{p.body}</p>
+              </li>
             ))}
-          </div>
-
-          {/* CTA — link to the dedicated /sell page */}
-          <div className="text-center mt-14" data-reveal>
-            <Link
-              href="/sell"
-              className="inline-block px-[60px] py-4 bg-accent hover:bg-accent-hover text-white text-[11px] tracking-[0.22em] uppercase transition"
-            >
-              {t.home.whyCta}
-            </Link>
-          </div>
+          </ul>
+          <TextLink href="/sell">{h.whyCta}</TextLink>
         </div>
       </section>
 
-      {/* FEATURED PROPERTIES */}
-      <section className="py-28 md:py-36 px-6 md:px-10 bg-[var(--background-elev)]">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6" data-reveal>
-            <div className="max-w-2xl">
-              <p className="type-eyebrow mb-5">{t.home.featuredEyebrow}</p>
-              <h2 className="type-h2 mb-4">
-                {t.home.featuredTitleBefore}{" "}
-                <em className="not-italic">{t.home.featuredTitleAccent}</em>
-              </h2>
-              <p className="type-subhead">{t.home.featuredSubtitle}</p>
-            </div>
-            <Link
-              href="/properties"
-              className="self-start md:self-end text-[11px] tracking-[0.22em] uppercase text-accent hover:text-link border-b border-accent pb-1"
-            >
-              {t.home.featuredCta}
-            </Link>
-          </div>
-
-          {/* Figma "Track (horizontal scroll)": a swipe carousel on every
-              screen size. Mobile: one card (86 %) with the next one peeking,
-              20px apart. Tablet 2, desktop 3 cards visible, 32px apart.
-              Snaps card by card; "← Swipe →" underneath. */}
-          <div className="-mx-6 md:-mx-10 px-6 md:px-10 scroll-px-6 md:scroll-px-10 flex gap-[20px] md:gap-gap overflow-x-auto snap-x snap-mandatory overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* FEATURED PROPERTIES (9:59 / 9:325): hairline on top, head with
+          "View entire portfolio →", three cards. Swipe track: one card (86 %)
+          with the next peeking on mobile, 2 on tablet, 3 on desktop.
+          Head → cards 56px (mobile 40), cards → swipe hint 56 (mobile 40). */}
+      <section className="bg-surface border-t border-hairline">
+        <div className="container-wrap section-y">
+          <SectionHeader
+            eyebrow={h.featuredEyebrow}
+            title={h.featuredTitle}
+            subtitle={h.featuredSubtitle}
+            action={<TextLink href="/properties">{h.featuredCta}</TextLink>}
+          />
+          <div className="relative mt-[40px] md:mt-[56px] -mx-margin px-margin scroll-px-margin flex gap-[20px] md:gap-gap overflow-x-auto snap-x snap-mandatory overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {featured.map((p, i) => (
               <div
                 key={p.id}
@@ -131,208 +115,125 @@ export function HomeContent({
               </div>
             ))}
           </div>
-          <p className="type-label text-muted text-center mt-[40px]" aria-hidden>
+          {/* "relative" on the track: the cards' hidden screen-reader labels are
+              positioned against it, so they can't widen the page on phones. */}
+          {/* Shown only where there is something to swipe (3 cards fill the
+              desktop row). */}
+          <p className="type-label text-muted text-center mt-[40px] md:mt-[56px] lg:hidden" aria-hidden>
             {t.common.swipeHint}
           </p>
         </div>
       </section>
 
-      {/* NOT YOUR ORDINARY LOCAL EXPERT — two-column editorial box (prototype) */}
-      <section className="py-20 md:py-28 px-6 md:px-10">
-        <div
-          className="max-w-[1400px] mx-auto grid md:grid-cols-2 border border-[var(--border)]"
-          data-reveal
-        >
-          {/* LEFT — text panel (white background per client) */}
-          <div className="bg-[var(--background)] px-8 md:px-14 py-14 md:py-20 flex flex-col justify-center">
-            <p className="type-eyebrow mb-6">
-              {lang === "en"
-                ? "Our signature"
-                : lang === "nl"
-                  ? "Onze signatuur"
-                  : "Notre signature"}
-            </p>
-            <h2 className="font-serif italic text-3xl md:text-4xl leading-[1.15] mb-8">
-              {t.home.expertTitle}
-            </h2>
-            <div className="space-y-4 text-muted-strong leading-[1.8] text-[14px] mb-10">
-              <p>{t.home.expertP1}</p>
-              <p>{t.home.expertP3}</p>
-            </div>
-            <Link
-              href="/about"
-              className="inline-block self-start px-[60px] py-4 bg-accent hover:bg-accent-hover text-white text-[11px] tracking-[0.22em] uppercase transition"
-            >
-              {t.cookies.learnMore}
-            </Link>
-          </div>
-          {/* RIGHT — image */}
-          <div className="relative min-h-[320px] md:min-h-[480px]">
-            <Image
-              src="/locations/riviera.jpg"
-              alt="Golfe de Saint-Tropez"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
+      {/* OUR SIGNATURE (2158:1486 / 2158:2940) */}
+      <Signature />
 
-      {/* QUOTE BAND — navy editorial pull-quote (prototype) */}
-      <section className="bg-[var(--accent)] text-white py-12 md:py-16 px-6" data-reveal>
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="block w-10 h-px bg-[var(--gold)] mx-auto mb-7" />
-          <p className="font-serif italic text-xl md:text-3xl leading-[1.4]">
-            {lang === "en"
-              ? "“Every property is a story. We are its authors.”"
-              : lang === "nl"
-                ? "“Elk pand is een verhaal. Wij zijn de auteurs ervan.”"
-                : "« Chaque propriété est une histoire. Nous en sommes les auteurs. »"}
-          </p>
-          <span className="block w-10 h-px bg-[var(--gold)] mx-auto mt-7" />
-        </div>
-      </section>
-
-      {/* JOURNAL PREVIEW — conservé pour le SEO (prototype : avant la newsletter) */}
+      {/* JOURNAL (9:132 / 9:398): head with "View all articles →", three cards,
+          "Browse by category" row with a hairline on top. Starts 96px below the
+          signature (mobile 64); head → cards and cards → categories 56 (40). */}
       {recentPosts.length > 0 && (
-        <section className="py-28 md:py-36 px-6 md:px-10 bg-[var(--panel)]">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6" data-reveal>
-              <div className="max-w-2xl">
-                <p className="text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] mb-5">
-                  {lang === "en" ? "The Journal" : lang === "nl" ? "Het Journaal" : "Le journal"}
-                </p>
-                <h2 className="type-h2 mb-4">
-                  {lang === "en" ? (
-                    <>
-                      Stories from the <em className="not-italic">Gulf</em>
-                    </>
-                  ) : lang === "nl" ? (
-                    <>
-                      Verhalen uit de <em className="not-italic">Golf</em>
-                    </>
-                  ) : (
-                    <>
-                      Chroniques du <em className="not-italic">Golfe</em>
-                    </>
-                  )}
-                </h2>
-                <p className="text-muted-strong">
-                  {lang === "en"
-                    ? "Buyer's guides, market analyses and Riviera lifestyle — our editorial selection."
-                    : lang === "nl"
-                      ? "Koopgidsen, marktanalyses en Riviera-lifestyle — onze redactionele selectie."
-                      : "Guides d'achat, analyses de marché et art de vivre — notre sélection éditoriale."}
-                </p>
-              </div>
-              <Link
-                href="/blog"
-                className="self-start md:self-end text-[11px] tracking-[0.22em] uppercase text-accent hover:text-link border-b border-accent pb-1"
-              >
-                {lang === "en"
-                  ? "View all articles →"
-                  : lang === "nl"
-                    ? "Alle artikelen bekijken →"
-                    : "Voir tous les articles →"}
-              </Link>
-            </div>
-
-            {/* Recent posts — Figma "Grid 3 col" / mobile "Grid 1 col" */}
-            <div className={cardGridCls}>
-              {recentPosts.map((p, i) => (
-                <BlogCard key={p.slug} post={p} priority={i === 0} />
+        <section className="bg-surface">
+          <div className="container-wrap pt-[64px] md:pt-[96px] pb-section">
+            <SectionHeader
+              eyebrow={t.journal.eyebrow}
+              title={`${t.journal.titleBefore} ${t.journal.titleAccent}`}
+              subtitle={t.journal.subtitle}
+              action={<TextLink href="/blog">{h.journalCta}</TextLink>}
+            />
+            <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
+              {recentPosts.map((p) => (
+                <BlogCard key={p.slug} post={p} />
               ))}
             </div>
-
-            {/* Category chips — quick access to filtered views */}
-            <div className="mt-12 pt-10 border-t border-[var(--border)]">
-              <p className="text-[10px] tracking-[0.22em] uppercase text-muted text-center mb-6">
-                {lang === "en"
-                  ? "Browse by category"
-                  : lang === "nl"
-                    ? "Bladeren per categorie"
-                    : "Parcourir par catégorie"}
-              </p>
-              <div className="flex flex-wrap justify-center gap-2 md:gap-3">
-                {CATEGORIES_ORDER.map((cat) => (
-                  <Link
-                    key={cat}
-                    href={`/blog?category=${cat}`}
-                    className="text-[11px] tracking-[0.18em] uppercase px-5 py-2.5 border border-[var(--border)] hover:border-accent hover:text-link transition"
-                  >
-                    {CATEGORY_LABELS[cat][lang]}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <nav
+              aria-label={h.browseByCategory}
+              className="mt-[40px] md:mt-[56px] pt-[28px] border-t border-hairline flex flex-wrap items-center gap-x-[28px] gap-y-[12px]"
+            >
+              <p className="type-label text-muted">{h.browseByCategory}</p>
+              {CATEGORIES_ORDER.map((cat) => (
+                <Link
+                  key={cat}
+                  href={`/blog?category=${cat}`}
+                  className="type-label text-muted py-[6px] border-b border-transparent hover:text-brand-blue hover:border-hairline transition-colors"
+                >
+                  {t.journal.categories[cat]}
+                </Link>
+              ))}
+            </nav>
           </div>
         </section>
       )}
 
-      {/* STAY INFORMED — dark navy box (prototype: last section before footer) */}
-      <section className="py-16 md:py-20 px-6 md:px-10 bg-[var(--accent)] text-white">
-        <div className="max-w-2xl mx-auto text-center" data-reveal>
-          <p className="text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] mb-5">
-            {t.home.newsletterEyebrow}
-          </p>
-          <h2 className="type-h2 mb-5 text-white">
-            {t.home.newsletterTitleBefore} {t.home.newsletterTitleAccent}
-          </h2>
-          <p className="font-serif italic text-lg md:text-xl text-white/80 mb-10">
-            {t.home.newsletterSubtitle}
-          </p>
-          <NewsletterForm onDark />
+      {/* NEWSLETTER (9:180 / 9:446): surface/light, centred stack (max 640),
+          form 40px below (mobile 32). Success = thank-you overlay. */}
+      <section className="bg-surface-light">
+        <div className="container-wrap section-y flex flex-col items-center">
+          <SectionHeader
+            align="center"
+            eyebrow={h.newsletterEyebrow}
+            title={h.newsletterTitle}
+            subtitle={h.newsletterSubtitle}
+          />
+          <div className="w-full mt-[32px] md:mt-[40px]">
+            <NewsletterForm />
+          </div>
         </div>
       </section>
     </>
   );
 }
 
-// Icons for the 4 "Why Ellington" features (order: trusted advisors, network,
-// transactions, bespoke service).
-function FeatureIcon({ idx }: { idx: number }) {
-  const p = {
-    width: 22,
-    height: 22,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.4,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-  switch (idx) {
-    case 0:
-      return (
-        <svg {...p}>
-          <path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6l8-3z" />
-          <path d="M9 12l2 2 4-4" />
-        </svg>
-      );
-    case 1:
-      return (
-        <svg {...p}>
-          <circle cx="12" cy="6" r="2.5" />
-          <circle cx="5" cy="18" r="2.5" />
-          <circle cx="19" cy="18" r="2.5" />
-          <path d="M12 8.5v3M10 17l2-5M14 17l-2-5" />
-        </svg>
-      );
-    case 2:
-      return (
-        <svg {...p}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" />
-        </svg>
-      );
-    default:
-      return (
-        <svg {...p}>
-          <circle cx="8" cy="14" r="4" />
-          <path d="M11 11l9-9M16 6l3 3" />
-        </svg>
-      );
-  }
-}
+// "Our signature". Desktop (from 1280px, where the Figma composition fits):
+// photo 720px high bleeding to the left edge of the screen, text column
+// 384px on the right (96px gap), white quote box (560px, padding 40 × 48,
+// quote in H2 italic) overlapping the photo's bottom by 140px, 460px into
+// the content area. Below 1280px (Figma mobile): photo full width 460px high,
+// quote box overlapping its bottom by 90px (padding 28), text 75px below.
+function Signature() {
+  const { t } = useLanguage();
+  const h = t.home;
+  const text = (
+    <>
+      <p className="type-eyebrow">{h.signatureEyebrow}</p>
+      <h2 className="type-h2">{h.signatureTitle}</h2>
+      <p className="type-subtitle">{h.signatureLead}</p>
+      <p className="type-body">{h.signatureText}</p>
+      <div className="h-[8px]" aria-hidden />
+      <TextLink href="/about" className="self-start">
+        {h.signatureCta}
+      </TextLink>
+    </>
+  );
+  const photo = (
+    <Image src="/home/signature.jpg" alt={h.signatureAlt} fill sizes="(min-width: 1280px) 60vw, 100vw" className="object-cover" />
+  );
 
+  return (
+    <section className="bg-surface">
+      {/* Mobile / tablet */}
+      <div className="xl:hidden">
+        <div className="relative h-[460px] md:h-[560px]">{photo}</div>
+        <div className="container-wrap">
+          <blockquote className="relative z-10 -mt-[90px] bg-surface p-[28px]">
+            <p className="type-h2">{h.signatureQuote}</p>
+          </blockquote>
+          <div className="mt-[75px] pb-[69px] flex flex-col items-start gap-[20px]">{text}</div>
+        </div>
+      </div>
+
+      {/* Desktop */}
+      <div className="hidden xl:block relative pt-[144px] pb-[98px]">
+        <div className="absolute left-0 top-[144px] h-[720px] w-[min(calc(100vw-580px),calc(50vw+140px))]">{photo}</div>
+        <div className="container-wrap relative">
+          <div className="min-h-[720px] flex justify-end">
+            {/* pb 178 = room for the quote box below the text (580 − 40 − 502 + 140 + 38) */}
+            <div className="w-[384px] pt-[40px] pb-[178px] flex flex-col items-start gap-[24px]">{text}</div>
+          </div>
+          <blockquote className="relative z-10 -mt-[140px] ml-[460px] w-[560px] bg-surface px-[48px] py-[40px]">
+            <p className="type-h2">{h.signatureQuote}</p>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+  );
+}

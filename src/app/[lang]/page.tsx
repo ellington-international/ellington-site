@@ -24,5 +24,5 @@ export default async function HomePage() {
     getFeaturedProperties(),
     getCities(),
   ]);
-  return <HomeContent posts={posts} featured={featured.slice(0, 6)} cities={cities} />;
+  return <HomeContent posts={posts} featured={featured.slice(0, 3)} cities={cities} />;
 }

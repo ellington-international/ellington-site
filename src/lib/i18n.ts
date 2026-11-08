@@ -74,64 +74,49 @@ const dictRaw = {
       reset: "Réinitialiser",
     },
     home: {
-      eyebrow: "Immobilier de prestige · Côte d'Azur",
-      titleBefore: "Découvrez l'élégance",
-      titleAccent: "",
-      titleAfter: "",
-      subtitle: "Propriétés d'exception sur la Côte d'Azur",
-      whyEyebrow: "L'excellence Ellington",
-      whyTitleBefore: "Pourquoi choisir",
-      whyTitleAccent: "Ellington",
-      whySubtitle:
-        "Une expertise inégalée dans l'immobilier de luxe sur l'ensemble de la Côte d'Azur.",
-      whyCta: "Vendre avec nous",
-      features: [
+      // Home redesign (step 13). Figma "01 Home" copy is English; FR draft.
+      // TODO client review (FR draft)
+      title: "Là où la Riviera devient chez vous",
+      subtitle: "Villas, domaines et maisons les pieds dans l'eau autour de Saint-Tropez.",
+      heroAlt: "Jardin d'une villa avec vue sur le Golfe de Saint-Tropez",
+      scroll: "Défiler",
+      whyEyebrow: "Le standard Ellington",
+      whyStatement: "Des conseils honnêtes, un ancrage local et un compte rendu écrit chaque mois.",
+      points: [
         {
-          title: "Conseillers de confiance",
-          body: "Une approche confidentielle et discrète, dans le respect des plus hauts standards professionnels.",
+          title: "Des conseils honnêtes",
+          body: "Nous vous disons ce que nous pensons vraiment du prix — vous gardez le dernier mot.",
         },
+        { title: "Un ancrage local", body: "Basés à Gassin, des Issambres au Lavandou." },
         {
-          title: "Réseau exclusif",
-          body: "Accès privilégié à des biens off-market, indisponibles sur les canaux publics.",
-        },
-        {
-          title: "Clientèle internationale",
-          body: "Des acquéreurs de plus de 10 pays nous font confiance pour leurs projets sur la Côte d'Azur.",
-        },
-        {
-          title: "Service sur-mesure",
-          body: "De la première visite à la signature, un accompagnement personnalisé à chaque étape.",
+          title: "Des acheteurs du monde entier",
+          body: "Nous vous conseillons en français, en anglais et en néerlandais.",
         },
       ] as { title: string; body: string }[],
+      whyCta: "Vendre avec nous →",
       featuredEyebrow: "Sélection",
-      featuredTitleBefore: "Propriétés",
-      featuredTitleAccent: "en vedette",
-      featuredSubtitle:
-        "Une sélection des biens les plus rares de notre portefeuille, renouvelée chaque semaine.",
+      featuredTitle: "Biens à la une",
+      featuredSubtitle: "Une sélection des propriétés d'exception que nous représentons actuellement.",
       featuredCta: "Voir tout le portefeuille →",
-      regionsEyebrow: "Nos régions",
-      regionsTitleBefore: "Adresses",
-      regionsTitleAccent: "d'exception",
-      regionsSubtitle:
-        "De Monaco à Saint-Tropez, nous opérons sur les emplacements les plus prestigieux de la Côte d'Azur.",
-      regionsCta: "Voir toutes nos régions",
-      newsletterEyebrow: "Restez informé",
-      newsletterTitleBefore: "Restez",
-      newsletterTitleAccent: "informé",
+      signatureEyebrow: "Notre signature",
+      signatureTitle: "Un expert local pas comme les autres.",
+      signatureLead:
+        "Fondée en 2023 dans le Golfe de Saint-Tropez par deux associés qui partagent une passion pour l'immobilier et l'architecture.",
+      signatureText:
+        "Nous nous concentrons sur les villas et domaines d'exception, et restons aux côtés de nos clients de la première visite à la signature chez le notaire.",
+      signatureQuote: "« Des conseils honnêtes, de la première visite à la signature finale. »",
+      signatureCta: "En savoir plus →",
+      signatureAlt: "Une baie de la Côte d'Azur au coucher du soleil",
+      journalCta: "Voir tous les articles →",
+      browseByCategory: "Parcourir par catégorie",
+      newsletterEyebrow: "Newsletter",
+      newsletterTitle: "Restez informé",
       newsletterSubtitle:
         "Recevez en exclusivité nos nouveaux biens et nos analyses du marché immobilier.",
-      expertTitle: "Un expert local pas comme les autres.",
-      expertP1:
-        "Né au cœur du Golfe de Saint-Tropez, Ellington est plus qu'une agence immobilière — c'est une signature.",
-      expertP2:
-        "Son fondateur, ayant grandi dans la région, possède une connaissance intime et instinctive de chaque secteur, chaque adresse et chaque détail subtil qui définit la valeur d'un bien sur la Côte d'Azur. Cette expertise locale, bâtie au fil des années, est aujourd'hui mise au service d'une clientèle exigeante en quête d'excellence.",
-      expertP3:
-        "Choisir Ellington, c'est s'associer à un conseiller de confiance combinant des racines locales profondes, un rayonnement international et l'excellence du service.",
-      newsletterDisclaimer:
-        "Pas de spam — désinscription possible à tout moment.",
       newsletterPlaceholder: "Votre adresse email",
       newsletterSubmit: "S'inscrire",
-      newsletterSuccess: "Merci, votre inscription est confirmée.",
+      // Still used on the About page until its redesign (step 21)
+      expertTitle: "Un expert local pas comme les autres.",
     },
     search: {
       buy: "Achat",
@@ -719,64 +704,44 @@ const dictRaw = {
       reset: "Reset",
     },
     home: {
-      eyebrow: "Luxury Real Estate · French Riviera",
-      titleBefore: "Discover Elegance",
-      titleAccent: "",
-      titleAfter: "",
-      subtitle: "Exclusive Properties in the French Riviera",
-      whyEyebrow: "The Ellington Standard",
-      whyTitleBefore: "Why choose",
-      whyTitleAccent: "Ellington",
-      whySubtitle:
-        "Unparalleled expertise in luxury real estate across the French Riviera.",
-      whyCta: "Sell with us",
-      features: [
+      // Home redesign (step 13): Figma "01 Home" copy (approved).
+      title: "Where the Riviera becomes home",
+      subtitle: "Villas, estates and waterfront houses around Saint-Tropez.",
+      heroAlt: "Villa garden overlooking the Golfe de Saint-Tropez",
+      scroll: "Scroll",
+      whyEyebrow: "The Ellington standard",
+      whyStatement: "Honest advice, local roots, and a written update every month.",
+      points: [
         {
-          title: "Trusted advisors",
-          body: "A confidential, discreet approach respecting the highest professional standards.",
+          title: "Honest advice",
+          body: "We tell you what we really think about price — you keep the final word.",
         },
-        {
-          title: "Exclusive network",
-          body: "Privileged access to off-market properties, unavailable through public channels.",
-        },
-        {
-          title: "International clientele",
-          body: "Buyers from over 10 countries trust us with their projects on the French Riviera.",
-        },
-        {
-          title: "Bespoke service",
-          body: "From first viewing to signing, personal guidance at every step.",
-        },
+        { title: "Local roots", body: "Based in Gassin, from Les Issambres to Le Lavandou." },
+        { title: "Buyers from around the world", body: "We advise in French, English and Dutch." },
       ] as { title: string; body: string }[],
+      whyCta: "Sell with us →",
       featuredEyebrow: "Selection",
-      featuredTitleBefore: "Featured",
-      featuredTitleAccent: "properties",
-      featuredSubtitle:
-        "A curated selection of the rarest properties in our portfolio, refreshed weekly.",
+      featuredTitle: "Featured properties",
+      featuredSubtitle: "A selection of the exceptional homes we currently represent.",
       featuredCta: "View entire portfolio →",
-      regionsEyebrow: "Our regions",
-      regionsTitleBefore: "Exceptional",
-      regionsTitleAccent: "addresses",
-      regionsSubtitle:
-        "From Monaco to Saint-Tropez, we operate in the most prestigious locations on the French Riviera.",
-      regionsCta: "View all our regions",
-      newsletterEyebrow: "Stay informed",
-      newsletterTitleBefore: "Stay",
-      newsletterTitleAccent: "informed",
-      newsletterSubtitle:
-        "Receive exclusive updates on new properties and market insights.",
-      expertTitle: "Not Your Ordinary Local Expert.",
-      expertP1:
-        "Born in the heart of the Gulf of Saint-Tropez, Ellington is more than a real estate agency — it is a signature.",
-      expertP2:
-        "Its founder, having grown up in the region, possesses an intimate and instinctive knowledge of every area, every address, and every subtle detail that defines the value of a property on the French Riviera. This local expertise, built over the years, is now dedicated to serving a discerning clientele in search of excellence.",
-      expertP3:
-        "Choosing Ellington means partnering with a trusted advisor who combines deep local roots, international reach, and excellence in service.",
-      newsletterDisclaimer:
-        "No spam — unsubscribe at any time.",
+      signatureEyebrow: "Our signature",
+      signatureTitle: "Not your ordinary local expert.",
+      signatureLead:
+        "Founded in 2023 in the Golfe de Saint-Tropez by two partners who share a passion for property and architecture.",
+      signatureText:
+        "We focus on exceptional villas and estates, and stay close to our clients from the first visit to the signature at the notary.",
+      signatureQuote: "“Honest advice, from the first visit to the final signature.”",
+      signatureCta: "Learn more →",
+      signatureAlt: "A bay on the Côte d'Azur at sunset",
+      journalCta: "View all articles →",
+      browseByCategory: "Browse by category",
+      newsletterEyebrow: "Newsletter",
+      newsletterTitle: "Stay informed",
+      newsletterSubtitle: "Receive exclusive updates on new properties and market insights.",
       newsletterPlaceholder: "Your email address",
       newsletterSubmit: "Subscribe",
-      newsletterSuccess: "Thank you, your subscription is confirmed.",
+      // Still used on the About page until its redesign (step 21)
+      expertTitle: "Not Your Ordinary Local Expert.",
     },
     search: {
       buy: "Buy",
@@ -1366,64 +1331,45 @@ const dictRaw = {
       reset: "Opnieuw instellen",
     },
     home: {
-      eyebrow: "Luxe vastgoed · Côte d'Azur",
-      titleBefore: "Ontdek elegantie",
-      titleAccent: "",
-      titleAfter: "",
-      subtitle: "Exclusieve woningen aan de Franse Rivièra",
+      // Home redesign (step 13). Figma "01 Home" copy is English; NL draft.
+      // TODO client review (NL draft)
+      title: "Waar de Rivièra thuis wordt",
+      subtitle: "Villa's, landgoederen en huizen aan het water rond Saint-Tropez.",
+      heroAlt: "Tuin van een villa met uitzicht op de Golfe de Saint-Tropez",
+      scroll: "Scroll",
       whyEyebrow: "De Ellington-standaard",
-      whyTitleBefore: "Waarom kiezen voor",
-      whyTitleAccent: "Ellington",
-      whySubtitle:
-        "Ongeëvenaarde expertise in luxe vastgoed langs de hele Franse Rivièra.",
-      whyCta: "Verkoop met ons",
-      features: [
+      whyStatement: "Eerlijk advies, lokale wortels en elke maand een schriftelijke update.",
+      points: [
         {
-          title: "Vertrouwde adviseurs",
-          body: "Een vertrouwelijke, discrete aanpak met respect voor de hoogste professionele normen.",
+          title: "Eerlijk advies",
+          body: "We zeggen u wat we echt van de prijs vinden — u houdt het laatste woord.",
         },
-        {
-          title: "Exclusief netwerk",
-          body: "Bevoorrechte toegang tot off-market woningen, niet beschikbaar via openbare kanalen.",
-        },
-        {
-          title: "Internationale clientèle",
-          body: "Kopers uit meer dan 10 landen vertrouwen ons hun projecten aan de Franse Rivièra toe.",
-        },
-        {
-          title: "Service op maat",
-          body: "Van eerste bezichtiging tot ondertekening, persoonlijke begeleiding bij elke stap.",
-        },
+        { title: "Lokale wortels", body: "Gevestigd in Gassin, van Les Issambres tot Le Lavandou." },
+        { title: "Kopers van over de hele wereld", body: "We adviseren in het Frans, Engels en Nederlands." },
       ] as { title: string; body: string }[],
+      whyCta: "Verkopen met ons →",
       featuredEyebrow: "Selectie",
-      featuredTitleBefore: "Uitgelichte",
-      featuredTitleAccent: "woningen",
-      featuredSubtitle:
-        "Een zorgvuldig samengestelde selectie van de zeldzaamste woningen in ons portfolio, wekelijks ververst.",
-      featuredCta: "Bekijk het volledige portfolio →",
-      regionsEyebrow: "Onze regio's",
-      regionsTitleBefore: "Uitzonderlijke",
-      regionsTitleAccent: "adressen",
-      regionsSubtitle:
-        "Van Monaco tot Saint-Tropez zijn wij actief op de meest prestigieuze locaties aan de Franse Rivièra.",
-      regionsCta: "Bekijk al onze regio's",
-      newsletterEyebrow: "Blijf op de hoogte",
-      newsletterTitleBefore: "Blijf",
-      newsletterTitleAccent: "op de hoogte",
-      newsletterSubtitle:
-        "Ontvang exclusieve updates over nieuwe woningen en marktinzichten.",
-      expertTitle: "Geen gewone lokale expert.",
-      expertP1:
-        "Geboren in het hart van de Golf van Saint-Tropez is Ellington meer dan een vastgoedkantoor — het is een handtekening.",
-      expertP2:
-        "De oprichter, opgegroeid in de regio, beschikt over een intieme en instinctieve kennis van elk gebied, elk adres en elk subtiel detail dat de waarde van een woning aan de Franse Rivièra bepaalt. Deze lokale expertise, door de jaren heen opgebouwd, staat nu ten dienste van een veeleisende clientèle op zoek naar uitmuntendheid.",
-      expertP3:
-        "Kiezen voor Ellington betekent samenwerken met een vertrouwde adviseur die diepe lokale wortels, internationaal bereik en uitmuntende service combineert.",
-      newsletterDisclaimer:
-        "Geen spam — u kunt zich op elk moment uitschrijven.",
+      featuredTitle: "Uitgelichte woningen",
+      featuredSubtitle: "Een selectie van de uitzonderlijke woningen die wij momenteel vertegenwoordigen.",
+      featuredCta: "Bekijk de hele portefeuille →",
+      signatureEyebrow: "Onze signatuur",
+      signatureTitle: "Geen gewone lokale expert.",
+      signatureLead:
+        "Opgericht in 2023 in de Golfe de Saint-Tropez door twee partners die een passie delen voor vastgoed en architectuur.",
+      signatureText:
+        "We richten ons op uitzonderlijke villa's en landgoederen en blijven dicht bij onze klanten, van het eerste bezoek tot de ondertekening bij de notaris.",
+      signatureQuote: "“Eerlijk advies, van het eerste bezoek tot de laatste handtekening.”",
+      signatureCta: "Meer weten →",
+      signatureAlt: "Een baai aan de Côte d'Azur bij zonsondergang",
+      journalCta: "Alle artikelen bekijken →",
+      browseByCategory: "Bladeren per categorie",
+      newsletterEyebrow: "Nieuwsbrief",
+      newsletterTitle: "Blijf op de hoogte",
+      newsletterSubtitle: "Ontvang exclusieve updates over nieuwe woningen en marktinzichten.",
       newsletterPlaceholder: "Uw e-mailadres",
       newsletterSubmit: "Inschrijven",
-      newsletterSuccess: "Dank u, uw inschrijving is bevestigd.",
+      // Still used on the About page until its redesign (step 21)
+      expertTitle: "Geen gewone lokale expert.",
     },
     search: {
       buy: "Kopen",
