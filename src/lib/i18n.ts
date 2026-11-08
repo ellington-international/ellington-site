@@ -788,7 +788,7 @@ const dictRaw = {
       allBedrooms: "All",
       submit: "Search",
       results: (n: number) =>
-        `${n} propert${n > 1 ? "ies" : "y"} available`,
+        `${n} propert${n === 1 ? "y" : "ies"} available`,
       noResults: "No property matches your search.",
       noResultsCta: "Reset filters",
     },
@@ -1431,7 +1431,7 @@ const dictRaw = {
       allBedrooms: "Alle",
       submit: "Zoeken",
       results: (n: number) =>
-        `${n} ${n > 1 ? "woningen" : "woning"} beschikbaar`,
+        `${n} ${n === 1 ? "woning" : "woningen"} beschikbaar`,
       noResults: "Geen woning komt overeen met uw zoekopdracht.",
       noResultsCta: "Filters opnieuw instellen",
     },

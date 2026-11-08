@@ -24,8 +24,9 @@ export function PropertiesPageContent({
         title={t.heroes.buyTitle}
         subtitle={t.heroes.buySubtitle}
       />
-      {/* Figma "02 Buy" › Content: filters start 72px below the hero (mobile 48) */}
-      <div className="pt-[48px] md:pt-[72px] pb-20">
+      {/* Figma "02 Buy" › Content: filters 72px below the hero (mobile 48),
+          144px (mobile 96) below the last row of cards */}
+      <div className="pt-[48px] md:pt-[72px] pb-section">
         <PropertiesBrowser properties={properties} cities={cities} />
       </div>
     </>

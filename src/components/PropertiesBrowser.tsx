@@ -7,6 +7,7 @@ import type { Property } from "@/lib/types";
 import { useLanguage } from "./LanguageProvider";
 import { Dropdown } from "./ui/Dropdown";
 import { Button } from "./ui/Button";
+import { textLinkClasses } from "./ui/TextLink";
 import { PRICE_RANGES, filterOptions } from "@/lib/filters";
 import { cardGridCls } from "@/components/ui/card";
 
@@ -87,60 +88,54 @@ function PropertiesBrowserInner({
     setBeds(0);
   };
 
+  // Figma "02 Buy" › Content (10:6 / mobile 10:223), inside the 1240 container:
+  //   Filter: 4 Search fields (light) + Primary "Search" (padding 28 × 14) in
+  //     one row, 14px apart, aligned at the bottom; mobile 2 × 2, 12px apart,
+  //     full-width button.
+  //   Toolbar 40px below (mobile 32): count in Text/Small muted, 16px padding,
+  //     hairline below.
+  //   Grid 40px below (mobile 32): 3 / 2 / 1 columns (cardGridCls).
+  // The list updates live as filters change; the button scrolls to the results.
   return (
-    <div>
-      {/* FILTERS — Figma "02 Buy" › Filter: 4 dropdowns + Search button.
-          Desktop one row (gap 14, button at the bottom); mobile 2 × 2 (gap 12)
-          with a full-width button. The list updates live; the button scrolls
-          to the results. */}
-      <div className="bg-[var(--panel)] mb-12">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-6 grid grid-cols-2 md:grid-cols-[repeat(4,minmax(0,1fr))_auto] gap-[12px] md:gap-[14px] items-end">
-          <Dropdown label={t.search.location} value={city} onChange={setCity} options={opts.location} />
-          <Dropdown label={t.search.type} value={type} onChange={setType} options={opts.type} />
-          <Dropdown
-            label={t.search.budget}
-            value={String(priceIdx)}
-            onChange={(v) => setPriceIdx(Number(v))}
-            options={opts.budget}
-          />
-          <Dropdown
-            label={t.search.bedrooms}
-            value={String(beds)}
-            onChange={(v) => setBeds(Number(v))}
-            options={opts.bedrooms}
-          />
-          <Button
-            variant="primary"
-            className="col-span-2 md:col-span-1 h-[42px]"
-            onClick={() =>
-              document.getElementById("results")?.scrollIntoView({ behavior: "smooth" })
-            }
-          >
-            {t.search.submit}
-          </Button>
-        </div>
+    <div className="container-wrap">
+      <div className="grid grid-cols-2 md:grid-cols-[repeat(4,minmax(0,1fr))_auto] gap-[12px] md:gap-[14px] items-end">
+        <Dropdown label={t.search.location} value={city} onChange={setCity} options={opts.location} />
+        <Dropdown label={t.search.type} value={type} onChange={setType} options={opts.type} />
+        <Dropdown
+          label={t.search.budget}
+          value={String(priceIdx)}
+          onChange={(v) => setPriceIdx(Number(v))}
+          options={opts.budget}
+        />
+        <Dropdown
+          label={t.search.bedrooms}
+          value={String(beds)}
+          onChange={(v) => setBeds(Number(v))}
+          options={opts.bedrooms}
+        />
+        <Button
+          variant="primary"
+          className="col-span-2 md:col-span-1 px-[28px]!"
+          onClick={() => document.getElementById("results")?.scrollIntoView({ behavior: "smooth" })}
+        >
+          {t.search.submit}
+        </Button>
       </div>
 
-      {/* Results: Figma "Grid 3 col" (gap 32, rows 56) / mobile "Grid 1 col" (rows 36) */}
-      <div id="results" className="max-w-[1400px] mx-auto px-6 md:px-10 scroll-mt-28">
-        <p className="text-sm text-muted mb-8">
+      <div id="results" className="scroll-mt-nav">
+        <p className="mt-[32px] md:mt-[40px] py-[16px] border-b border-hairline type-small text-muted" aria-live="polite">
           {t.search.results(filtered.length)}
         </p>
 
         {filtered.length === 0 ? (
-          <div className="py-32 text-center">
-            <p className="font-serif text-2xl italic mb-4">
-              {t.search.noResults}
-            </p>
-            <button
-              onClick={reset}
-              className="text-[11px] tracking-[0.22em] uppercase text-accent border-b border-accent pb-1"
-            >
+          <div className="py-section flex flex-col items-center gap-[24px] text-center">
+            <p className="type-subtitle">{t.search.noResults}</p>
+            <button type="button" onClick={reset} className={textLinkClasses()}>
               {t.search.noResultsCta}
             </button>
           </div>
         ) : (
-          <div className={cardGridCls}>
+          <div className={`${cardGridCls} mt-[32px] md:mt-[40px]`}>
             {filtered.map((p, i) => (
               <PropertyCard key={p.id} property={p} priority={i < 3} />
             ))}
