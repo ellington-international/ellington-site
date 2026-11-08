@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import Image from "next/image";
 import type { Property } from "@/lib/types";
 import { formatPriceShort } from "@/lib/properties";

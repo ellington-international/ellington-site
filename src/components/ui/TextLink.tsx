@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import type { ComponentProps } from "react";
 
 // Figma component "Link" (2048:48): text link with an underline, 2 tones ×

@@ -1,4 +1,7 @@
 import { SITE_URL } from "./site";
+import type { Lang } from "./i18n";
+
+const IN_LANGUAGE: Record<Lang, string> = { fr: "fr-FR", en: "en", nl: "nl" };
 import type { Property, Location } from "./types";
 
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -39,20 +42,20 @@ export function organizationSchema() {
   };
 }
 
-export function websiteSchema() {
+export function websiteSchema(lang: Lang) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
-    url: SITE_URL,
+    url: `${SITE_URL}/${lang}`,
     name: "Ellington Properties",
-    inLanguage: "fr-FR",
+    inLanguage: IN_LANGUAGE[lang],
     publisher: { "@id": ORG_ID },
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/properties?city={search_term_string}`,
+        urlTemplate: `${SITE_URL}/${lang}/properties?city={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },
@@ -68,8 +71,8 @@ function residenceType(t: string): string {
 
 // A property-for-sale listing. Price is included ONLY when it is a real value
 // (some Apimo feeds return 0 — we never publish a 0 € offer).
-export function propertySchema(p: Property) {
-  const url = `${SITE_URL}/properties/${p.id}`;
+export function propertySchema(p: Property, lang: Lang) {
+  const url = `${SITE_URL}/${lang}/properties/${p.id}`;
   const images = p.pictures.map((pic) => pic.url).slice(0, 6);
 
   const about: Record<string, unknown> = {
@@ -121,12 +124,12 @@ export function propertySchema(p: Property) {
 }
 
 // A region / locality page.
-export function placeSchema(loc: Location) {
+export function placeSchema(loc: Location, lang: Lang) {
   const node: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Place",
     name: loc.name,
-    url: `${SITE_URL}/locations/${loc.slug}`,
+    url: `${SITE_URL}/${lang}/locations/${loc.slug}`,
     address: {
       "@type": "PostalAddress",
       addressLocality: loc.name,

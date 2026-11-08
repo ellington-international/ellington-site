@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { useLanguage } from "./LanguageProvider";
 import { PropertyCard } from "./PropertyCard";
 import { LOCATION_CONTENT } from "@/lib/location-content";

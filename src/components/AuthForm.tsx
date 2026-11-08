@@ -1,13 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { useActionState, useState } from "react";
 import { login, signup, type AuthState } from "@/app/actions/auth";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "./LanguageProvider";
 
 type Mode = "login" | "signup";
 
-export function AuthForm({ mode, signupSuccess }: { mode: Mode; signupSuccess?: boolean }) {
+export function AuthForm({ mode, signupSuccess, next }: { mode: Mode; signupSuccess?: boolean; next?: string }) {
+  const { lang } = useLanguage();
+  // Where to go after logging in (the server action checks it is a page of this site)
+  const after = next ?? `/${lang}/mes-favoris`;
   const action = mode === "login" ? login : signup;
   const [state, formAction, pending] = useActionState<AuthState, FormData>(action, null);
   const [oauthError, setOauthError] = useState<string | null>(null);
@@ -22,7 +26,7 @@ export function AuthForm({ mode, signupSuccess }: { mode: Mode; signupSuccess?: 
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(after)}`,
         queryParams: { prompt: "select_account" },
       },
     });
@@ -73,6 +77,8 @@ export function AuthForm({ mode, signupSuccess }: { mode: Mode; signupSuccess?: 
       </div>
 
       <form action={formAction} className="space-y-5">
+        <input type="hidden" name="lang" value={lang} />
+        <input type="hidden" name="next" value={after} />
         <div>
           <label htmlFor="email" className="block text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-2">
             Adresse email

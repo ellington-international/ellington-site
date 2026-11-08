@@ -13,8 +13,14 @@ import type { KeyboardEvent } from "react";
 // Option: 10 / 14 padding, Text/Input; hover/keyboard focus surface/light +
 // brand/blue text.
 //
-// Only one dropdown is open at a time: opening another one is a click (or
-// focus) outside the first, which closes it.
+// Closing works the same with a mouse and on touch screens (iPhone):
+//   tap / click the field again, choose an option, tap / click anywhere
+//   outside (which is also what closes it when another dropdown is opened),
+//   or Esc / Tab on the keyboard. Only one dropdown is open at a time.
+// No "close on blur": Safari (iOS and macOS) doesn't focus a button when it
+// is tapped, so a blur handler closed the list and the same tap re-opened it.
+// The page keeps scrolling normally while a list is open; scrolling inside
+// the list doesn't scroll the page (overscroll-contain).
 // Keyboard: Enter / Space / ↓ / ↑ open; ↑ ↓ Home End move; Enter / Space
 // select; Esc closes; typing a letter jumps to the first option with it.
 
@@ -56,7 +62,7 @@ export function Dropdown({
   };
   const close = (refocus = true) => {
     setOpen(false);
-    if (refocus) buttonRef.current?.focus();
+    if (refocus) buttonRef.current?.focus({ preventScroll: true });
   };
   const choose = (index: number) => {
     const o = options[index];
@@ -65,26 +71,38 @@ export function Dropdown({
   };
 
   // Close on a click / tap anywhere outside this dropdown (this is also what
-  // closes it when another dropdown is opened).
+  // closes it when another dropdown is opened). Listens to touchstart as well
+  // as pointerdown, in the capture phase, so iOS taps on plain text or photos
+  // count too and nothing on the page can swallow the event first.
   useEffect(() => {
     if (!open) return;
-    const onPointer = (e: PointerEvent) => {
+    const onOutside = (e: Event) => {
       if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
     };
-    document.addEventListener("pointerdown", onPointer);
-    return () => document.removeEventListener("pointerdown", onPointer);
+    document.addEventListener("pointerdown", onOutside, true);
+    document.addEventListener("touchstart", onOutside, { capture: true, passive: true });
+    return () => {
+      document.removeEventListener("pointerdown", onOutside, true);
+      document.removeEventListener("touchstart", onOutside, { capture: true });
+    };
   }, [open]);
 
-  // When opened: focus the list so the keyboard works on it.
+  // When opened: focus the list so the keyboard works on it (without
+  // scrolling the page).
   useEffect(() => {
-    if (open) listRef.current?.focus();
+    if (open) listRef.current?.focus({ preventScroll: true });
   }, [open]);
 
-  // Keep the active option visible while moving with the keyboard.
+  // Keep the active option visible while moving with the keyboard. Scrolls
+  // only the list itself (scrollIntoView would also move the page on iOS).
   useEffect(() => {
     if (!open) return;
-    const el = listRef.current?.querySelector<HTMLElement>(`[data-index="${active}"]`);
-    el?.scrollIntoView({ block: "nearest" });
+    const list = listRef.current;
+    const el = list?.querySelector<HTMLElement>(`[data-index="${active}"]`);
+    if (!list || !el) return;
+    if (el.offsetTop < list.scrollTop) list.scrollTop = el.offsetTop;
+    else if (el.offsetTop + el.offsetHeight > list.scrollTop + list.clientHeight)
+      list.scrollTop = el.offsetTop + el.offsetHeight - list.clientHeight;
   }, [open, active]);
 
   const onButtonKey = (e: KeyboardEvent<HTMLButtonElement>) => {
@@ -142,10 +160,6 @@ export function Dropdown({
     <div
       ref={rootRef}
       className={`relative flex flex-col gap-[8px] min-w-0 ${className}`}
-      // Focus moving out of the dropdown (Tab, or clicking a link) closes it.
-      onBlur={(e) => {
-        if (open && !rootRef.current?.contains(e.relatedTarget as Node)) setOpen(false);
-      }}
     >
       <span id={labelId} className={`type-label ${onPhoto ? "text-white" : "text-brand-blue"}`}>
         {label}
@@ -186,10 +200,7 @@ export function Dropdown({
           aria-labelledby={labelId}
           aria-activedescendant={`${id}-opt-${active}`}
           onKeyDown={onListKey}
-          // Keep focus on the list while clicking an option, otherwise the
-          // blur above would close it before the click lands.
-          onMouseDown={(e) => e.preventDefault()}
-          className="absolute left-0 right-0 top-full -mt-px z-30 max-h-[174px] overflow-y-auto py-[4px] bg-surface border border-hairline shadow-[0_8px_24px_rgba(10,30,50,0.12)] outline-none"
+          className="absolute left-0 right-0 top-full -mt-px z-30 max-h-[174px] overflow-y-auto overscroll-contain py-[4px] bg-surface border border-hairline shadow-[0_8px_24px_rgba(10,30,50,0.12)] outline-none"
         >
           {options.map((o, i) => (
             <li

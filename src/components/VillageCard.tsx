@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { cardImageCls, cardLinkCls, cardPhotoCls, cardTitleHoverCls } from "./ui/card";
 
 // Figma "Village card" (2048:466): photo 4:3, then the village name in

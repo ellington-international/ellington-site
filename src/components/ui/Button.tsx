@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import type { ComponentProps } from "react";
 
 // Figma component "Button" (5:29): 4 styles × Default / Hover.

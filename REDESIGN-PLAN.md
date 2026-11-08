@@ -13,19 +13,19 @@ moving on. Do one step, check desktop and mobile against the Figma frame, commit
 
 | What | Where |
 |---|---|
-| Pages (routes) | `src/app/<route>/page.tsx`. Most pages are a thin server file plus a client `…Content.tsx` that renders the UI |
-| Shared layout (header, footer, fonts, `<html lang>`) | `src/app/layout.tsx` |
+| Pages (routes) | `src/app/[lang]/<route>/page.tsx` (since step 12; `[lang]` = en / fr / nl). Most pages are a thin server file plus a client `…Content.tsx` that renders the UI |
+| Shared layout (header, footer, fonts, `<html lang>`) | `src/app/[lang]/layout.tsx` |
 | Components | `src/components/*.tsx` |
 | Colours, type scale, global CSS | `src/app/globals.css` (Tailwind 4, configured inside the CSS. There is no `tailwind.config.js`) |
 | Fonts | `src/app/layout.tsx` via `next/font/google`: Cormorant Garamond (serif) + Inter (sans) |
 | UI translations FR/EN/NL | `src/lib/i18n.ts` (one big `dict` with `fr`, `en`, `nl`) |
-| Current language | `src/components/LanguageProvider.tsx` (browser `localStorage`) + `LanguageToggle.tsx` |
+| Current language | From the URL: `src/proxy.ts` (redirects), `src/lib/locale.ts` (helpers), `LanguageProvider.tsx` (gets `lang` from the layout), `LanguageToggle.tsx`, `LocaleLink.tsx` (links keep the language), `src/lib/seo.ts` (per-language titles + hreflang) |
 | Hard-coded per-language strings (outside i18n) | `HomeContent.tsx`, `BlogIndexContent.tsx`, `BlogPostShell.tsx`, `PropertiesBrowser.tsx`, `ContactForm.tsx`, `LocationDetail.tsx`, `LocationsIndexContent.tsx` |
 | Blog articles | `content/blog/*.mdx` (French only), read by `src/lib/blog.ts` (server) / `blog-shared.ts` (client-safe) |
 | Location (village) texts | `src/lib/properties.ts` → `locations` array (9 villages, FR + EN fields, **no NL**); rich Saint-Tropez content in `src/lib/location-content.ts` (FR + EN, **no NL**) |
 | Location images | `public/locations/…` |
 | Apimo (listings) | `src/lib/apimo.ts` (API calls + mapping) → `src/lib/properties.ts` (`getProperties`, `getProperty`, mock fallback) |
-| Supabase (login + favourites) | `src/lib/supabase/{client,server,proxy}.ts`, `src/app/actions/{auth,favorites}.ts`, `src/app/auth/callback/route.ts`, `proxy.ts`, `supabase/schema.sql` |
+| Supabase (login + favourites) | `src/lib/supabase/{client,server,proxy}.ts`, `src/app/actions/{auth,favorites}.ts`, `src/app/auth/callback/route.ts`, `proxy.ts`, `supabase/schema.sql` (proxy: `src/proxy.ts`) |
 | Contact form | `src/components/ContactForm.tsx` (FormSubmit → marc@ellington-international.com) |
 | Secrets | `.env.local` (git-ignored). Template in `.env.example` |
 
@@ -132,7 +132,7 @@ Legend: **[D]** check against Desktop frame, **[M]** check against Mobile frame.
 11. **Thank-you overlay.** ✅ *done, waiting for your check.* `src/components/ThankYouOverlay.tsx`, variants `request` ("Request received" · "Thank you" · "Your message is with us…") and `newsletter` ("Newsletter" · "Thank you" · "You're on our list…"), FR/NL drafts marked for client review. Figma card (480 px, mobile screen − 48), champagne check circle, Primary Close. Closes with Close, Esc or a click/tap on the dark veil; page scroll locked, focus kept in the card and returned afterwards; portal above header and menu. Replaces the inline success messages of `ContactForm` (also Sell valuation / village consultation, which use it) and `NewsletterForm`. **Test:** `/styleguide` buttons; `/contact?test` = dev-only dry run (no email sent, ignored in production); newsletter at the bottom of Home (no backend yet, always succeeds).
 
 ### Phase 3. Fix the language system (before redoing pages, see §5)
-12. Language in the URL (§5). Every page and component is touched in Phase 4 anyway, so this is the cheapest moment.
+12. Language in the URL (§5). ✅ *done.* Routes moved to `src/app/[lang]/`. `src/proxy.ts`: `/` → 307 to `/en` (or `/fr` / `/nl` from the `lang` cookie or the browser language, `Vary: Accept-Language, Cookie`); old unprefixed URLs → 301 to `/fr/…` (query kept); `/en|nl/blog/<slug>` → 301 `/fr/blog/<slug>`; static files, `/_next`, `/auth/…` untouched. **Found:** the old `proxy.ts` sat in the project root, where Next.js ignores it when there is a `src/` folder, so it had never run (also not the Supabase session refresh); now in `src/proxy.ts`. `LanguageProvider` gets the language from the layout (no localStorage, no flash; Header `mounted` workaround removed, header state now correct in the server HTML). `LanguageToggle` = links to the same page in the other language (query kept, sets the `lang` cookie; from an article EN/NL go to the journal index). All internal links go through `LocaleLink` / `localePath` (articles always `/fr`). Per-language titles/descriptions in `src/lib/seo.ts` (EN/NL drafts, client review), canonical + hreflang en/fr/nl + x-default (home → `/`, inner pages → English version) on every public page; articles fr only. Sitemap: every page × 3 with hreflang, articles under `/fr` only, no `/rentals`. robots.txt per language. Login/signup/logout/auth callback keep the language. `llms.txt` links → `/fr/`. **After your check:** the language switch now does a full page load of the same page in the other language (nothing reused from the previous language); mobile menu raised above the cookie banner (z-65), which was covering FR/EN/NL and Login on phones; journal texts (index + article page: eyebrow, title, subtitle, chips, notice, back link, reading time, CTA) moved to `i18n.ts › journal` in FR/EN/NL (NL draft, client review), category names now come from there too; dropdowns close on touch (tap outside, same field, option, other dropdown; no close-on-blur, which Safari broke), page keeps scrolling while a list is open.
 
 ### Phase 4. Pages (one step each, desktop + mobile)
 13. **Home** `/` (`HomeContent.tsx`) → frames "01 Home". Hero + search, The Ellington standard (3 features), Featured properties, **Our signature** (new section replacing "Exceptional addresses"), Journal (+ Browse by category), Newsletter.

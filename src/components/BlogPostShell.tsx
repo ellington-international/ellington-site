@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import type { Post } from "@/lib/blog-shared";
 import { formatDate } from "@/lib/blog-shared";
 import { BlogCard } from "./BlogCard";
@@ -20,8 +20,9 @@ export function BlogPostShell({
   children: React.ReactNode;
 }) {
   const { t, lang } = useLanguage();
-  const backToBlog = lang === "en" ? "Back to journal" : "Retour au journal";
-  const relatedTitle = lang === "en" ? "Related" : "À lire aussi";
+  // Page texts from i18n.ts › journal (articles are French-only, so this page
+  // is normally shown under /fr; the texts still follow the page language).
+  const j = t.journal;
 
   return (
     <article className="pb-20">
@@ -44,7 +45,7 @@ export function BlogPostShell({
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M15 6l-6 6 6 6" />
             </svg>
-            {backToBlog}
+            {j.back}
           </Link>
           <p className="text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] mb-5">
             {categoryLabel}
@@ -53,7 +54,7 @@ export function BlogPostShell({
             {post.title}
           </h1>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/75">
-            <span>{post.author ?? "Équipe Ellington"}</span>
+            <span>{post.author ?? j.team}</span>
             <span className="opacity-50">·</span>
             <time dateTime={post.publishedAt}>
               {formatDate(post.publishedAt, lang)}
@@ -61,9 +62,7 @@ export function BlogPostShell({
             {post.readingTime && (
               <>
                 <span className="opacity-50">·</span>
-                <span>
-                  {post.readingTime} min{lang === "en" ? " read" : " de lecture"}
-                </span>
+                <span>{j.readingTime.replace("{n}", String(post.readingTime))}</span>
               </>
             )}
           </div>
@@ -94,14 +93,10 @@ export function BlogPostShell({
             {t.aboutPage.ctaEyebrow}
           </p>
           <h2 className="font-serif text-2xl md:text-3xl mb-5">
-            {lang === "en"
-              ? "Speak with one of our advisors"
-              : "Échangez avec un conseiller Ellington"}
+            {j.ctaTitle}
           </h2>
           <p className="text-muted-strong max-w-md mx-auto mb-7">
-            {lang === "en"
-              ? "Confidential, off-market expertise across the Gulf of Saint-Tropez."
-              : "Une expertise confidentielle, off-market, sur l'ensemble du Golfe de Saint-Tropez."}
+            {j.ctaText}
           </p>
           <Link
             href="/contact"
@@ -116,7 +111,7 @@ export function BlogPostShell({
       {related.length > 0 && (
         <section className="max-w-[1400px] mx-auto px-6 md:px-10 mt-24 pt-16 border-t border-[var(--border)]">
           <h2 className="font-serif text-3xl md:text-4xl mb-10">
-            <em className="italic">{relatedTitle}</em>
+            <em className="italic">{j.related}</em>
           </h2>
           <div className={cardGridCls}>
             {related.map((p) => (

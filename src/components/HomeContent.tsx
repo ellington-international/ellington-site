@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import Image from "next/image";
 import { PropertyCard } from "@/components/PropertyCard";
 import { NewsletterForm } from "@/components/NewsletterForm";

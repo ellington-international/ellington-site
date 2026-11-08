@@ -4,6 +4,21 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { LEGACY_LANG, isLang } from "@/lib/locale";
+import type { Lang } from "@/lib/i18n";
+
+// Language of the page the form was sent from (hidden "lang" field).
+function formLang(formData: FormData): Lang {
+  const l = formData.get("lang");
+  return isLang(l) ? l : LEGACY_LANG;
+}
+
+// Only follow "next" to a page of this site ("/…", never "//other.site").
+function safeNext(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.startsWith("/") && !value.startsWith("//") && !value.startsWith("/\\")
+    ? value
+    : fallback;
+}
 
 export type AuthState = { error?: string } | null;
 
@@ -29,7 +44,8 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
   if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
-  redirect("/mes-favoris");
+  const lang = formLang(formData);
+  redirect(safeNext(formData.get("next"), `/${lang}/mes-favoris`));
 }
 
 export async function signup(_prev: AuthState, formData: FormData): Promise<AuthState> {
@@ -45,18 +61,18 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
     email,
     password,
     options: {
-      emailRedirectTo: `${await getSiteUrl()}/auth/callback`,
+      emailRedirectTo: `${await getSiteUrl()}/auth/callback?next=/${formLang(formData)}/mes-favoris`,
     },
   });
   if (error) return { error: error.message };
 
   revalidatePath("/", "layout");
-  redirect("/login?signup=success");
+  redirect(`/${formLang(formData)}/login?signup=success`);
 }
 
-export async function logout() {
+export async function logout(lang: Lang = LEGACY_LANG) {
   const supabase = await createClient();
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect(`/${isLang(lang) ? lang : LEGACY_LANG}`);
 }

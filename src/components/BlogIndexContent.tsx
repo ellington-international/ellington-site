@@ -4,7 +4,7 @@ import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BlogCard } from "./BlogCard";
 import { useLanguage } from "./LanguageProvider";
-import { CATEGORY_LABELS, type BlogCategory, type Post } from "@/lib/blog-shared";
+import type { BlogCategory, Post } from "@/lib/blog-shared";
 import { cardGridCls } from "@/components/ui/card";
 
 const CATEGORIES_ORDER: (BlogCategory | "all")[] = [
@@ -33,7 +33,7 @@ export function BlogIndexContent(props: { posts: Post[] }) {
 }
 
 function BlogIndexInner({ posts }: { posts: Post[] }) {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const params = useSearchParams();
   const initial = (() => {
     const cat = params.get("category");
@@ -49,34 +49,29 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
     return posts.filter((p) => p.category === filter);
   }, [posts, filter]);
 
-  const allLabel = lang === "en" ? "All articles" : "Tous les articles";
-  const eyebrow = lang === "en" ? "The Journal" : "Le journal";
-  const titleBefore = lang === "en" ? "Stories from the" : "Chroniques du";
-  const titleAccent = lang === "en" ? "Gulf" : "Golfe";
-  const subtitle =
-    lang === "en"
-      ? "Buyer's guides, market analyses and Riviera lifestyle — our editorial selection."
-      : "Guides d'achat, analyses de marché et art de vivre — notre sélection éditoriale.";
+  // All page texts follow the page language (i18n.ts › journal); only the
+  // articles themselves are French.
+  const j = t.journal;
 
   return (
     <div className="pt-32 pb-20">
       <div className="max-w-[1400px] mx-auto px-6 md:px-10">
         <header className="text-center mb-16 max-w-3xl mx-auto">
           <p className="text-[11px] tracking-[0.32em] uppercase text-accent mb-5">
-            {eyebrow}
+            {j.eyebrow}
           </p>
           <h1 className="font-serif text-5xl md:text-7xl mb-6">
-            {titleBefore}{" "}
-            <em className="italic">{titleAccent}</em>
+            {j.titleBefore}{" "}
+            <em className="italic">{j.titleAccent}</em>
           </h1>
-          <p className="type-subtitle">{subtitle}</p>
+          <p className="type-subtitle">{j.subtitle}</p>
         </header>
 
         {/* Category filter */}
         <div className="flex flex-wrap justify-center gap-1 sm:gap-2 mb-12 border-b border-[var(--border)] pb-6">
           {CATEGORIES_ORDER.map((cat) => {
             const label =
-              cat === "all" ? allLabel : CATEGORY_LABELS[cat][lang];
+              cat === "all" ? j.all : j.categories[cat];
             const active = filter === cat;
             return (
               <button
@@ -98,9 +93,7 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
         {filtered.length === 0 ? (
           <div className="py-32 text-center">
             <p className="font-serif text-2xl italic text-muted-strong">
-              {lang === "en"
-                ? "No article in this category yet."
-                : "Aucun article dans cette catégorie pour le moment."}
+              {j.empty}
             </p>
           </div>
         ) : (
@@ -112,10 +105,8 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
         )}
 
         {/* Disclaimer / FR-only note */}
-        {lang === "en" && (
-          <p className="mt-16 text-center text-xs text-muted">
-            Articles are currently published in French only — English versions coming soon.
-          </p>
+        {j.frenchOnly && (
+          <p className="mt-16 text-center text-xs text-muted">{j.frenchOnly}</p>
         )}
 
         <p className="text-xs text-muted mt-4 text-center max-w-2xl mx-auto">

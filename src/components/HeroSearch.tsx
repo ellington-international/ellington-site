@@ -6,13 +6,14 @@ import { useLanguage } from "./LanguageProvider";
 import { Dropdown } from "./ui/Dropdown";
 import { textLinkClasses } from "./ui/TextLink";
 import { filterOptions, filterQuery } from "@/lib/filters";
+import { localePath } from "@/lib/locale";
 
 // Home hero search (Figma "01 Home" › Hero › Filter + Search link):
 // Location · Property type · Budget · Bedrooms on the photo, then a white
 // "Search" text link. Desktop: one row, 980px max, 14px apart.
 // Mobile: 2 × 2, 12px apart. Opens the Buy page with the chosen filters.
 export function HeroSearch({ cities }: { cities: string[] }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const router = useRouter();
   const [city, setCity] = useState("");
   const [type, setType] = useState("");
@@ -23,7 +24,7 @@ export function HeroSearch({ cities }: { cities: string[] }) {
 
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    router.push(`/properties${filterQuery({ city, type, priceIdx, beds })}`);
+    router.push(localePath(lang, `/properties${filterQuery({ city, type, priceIdx, beds })}`));
   }
 
   return (

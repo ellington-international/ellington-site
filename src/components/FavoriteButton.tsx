@@ -18,7 +18,7 @@ export function FavoriteButton({
   variant?: "card" | "detail";
 }) {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [favored, setFavored] = useState(initialFavored);
   const [pending, startTransition] = useTransition();
 
@@ -28,7 +28,7 @@ export function FavoriteButton({
     startTransition(async () => {
       const res = await toggleFavorite(propertyId);
       if (res.needsAuth) {
-        router.push(`/login?next=/properties/${propertyId}`);
+        router.push(`/${lang}/login?next=/${lang}/properties/${propertyId}`);
         return;
       }
       if (res.ok) setFavored(res.favored ?? false);

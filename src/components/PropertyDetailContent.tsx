@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { PropertyGallery } from "./PropertyGallery";
 import { PropertyCard } from "./PropertyCard";
 import { FavoriteButton } from "./FavoriteButton";

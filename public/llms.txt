@@ -14,15 +14,15 @@ Grimaud, Port-Grimaud, Sainte-Maxime et l'ensemble de la Côte d'Azur.
 
 ## Pages principales
 
-- [Acheter — Propriétés à vendre](https://www.ellingtoninternational.com/properties): biens d'exception à vendre sur la Côte d'Azur
-- [Vendre avec Ellington](https://www.ellingtoninternational.com/sell): estimation et accompagnement à la vente
-- [Nos régions](https://www.ellingtoninternational.com/locations): Saint-Tropez, Ramatuelle, Gassin, Grimaud, Port-Grimaud, Sainte-Maxime
-- [À propos](https://www.ellingtoninternational.com/about): l'agence, l'équipe et ses valeurs
-- [Contact](https://www.ellingtoninternational.com/contact): nous écrire
+- [Acheter — Propriétés à vendre](https://www.ellingtoninternational.com/fr/properties): biens d'exception à vendre sur la Côte d'Azur
+- [Vendre avec Ellington](https://www.ellingtoninternational.com/fr/sell): estimation et accompagnement à la vente
+- [Nos régions](https://www.ellingtoninternational.com/fr/locations): Saint-Tropez, Ramatuelle, Gassin, Grimaud, Port-Grimaud, Sainte-Maxime
+- [À propos](https://www.ellingtoninternational.com/fr/about): l'agence, l'équipe et ses valeurs
+- [Contact](https://www.ellingtoninternational.com/fr/contact): nous écrire
 
 ## Éditorial
 
-- [Le Journal](https://www.ellingtoninternational.com/blog): guides d'achat, analyses de marché et art de vivre sur la Riviera
+- [Le Journal](https://www.ellingtoninternational.com/fr/blog): guides d'achat, analyses de marché et art de vivre sur la Riviera
 
 ## Plan du site
 

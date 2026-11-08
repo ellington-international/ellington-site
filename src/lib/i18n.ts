@@ -37,6 +37,29 @@ const dictRaw = {
       requestText: "Votre message nous est bien parvenu. Un membre de notre équipe vous répondra personnellement.",
       newsletterText: "Vous êtes inscrit à notre liste : nouveaux biens et histoires du Golfe.",
     },
+    journal: {
+      // Journal index + article pages (the articles themselves are French-only)
+      eyebrow: "Le journal",
+      titleBefore: "Chroniques du",
+      titleAccent: "Golfe",
+      subtitle: "Guides d'achat, analyses de marché et art de vivre — notre sélection éditoriale.",
+      all: "Tous les articles",
+      empty: "Aucun article dans cette catégorie pour le moment.",
+      frenchOnly: "", // not shown on the French pages
+      categories: {
+        "guides-achat": "Guides d'achat",
+        marche: "Marché immobilier",
+        architecture: "Architecture & patrimoine",
+        "art-de-vivre": "Art de vivre",
+        fiscalite: "Fiscalité & juridique",
+      },
+      back: "Retour au journal",
+      related: "À lire aussi",
+      readingTime: "{n} min de lecture",
+      team: "Équipe Ellington",
+      ctaTitle: "Échangez avec un conseiller Ellington",
+      ctaText: "Une expertise confidentielle, off-market, sur l'ensemble du Golfe de Saint-Tropez.",
+    },
     common: {
       backToPortfolio: "Retour au portefeuille",
       addFavorite: "Ajouter aux favoris",
@@ -658,6 +681,29 @@ const dictRaw = {
       title: "Thank you",
       requestText: "Your message is with us. A member of our team will reply to you personally.",
       newsletterText: "You're on our list for new properties and stories from the Golfe.",
+    },
+    journal: {
+      // Journal index + article pages (the articles themselves are French-only)
+      eyebrow: "The Journal",
+      titleBefore: "Stories from the",
+      titleAccent: "Golfe",
+      subtitle: "Buyer's guides, market analyses and Riviera lifestyle — our editorial selection.",
+      all: "All articles",
+      empty: "No article in this category yet.",
+      frenchOnly: "Articles are currently published in French only — English versions coming soon.",
+      categories: {
+        "guides-achat": "Buyer's Guides",
+        marche: "Market Analysis",
+        architecture: "Architecture & Heritage",
+        "art-de-vivre": "Lifestyle",
+        fiscalite: "Tax & Legal",
+      },
+      back: "Back to journal",
+      related: "Related",
+      readingTime: "{n} min read",
+      team: "Ellington team",
+      ctaTitle: "Speak with one of our advisors",
+      ctaText: "Confidential, off-market expertise across the Golfe de Saint-Tropez.",
     },
     common: {
       backToPortfolio: "Back to portfolio",
@@ -1281,6 +1327,30 @@ const dictRaw = {
       title: "Dank u",
       requestText: "Uw bericht is bij ons. Een lid van ons team antwoordt u persoonlijk.",
       newsletterText: "U staat op onze lijst voor nieuwe woningen en verhalen uit de Golfe.",
+    },
+    journal: {
+      // TODO client review (NL draft)
+      // Journal index + article pages (the articles themselves are French-only)
+      eyebrow: "Het Journaal", // same as the Home section
+      titleBefore: "Verhalen uit de",
+      titleAccent: "Golfe",
+      subtitle: "Koopgidsen, marktanalyses en het leven aan de Rivièra — onze redactionele selectie.",
+      all: "Alle artikelen",
+      empty: "Nog geen artikelen in deze categorie.",
+      frenchOnly: "Onze artikelen verschijnen voorlopig alleen in het Frans — Nederlandse versies volgen binnenkort.",
+      categories: {
+        "guides-achat": "Koopgidsen",
+        marche: "Marktanalyse",
+        architecture: "Architectuur & erfgoed",
+        "art-de-vivre": "Levensstijl",
+        fiscalite: "Belasting & recht",
+      },
+      back: "Terug naar het Journaal",
+      related: "Lees ook",
+      readingTime: "{n} min leestijd",
+      team: "Team Ellington",
+      ctaTitle: "Spreek met een van onze adviseurs",
+      ctaText: "Discrete, off-market expertise in de hele Golfe de Saint-Tropez.",
     },
     common: {
       backToPortfolio: "Terug naar portfolio",

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { LogoLockup } from "./Logo";
@@ -8,6 +8,7 @@ import { LanguageToggle } from "./LanguageToggle";
 import { useLanguage } from "./LanguageProvider";
 import { AuthMenu } from "./AuthMenu";
 import { ButtonLink } from "./ui/Button";
+import { splitLang } from "@/lib/locale";
 
 // Figma component "Navigation" (7:75), 4 variants:
 //   Transparent (over hero photo: white logo + text) / Solid (white bar,
@@ -19,18 +20,18 @@ import { ButtonLink } from "./ui/Button";
 export function Header() {
   const { t } = useLanguage();
   const pathname = usePathname();
+  // The page without its language prefix: "/en/sell" → "/sell", "/en" → "/"
+  const path = splitLang(pathname).path;
   const [scrolled, setScrolled] = useState(false);
   // The menu remembers the page it was opened on, so it is closed
   // automatically as soon as the route changes (no effect needed).
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === pathname;
   const setOpen = (value: boolean) => setOpenOn(value ? pathname : null);
-  const [mounted, setMounted] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setMounted(true);
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -58,17 +59,12 @@ export function Header() {
   // Pages whose top section is a full-bleed image hero — the header should
   // start transparent so the image flows behind it, then turn solid on scroll.
   const hasImageHero =
-    pathname === "/" ||
-    pathname === "/about" ||
-    pathname === "/sell" ||
-    pathname === "/locations" ||
-    pathname.startsWith("/locations/");
-  // Until mounted, default to the transparent "over image" state. usePathname()
-  // is unreliable during static prerender (the layout is shared across routes),
-  // which baked the solid header into the initial HTML and caused a white flash
-  // over image heroes on reload. Client mount then computes the real state.
-  // (Goes away with the language-in-URL fix, step 12.)
-  const overImage = mounted ? hasImageHero && !scrolled : true;
+    path === "/" ||
+    path === "/about" ||
+    path === "/sell" ||
+    path === "/locations" ||
+    path.startsWith("/locations/");
+  const overImage = hasImageHero && !scrolled;
 
   const navLinks = [
     { href: "/properties", label: t.nav.buy },
@@ -79,8 +75,7 @@ export function Header() {
   // The mobile menu also lists the Journal (Figma "00 Menu — Mobile").
   const menuLinks = [...navLinks, { href: "/blog", label: t.nav.journal }];
 
-  const isCurrent = (href: string) =>
-    mounted && (pathname === href || pathname.startsWith(`${href}/`));
+  const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
 
   const tone = overImage ? "text-white" : "text-brand-blue";
 
@@ -98,7 +93,7 @@ export function Header() {
             href="/"
             aria-label="Ellington Properties"
             onClick={(e) => {
-              if (window.location.pathname === "/") {
+              if (path === "/") {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
@@ -153,7 +148,8 @@ export function Header() {
         </div>
       </header>
 
-      {/* Full-screen mobile menu, Figma "00 Menu — Mobile". Rendered outside
+      {/* Full-screen mobile menu, Figma "00 Menu — Mobile". z-65: above the
+          cookie banner (z-60), below the thank-you overlay (z-70). Rendered outside
           <header> so it covers the whole screen, header included. */}
       {open && (
         <div
@@ -161,7 +157,7 @@ export function Header() {
           role="dialog"
           aria-modal="true"
           aria-label={t.nav.menu}
-          className="lg:hidden fixed inset-0 z-[60] bg-surface flex flex-col overflow-y-auto animate-[fadeIn_0.25s_ease-out]"
+          className="lg:hidden fixed inset-0 z-[65] bg-surface flex flex-col overflow-y-auto animate-[fadeIn_0.25s_ease-out]"
         >
           {/* Close (×) sits exactly where the menu icon was */}
           <div className="container-wrap h-nav shrink-0 flex items-center justify-end">
