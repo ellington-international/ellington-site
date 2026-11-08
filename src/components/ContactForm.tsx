@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLanguage } from "./LanguageProvider";
+import { ThankYouOverlay } from "./ThankYouOverlay";
 
 export function ContactForm() {
   const { t, lang } = useLanguage();
@@ -20,6 +21,19 @@ export function ContactForm() {
     payload._template = "table";
     payload._captcha = "false";
 
+    // Dev-only test mode: on the local dev server, /contact?test shows the
+    // thank-you overlay without sending anything to FormSubmit (no email to
+    // Marc). Ignored in production builds.
+    if (
+      process.env.NODE_ENV === "development" &&
+      new URLSearchParams(window.location.search).has("test")
+    ) {
+      await new Promise((r) => setTimeout(r, 400));
+      setState("ok");
+      form.reset();
+      return;
+    }
+
     try {
       const res = await fetch(
         "https://formsubmit.co/ajax/marc@ellington-international.com",
@@ -32,33 +46,39 @@ export function ContactForm() {
           body: JSON.stringify(payload),
         },
       );
-      const json: { success?: string | boolean } = await res
-        .json()
-        .catch(() => ({}));
-      if (res.ok && (json.success === "true" || json.success === true)) {
+      // FormSubmit always answers HTTP 200 with a JSON body (sent as
+      // text/html), e.g. {"success":"true","message":"…"}. A message that was
+      // NOT forwarded comes back as {"success":"false","message":"…"} — for
+      // example "This form needs Activation" when the site address (such as
+      // localhost) hasn't been activated for this inbox yet. Only a delivered
+      // message counts as success; network errors and non-2xx are failures.
+      const text = await res.text();
+      let json: { success?: string | boolean; message?: string } = {};
+      try {
+        json = JSON.parse(text);
+      } catch {
+        /* not JSON: treated as a failure below */
+      }
+      const delivered = res.ok && String(json.success).toLowerCase() === "true";
+      if (delivered) {
         setState("ok");
         form.reset();
       } else {
+        if (process.env.NODE_ENV === "development") {
+          console.warn("FormSubmit did not deliver the message:", res.status, json.message ?? text);
+        }
         setState("err");
       }
-    } catch {
+    } catch (err) {
+      if (process.env.NODE_ENV === "development") console.warn("FormSubmit request failed:", err);
       setState("err");
     }
   }
 
-  if (state === "ok") {
-    return (
-      <div className="bg-[var(--panel)] p-12 text-center">
-        <p className="font-serif text-3xl italic text-accent mb-4">
-          {t.contactPage.thanks}
-        </p>
-        <p className="text-muted-strong">{t.contactPage.successBody}</p>
-      </div>
-    );
-  }
-
+  // Success: Figma thank-you overlay (request); the emptied form stays.
   return (
     <div>
+      <ThankYouOverlay open={state === "ok"} variant="request" onClose={() => setState("idle")} />
       <h2 className="type-h3 mb-3">
         {t.contactPage.formTitle}
       </h2>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLanguage } from "./LanguageProvider";
+import { ThankYouOverlay } from "./ThankYouOverlay";
 
 export function NewsletterForm({ onDark = false }: { onDark?: boolean }) {
   const { t } = useLanguage();
@@ -18,19 +19,10 @@ export function NewsletterForm({ onDark = false }: { onDark?: boolean }) {
     setEmail("");
   }
 
-  if (state === "ok") {
-    return (
-      <p
-        className={`font-serif text-xl italic ${
-          onDark ? "text-white" : "text-accent"
-        }`}
-      >
-        {t.home.newsletterSuccess}
-      </p>
-    );
-  }
-
+  // Success: Figma thank-you overlay (newsletter); the emptied form stays.
   return (
+    <>
+    <ThankYouOverlay open={state === "ok"} variant="newsletter" onClose={() => setState("idle")} />
     <form
       onSubmit={onSubmit}
       className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
@@ -59,5 +51,6 @@ export function NewsletterForm({ onDark = false }: { onDark?: boolean }) {
         {state === "loading" ? t.common.loading : t.home.newsletterSubmit}
       </button>
     </form>
+    </>
   );
 }

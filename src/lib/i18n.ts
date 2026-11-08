@@ -29,6 +29,14 @@ const dictRaw = {
       menu: "Menu",
       close: "Fermer", // TODO client review
     },
+    thankYou: {
+      // TODO client review (FR draft)
+      requestEyebrow: "Demande reçue",
+      newsletterEyebrow: "Newsletter",
+      title: "Merci",
+      requestText: "Votre message nous est bien parvenu. Un membre de notre équipe vous répondra personnellement.",
+      newsletterText: "Vous êtes inscrit à notre liste : nouveaux biens et histoires du Golfe.",
+    },
     common: {
       backToPortfolio: "Retour au portefeuille",
       addFavorite: "Ajouter aux favoris",
@@ -644,6 +652,13 @@ const dictRaw = {
       menu: "Menu",
       close: "Close",
     },
+    thankYou: {
+      requestEyebrow: "Request received",
+      newsletterEyebrow: "Newsletter",
+      title: "Thank you",
+      requestText: "Your message is with us. A member of our team will reply to you personally.",
+      newsletterText: "You're on our list for new properties and stories from the Golfe.",
+    },
     common: {
       backToPortfolio: "Back to portfolio",
       addFavorite: "Add to favorites",
@@ -1258,6 +1273,14 @@ const dictRaw = {
       favorites: "Favorieten",
       menu: "Menu",
       close: "Sluiten", // TODO client review
+    },
+    thankYou: {
+      // TODO client review (NL draft)
+      requestEyebrow: "Aanvraag ontvangen",
+      newsletterEyebrow: "Nieuwsbrief",
+      title: "Dank u",
+      requestText: "Uw bericht is bij ons. Een lid van ons team antwoordt u persoonlijk.",
+      newsletterText: "U staat op onze lijst voor nieuwe woningen en verhalen uit de Golfe.",
     },
     common: {
       backToPortfolio: "Terug naar portfolio",

@@ -1,9 +1,13 @@
-// TEMPORARY design-token check page for the redesign (steps 1–5).
+// TEMPORARY design-token check page for the redesign (steps 1–11).
 // Not linked anywhere, not in the sitemap, noindex. Delete before merging the
 // redesign branch (REDESIGN-PLAN.md step 24).
 import type { Metadata } from "next";
 import { Button, ButtonLink } from "@/components/ui/Button";
 import { TextLink } from "@/components/ui/TextLink";
+import { Tag, Stat, DetailRow, InfoBox } from "@/components/ui/SmallParts";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Band } from "@/components/ui/Band";
+import { ChipDemo, OverlayDemo } from "./StyleguideDemos";
 
 export const metadata: Metadata = {
   title: "Styleguide (temporary)",
@@ -59,7 +63,7 @@ export default function StyleguidePage() {
       <section className="bg-surface-light">
         <div className="container-wrap section-y">
           <div className="bg-surface border border-hairline p-stack">
-            <p className="type-eyebrow mb-xs">Temporary · redesign steps 1–5</p>
+            <p className="type-eyebrow mb-xs">Temporary · redesign steps 1–11</p>
             <h1 className="type-h2">Styleguide</h1>
             <p className="type-body mt-stack max-w-[60ch]">
               Compare with the Figma page “Foundations”. This white box is the
@@ -130,6 +134,114 @@ export default function StyleguidePage() {
           </div>
         </div>
       </section>
+
+      {/* Step 10: small parts */}
+      <section className="container-wrap pb-section flex flex-col gap-section">
+        <div>
+          <h2 className="type-title mb-stack">Section header</h2>
+          <div className="flex flex-col gap-gutter">
+            <SectionHeader
+              eyebrow="Selection"
+              title="Featured properties"
+              subtitle="A selection of the exceptional homes we currently represent."
+              action={<TextLink href="#">View entire portfolio →</TextLink>}
+            />
+            <SectionHeader
+              align="center"
+              eyebrow="Journal"
+              title="Stories from the Golfe"
+              subtitle="Buyer's guides, market analyses and Riviera lifestyle."
+            />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-gutter">
+          <div>
+            <h2 className="type-title mb-stack">Chip (category filter)</h2>
+            <p className="type-small mb-stack">Click to change the active one; hover the others.</p>
+            <ChipDemo />
+          </div>
+          <div>
+            <h2 className="type-title mb-stack">Tag (property feature)</h2>
+            <div className="flex flex-wrap gap-xs">
+              <Tag>Swimming pool</Tag>
+              <Tag>Sea view</Tag>
+              <Tag>Air conditioning</Tag>
+              <Tag>Garage</Tag>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="type-title mb-stack">Stat</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-gap">
+            <Stat figure="2023" label="Founded" />
+            <Stat figure="9" label="Villages" />
+            <Stat figure="30+" label="Years on the Riviera" />
+            <Stat figure="4" label="Languages" />
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-gutter">
+          <div>
+            <h2 className="type-title mb-stack">Detail row</h2>
+            <dl className="border-t border-hairline">
+              <DetailRow label="Bedrooms" value="7" />
+              <DetailRow label="Bathrooms" value="7" />
+              <DetailRow label="Living area" value="504 m²" />
+              <DetailRow label="Land" value="3,016 m²" />
+            </dl>
+          </div>
+          <div>
+            <h2 className="type-title mb-stack">Info box</h2>
+            <div className="flex flex-col gap-gutter">
+              <InfoBox title="Confidential service">
+                <p>
+                  All enquiries are handled with the strictest discretion. Our international
+                  clientele values our commitment to confidentiality.
+                </p>
+              </InfoBox>
+              <InfoBox title="Interested in this property?">
+                <p>Ask for the full file or a private viewing.</p>
+                <ButtonLink href="#" variant="primary" className="self-start">Request information</ButtonLink>
+              </InfoBox>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="type-title mb-stack">Thank-you overlay (step 11)</h2>
+          <p className="type-small mb-stack">
+            Closes with Close, Esc, or a click on the dark area. Also on the real forms:
+            /contact?test (dev only, nothing is sent) and the newsletter at the bottom of Home.
+          </p>
+          <OverlayDemo />
+        </div>
+      </section>
+
+      {/* Step 10: closing bands (full width) */}
+      <Band
+        variant="light"
+        title="Discover the true value of your property"
+        subtitle="Thinking about selling, or simply curious what your property is worth today? We will give you an honest figure."
+      >
+        <TextLink href="#">Request your confidential valuation →</TextLink>
+      </Band>
+      <Band
+        variant="light"
+        title="Let’s find your property"
+        subtitle="Buying, selling or valuing — tell us what you have in mind."
+      >
+        <ButtonLink href="#" variant="primary">View properties</ButtonLink>
+        <ButtonLink href="#" variant="outline">Contact us</ButtonLink>
+      </Band>
+      <Band
+        variant="blue"
+        title="Your local expert in this region"
+        subtitle="We live and work in the Golfe — ask us anything about this village."
+      >
+        <TextLink href="#" tone="white">Request a consultation</TextLink>
+      </Band>
 
       <section className="relative bg-brand-blue-deep on-photo">
         <div className="container-wrap py-section">
