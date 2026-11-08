@@ -52,6 +52,12 @@ export interface Property {
   /** Coût annuel d'énergie estimé — range (€) pour un usage standard. */
   energyCostMin?: number;
   energyCostMax?: number;
+  /** DPE consumption value (kWh/m²/year) */
+  energyValue?: number;
+  /** GES emission value (kg CO₂/m²/year) */
+  ghgValue?: number;
+  /** Reference year of the energy cost estimate ("2023 prices") */
+  energyCostYear?: number;
 
   isFeatured?: boolean;
   isExclusive?: boolean;

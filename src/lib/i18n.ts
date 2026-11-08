@@ -209,13 +209,20 @@ const dictRaw = {
       shortBed: "ch.",
       shortBath: "sdb.",
       energyTitle: "Performance énergétique",
-      energyClass: "Diagnostic de performance énergétique",
-      ghgClass: "Indice d'émission de gaz à effet de serre",
-      energyDate: (date: string) =>
-        `Diagnostic réalisé après le 1er juillet 2021${date ? ` — ${date}` : ""}`,
-      energyCost: (min: number, max: number) =>
-        `Coût annuel d'énergie estimé pour un usage standard : entre ${min.toLocaleString("fr-FR")} € et ${max.toLocaleString("fr-FR")} € par an`,
-      energyUnavailable: "Diagnostic en cours de réalisation.",
+      // Energy block (Figma "Energy performance"). TODO client review (FR draft)
+      energyClass: "Classe énergie (DPE)",
+      ghgClass: "Émissions de gaz à effet de serre (GES)",
+      energyValue: (n: number) => `${n.toLocaleString("fr-FR")} kWh/m²/an`,
+      ghgValue: (n: number) => `${n.toLocaleString("fr-FR")} kg CO₂/m²/an`,
+      energyCost: (min: string, max: string, year?: number) =>
+        `Coûts annuels d'énergie estimés pour un usage standard : ${min} – ${max}${year ? ` (prix ${year})` : ""}.`,
+      energyUnavailable: "Diagnostic en cours.",
+      photoPrev: "Photo précédente",
+      photoNext: "Photo suivante",
+      photoOpen: "Agrandir la photo",
+      photoN: (n: number) => `Photo ${n}`,
+      similarTitle: "Biens similaires",
+      viewAll: "Tout voir →",
     },
     priceUnit: {
       week: "sem.",
@@ -826,7 +833,7 @@ const dictRaw = {
       origin: "Origin",
       type: "Type",
       landArea: "Land area",
-      propertyDetailsTitle: "Property Details",
+      propertyDetailsTitle: "Property details",
       officeHours: "Office hours",
       description: "Description",
       features: "Features",
@@ -849,13 +856,20 @@ const dictRaw = {
       shortBed: "bd.",
       shortBath: "ba.",
       energyTitle: "Energy performance",
-      energyClass: "Energy performance diagnostic",
-      ghgClass: "Greenhouse gas emission index",
-      energyDate: (date: string) =>
-        `Diagnostic completed after July 1, 2021${date ? ` — ${date}` : ""}`,
-      energyCost: (min: number, max: number) =>
-        `Estimated annual energy expenses for standard use: between €${min.toLocaleString("en-US")} and €${max.toLocaleString("en-US")} per year`,
-      energyUnavailable: "Diagnostic in progress.",
+      // Energy block (Figma "Energy performance")
+      energyClass: "Energy class (DPE)",
+      ghgClass: "Greenhouse gas emissions (GES)",
+      energyValue: (n: number) => `${n.toLocaleString("en-GB")} kWh/m²/year`,
+      ghgValue: (n: number) => `${n.toLocaleString("en-GB")} kg CO₂/m²/year`,
+      energyCost: (min: string, max: string, year?: number) =>
+        `Estimated annual energy costs for standard use: ${min} – ${max}${year ? ` (${year} prices)` : ""}.`,
+      energyUnavailable: "Diagnosis in progress.",
+      photoPrev: "Previous photo",
+      photoNext: "Next photo",
+      photoOpen: "Enlarge photo",
+      photoN: (n: number) => `Photo ${n}`,
+      similarTitle: "Similar properties",
+      viewAll: "View all →",
     },
     priceUnit: {
       week: "wk",
@@ -1492,13 +1506,20 @@ const dictRaw = {
       shortBed: "slpk.",
       shortBath: "badk.",
       energyTitle: "Energieprestatie",
-      energyClass: "Energieprestatiediagnose",
-      ghgClass: "Index voor broeikasgasemissies",
-      energyDate: (date: string) =>
-        `Diagnose uitgevoerd na 1 juli 2021${date ? ` — ${date}` : ""}`,
-      energyCost: (min: number, max: number) =>
-        `Geschatte jaarlijkse energiekosten bij standaardgebruik: tussen €${min.toLocaleString("nl-NL")} en €${max.toLocaleString("nl-NL")} per jaar`,
+      // Energy block (Figma "Energy performance"). TODO client review (NL draft)
+      energyClass: "Energieklasse (DPE)",
+      ghgClass: "Uitstoot van broeikasgassen (GES)",
+      energyValue: (n: number) => `${n.toLocaleString("nl-NL")} kWh/m²/jaar`,
+      ghgValue: (n: number) => `${n.toLocaleString("nl-NL")} kg CO₂/m²/jaar`,
+      energyCost: (min: string, max: string, year?: number) =>
+        `Geschatte jaarlijkse energiekosten bij standaardgebruik: ${min} – ${max}${year ? ` (prijzen ${year})` : ""}.`,
       energyUnavailable: "Diagnose in uitvoering.",
+      photoPrev: "Vorige foto", // TODO client review
+      photoNext: "Volgende foto",
+      photoOpen: "Foto vergroten",
+      photoN: (n: number) => `Foto ${n}`,
+      similarTitle: "Vergelijkbare woningen",
+      viewAll: "Alles bekijken →",
     },
     priceUnit: {
       week: "wk",

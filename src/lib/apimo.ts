@@ -175,6 +175,9 @@ interface ApimoProperty {
     minimum_energy_cost?: number;
     maximum_energy_cost?: number;
   };
+  // Regulations (energy diagnostics etc.): `type` refers to Apimo's
+  // property_regulation catalog, `value` is a number or a letter as text.
+  regulations?: { type?: number; value?: string | number; date?: string }[];
 }
 
 function mapDpeClass(
@@ -190,6 +193,103 @@ function mapDpeClass(
     return valid[numeric - 1];
   }
   return undefined;
+}
+
+// --- Energy data from `regulations` (REDESIGN-PLAN.md §4) ---
+// The regulation type ids aren't documented per agency, so each entry is
+// classified by its catalog name (FR or EN), e.g. "DPE - consommation
+// énergétique", "Classe GES", "Coût annuel d'énergie minimum".
+type RegulationKind =
+  | "energyValue"
+  | "energyClass"
+  | "ghgValue"
+  | "ghgClass"
+  | "costMin"
+  | "costMax"
+  | "costYear"
+  | "date";
+
+function classifyRegulation(name: string): RegulationKind | undefined {
+  const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  // Short tokens must start a word ("ges" must not match "charges").
+  const has = (...words: string[]) =>
+    words.some((w) => (w.length <= 4 ? new RegExp(`(^|[^a-z])${w}`).test(n) : n.includes(w)));
+  const isClass = has("classe", "class", "lettre", "letter", "etiquette", "label");
+  if (has("cout", "cost", "depense", "expense")) {
+    if (has("annee", "year", "reference", "indice")) return "costYear";
+    if (has("min", "bas", "low")) return "costMin";
+    if (has("max", "haut", "high")) return "costMax";
+    return undefined;
+  }
+  if (has("date") && has("dpe", "diagnostic", "energ")) return "date";
+  if (has("ges", "gaz", "emission", "co2", "climat", "greenhouse")) return isClass ? "ghgClass" : "ghgValue";
+  if (has("dpe", "energ", "consommation", "consumption")) return isClass ? "energyClass" : "energyValue";
+  return undefined;
+}
+
+function toNumber(v: unknown): number | undefined {
+  if (typeof v === "number") return Number.isFinite(v) ? v : undefined;
+  if (typeof v !== "string") return undefined;
+  const n = Number(v.replace(/\s/g, "").replace(",", "."));
+  return Number.isFinite(n) ? n : undefined;
+}
+
+type EnergyFields = Pick<
+  Property,
+  "energyClass" | "ghgClass" | "energyValue" | "ghgValue" | "energyCostMin" | "energyCostMax" | "energyCostYear" | "energyDiagnosticDate"
+>;
+
+const unmatchedRegulations = new Set<string>();
+
+function mapRegulations(
+  regs: ApimoProperty["regulations"],
+  catalog?: Map<number, string>,
+): EnergyFields {
+  const out: EnergyFields = {};
+  for (const r of regs ?? []) {
+    const name = r.type != null ? catalog?.get(r.type) : undefined;
+    const kind = name ? classifyRegulation(name) : undefined;
+    if (!kind) {
+      // Dev aid: list regulation names we don't use yet, once each.
+      if (process.env.NODE_ENV === "development" && name && !unmatchedRegulations.has(name)) {
+        unmatchedRegulations.add(name);
+        console.info(`[apimo] regulation not used: #${r.type} "${name}" = ${r.value}`);
+      }
+      continue;
+    }
+    const num = toNumber(r.value);
+    const letter = typeof r.value === "string" ? mapDpeClass(undefined, r.value.trim()) : undefined;
+    switch (kind) {
+      case "energyClass":
+        out.energyClass = letter ?? mapDpeClass(num);
+        break;
+      case "ghgClass":
+        out.ghgClass = letter ?? mapDpeClass(num);
+        break;
+      case "energyValue":
+        if (letter) out.energyClass = letter;
+        else out.energyValue = num;
+        break;
+      case "ghgValue":
+        if (letter) out.ghgClass = letter;
+        else out.ghgValue = num;
+        break;
+      case "costMin":
+        out.energyCostMin = num;
+        break;
+      case "costMax":
+        out.energyCostMax = num;
+        break;
+      case "costYear":
+        out.energyCostYear = num;
+        break;
+      case "date":
+        out.energyDiagnosticDate = typeof r.value === "string" ? r.value : r.date;
+        break;
+    }
+    if (r.date && !out.energyDiagnosticDate) out.energyDiagnosticDate = r.date;
+  }
+  return out;
 }
 
 // --- Mapping helpers ---
@@ -334,9 +434,25 @@ export async function getServiceCatalog(): Promise<Map<number, string>> {
   return map;
 }
 
+let regulationCatalogCache: Map<number, string> | null = null;
+
+export async function getRegulationCatalog(): Promise<Map<number, string>> {
+  if (regulationCatalogCache) return regulationCatalogCache;
+  const list = await apimoFetch<(ApimoServiceEntry & { culture?: string })[]>("/catalogs/property_regulation");
+  const map = new Map<number, string>();
+  // Prefer the French names (the agency's language); any culture works for matching.
+  for (const c of list ?? []) {
+    if (c.id == null || !c.name) continue;
+    if (!map.has(c.id) || c.culture?.startsWith("fr")) map.set(c.id, c.name);
+  }
+  if (map.size > 0) regulationCatalogCache = map;
+  return map;
+}
+
 export function mapApimoToProperty(
   p: ApimoProperty,
   serviceCatalog?: Map<number, string>,
+  regulationCatalog?: Map<number, string>,
 ): Property {
   const id = p.id?.toString() ?? p.reference ?? Math.random().toString(36);
   const reference = p.reference ?? `APIMO-${p.id ?? "?"}`;
@@ -352,6 +468,9 @@ export function mapApimoToProperty(
     undefined;
   const lat = p.latitude ?? p.city?.latitude;
   const lng = p.longitude ?? p.city?.longitude;
+  // Energy: regulations first, then the old dpe block, then nothing
+  // (the page shows "Diagnosis in progress").
+  const reg = mapRegulations(p.regulations, regulationCatalog);
 
   return {
     id,
@@ -370,11 +489,14 @@ export function mapApimoToProperty(
     price: p.price?.value ?? 0,
     currency: "EUR",
     pricePeriod: mapPricePeriod(p.price?.period),
-    energyClass: mapDpeClass(p.dpe?.consumption_class, p.dpe?.letter),
-    ghgClass: mapDpeClass(p.dpe?.emission_class),
-    energyDiagnosticDate: p.dpe?.date,
-    energyCostMin: p.dpe?.minimum_energy_cost,
-    energyCostMax: p.dpe?.maximum_energy_cost,
+    energyClass: reg.energyClass ?? mapDpeClass(p.dpe?.consumption_class, p.dpe?.letter),
+    ghgClass: reg.ghgClass ?? mapDpeClass(p.dpe?.emission_class),
+    energyValue: reg.energyValue ?? p.dpe?.consumption,
+    ghgValue: reg.ghgValue ?? p.dpe?.emission,
+    energyDiagnosticDate: reg.energyDiagnosticDate ?? p.dpe?.date,
+    energyCostMin: reg.energyCostMin ?? p.dpe?.minimum_energy_cost,
+    energyCostMax: reg.energyCostMax ?? p.dpe?.maximum_energy_cost,
+    energyCostYear: reg.energyCostYear,
     area: surface,
     landArea: land,
     rooms: p.rooms ?? 0,
@@ -408,12 +530,12 @@ export async function fetchApimoProperties(
     }&limit=100`,
   );
   if (!data?.properties) return null;
-  const catalog = await getServiceCatalog();
+  const [catalog, regulationCatalog] = await Promise.all([getServiceCatalog(), getRegulationCatalog()]);
   // Apimo's server-side category filter is unreliable for this agency
   // (rentals show up in the sale feed). Re-filter on our mapped category,
   // which uses `price.period` as the source of truth.
   return data.properties
-    .map((p) => mapApimoToProperty(p, catalog))
+    .map((p) => mapApimoToProperty(p, catalog, regulationCatalog))
     .filter((p) => p.category === category);
 }
 
@@ -430,6 +552,6 @@ export async function fetchApimoProperty(id: string): Promise<Property | null> {
       ? data.property
       : (data as ApimoProperty);
   if (!p?.id && !p?.reference) return null;
-  const catalog = await getServiceCatalog();
-  return mapApimoToProperty(p, catalog);
+  const [catalog, regulationCatalog] = await Promise.all([getServiceCatalog(), getRegulationCatalog()]);
+  return mapApimoToProperty(p, catalog, regulationCatalog);
 }

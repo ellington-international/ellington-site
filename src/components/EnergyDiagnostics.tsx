@@ -1,116 +1,111 @@
 "use client";
 
 import { useLanguage } from "./LanguageProvider";
+import { ENERGY_CLASSES, energyInfo, type EnergyClass } from "@/lib/energy";
 import type { Property } from "@/lib/types";
 
-const CLASSES = ["A", "B", "C", "D", "E", "F", "G"] as const;
-type EnergyClass = (typeof CLASSES)[number];
-
-// French DPE colour scale: green → red.
-const ENERGY_COLOR: Record<EnergyClass, string> = {
-  A: "#319834",
-  B: "#5fad33",
-  C: "#c6cc28",
-  D: "#f4d000",
-  E: "#f3a13e",
-  F: "#e8741e",
-  G: "#d62517",
+// Figma "03 Property" › Energy performance (11:119 / mobile 11:387):
+// two A–G scales side by side (40px apart; mobile stacked, 32 apart), each:
+// Caps/Label title, 16px, scale, 16px, value in Text/Body.
+// Scale: 7 columns 4px apart, aligned at the bottom; each = bar + key letter
+// (Caps/Label) 8px below. Inactive bar 8px high in the class colour at 50 %,
+// key muted at 60 %; the property's class: 32px bar in the full colour with
+// the letter inside (Inter Medium 15, #142640), key in brand/blue.
+// Note under both (Text/Small muted): estimated annual energy costs.
+// No data at all → greyed scales + "Diagnosis in progress".
+// Colours = the official French DPE / GES label colours, as in Figma.
+const DPE_COLORS: Record<EnergyClass, string> = {
+  A: "#009c6d",
+  B: "#52b153",
+  C: "#a5cc74",
+  D: "#f4e70f",
+  E: "#f0b40f",
+  F: "#eb8235",
+  G: "#d7221f",
+};
+const GES_COLORS: Record<EnergyClass, string> = {
+  A: "#f6edfd",
+  B: "#e4c7fb",
+  C: "#d5aaf6",
+  D: "#cb95f3",
+  E: "#ba72f0",
+  F: "#a74eeb",
+  G: "#8a19df",
 };
 
-// GHG (greenhouse gas) scale: light blue → deep navy, per Figma.
-const GHG_COLOR: Record<EnergyClass, string> = {
-  A: "#b4cdec",
-  B: "#8db0dd",
-  C: "#6892cd",
-  D: "#4673b4",
-  E: "#315689",
-  F: "#223e64",
-  G: "#172b48",
-};
-
-// Horizontal flat scale (Figma) — thin bars with the active class shown as a
-// taller labelled block.
-function ClassScale({
+function Scale({
   label,
   active,
   colors,
+  value,
 }: {
   label: string;
   active?: EnergyClass;
   colors: Record<EnergyClass, string>;
+  value?: string;
 }) {
   return (
-    <div>
-      <p className="text-[10px] tracking-[0.22em] uppercase text-muted mb-3">
-        {label}
-      </p>
-      <div className="flex items-center gap-1.5">
-        {CLASSES.map((c) => {
-          const isActive = c === active;
-          return isActive ? (
-            <div
-              key={c}
-              className="flex-1 h-9 flex items-center justify-center text-white text-sm font-bold"
-              style={{ backgroundColor: colors[c] }}
-            >
-              {c}
+    <div className="flex-1 min-w-0 flex flex-col gap-[16px]">
+      <p className="type-label">{label}</p>
+      <div className="flex items-end gap-[4px]" role="img" aria-label={active ? `${label}: ${active}` : label}>
+        {ENERGY_CLASSES.map((c) => {
+          const on = c === active;
+          return (
+            <div key={c} className="flex-1 min-w-0 flex flex-col items-center gap-[8px]" aria-hidden>
+              {on ? (
+                <div
+                  className="w-full h-[32px] flex items-center justify-center font-sans font-medium text-[15px] leading-[1.5] text-[#142640]"
+                  style={{ backgroundColor: colors[c] }}
+                >
+                  {c}
+                </div>
+              ) : (
+                <div className="w-full h-[8px]" style={{ backgroundColor: colors[c], opacity: 0.5 }} />
+              )}
+              <span className={`type-label ${on ? "text-brand-blue" : "opacity-60"}`}>{c}</span>
             </div>
-          ) : (
-            <div
-              key={c}
-              className="flex-1 h-2.5"
-              style={{
-                backgroundColor: colors[c],
-                opacity: active ? 0.55 : 1,
-              }}
-            />
           );
         })}
       </div>
+      {value && <p className="type-body text-brand-blue">{value}</p>}
     </div>
   );
 }
 
 export function EnergyDiagnostics({ property }: { property: Property }) {
-  const { t } = useLanguage();
-  const hasDiag = property.energyClass || property.ghgClass;
+  const { t, lang } = useLanguage();
+  const pd = t.propertyDetail;
+  const e = energyInfo(property);
+  const euro = (n: number) =>
+    new Intl.NumberFormat(lang === "fr" ? "fr-FR" : lang === "nl" ? "nl-NL" : "en-GB", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0,
+    }).format(n);
 
   return (
-    <div>
-      <h2 className="font-serif italic text-3xl mb-6">
-        {t.propertyDetail.energyTitle}
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-12">
-        <ClassScale
-          label={t.propertyDetail.energyClass}
-          active={property.energyClass}
-          colors={ENERGY_COLOR}
+    <section className="flex flex-col gap-[20px] md:gap-[24px]">
+      <h2 className="type-h2">{pd.energyTitle}</h2>
+      <div className="flex flex-col md:flex-row gap-[32px] md:gap-[40px]">
+        <Scale
+          label={pd.energyClass}
+          active={e.energyClass}
+          colors={DPE_COLORS}
+          value={e.energyValue != null ? pd.energyValue(e.energyValue) : undefined}
         />
-        <ClassScale
-          label={t.propertyDetail.ghgClass}
-          active={property.ghgClass}
-          colors={GHG_COLOR}
+        <Scale
+          label={pd.ghgClass}
+          active={e.ghgClass}
+          colors={GES_COLORS}
+          value={e.ghgValue != null ? pd.ghgValue(e.ghgValue) : undefined}
         />
       </div>
-      {hasDiag ? (
-        <>
-          <p className="text-xs text-muted mt-6">
-            {t.propertyDetail.energyDate(property.energyDiagnosticDate ?? "")}
-          </p>
-          {property.energyCostMin && property.energyCostMax && (
-            <p className="text-xs text-muted mt-1">
-              {t.propertyDetail.energyCost(
-                property.energyCostMin,
-                property.energyCostMax,
-              )}
-            </p>
-          )}
-        </>
+      {e.hasData ? (
+        e.costMin != null &&
+        e.costMax != null && <p className="type-small text-muted">{pd.energyCost(euro(e.costMin), euro(e.costMax), e.costYear)}</p>
       ) : (
-        <p className="text-xs text-muted mt-6 italic">
-          {t.propertyDetail.energyUnavailable}
-        </p>
+        <p className="type-small text-muted">{pd.energyUnavailable}</p>
       )}
-    </div>
+    </section>
   );
 }

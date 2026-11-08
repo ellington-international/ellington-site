@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "@/components/LocaleLink";
 import { PropertyGallery } from "./PropertyGallery";
 import { PropertyCard } from "./PropertyCard";
 import { FavoriteButton } from "./FavoriteButton";
@@ -9,8 +8,19 @@ import { formatPriceShort } from "@/lib/properties";
 import { localizeFeature } from "@/lib/amenities";
 import { useLanguage } from "./LanguageProvider";
 import type { Property } from "@/lib/types";
-import { cardGridCls } from "@/components/ui/card";
+import { cardGridCls, formatArea } from "@/components/ui/card";
+import { Stat, DetailRow, Tag, InfoBox } from "@/components/ui/SmallParts";
+import { ButtonLink, buttonClasses } from "@/components/ui/Button";
+import { TextLink } from "@/components/ui/TextLink";
 
+// Figma "03 Property — Desktop" (11:2) / "— Mobile" (11:270).
+// Top: back link, 32px, title row (town in Caps/Eyebrow champagne, title in
+// Heading/Title as the H1, price in Heading/Title champagne bottom right;
+// mobile: price under the title), 36px, gallery + thumbnails.
+// Body 72px below (mobile 48): main column (800) + aside (360), 80px apart;
+// mobile stacked, aside 56px below. Main sections 56px apart, each an H2
+// with its content 24px below (mobile 20). Similar properties 128px below
+// (mobile 80), cards 56px under the head (mobile 40).
 export function PropertyDetailContent({
   property,
   similar,
@@ -23,351 +33,187 @@ export function PropertyDetailContent({
   similarFavoredIds?: string[];
 }) {
   const { t, lang } = useLanguage();
-  const typeKey = property.type as keyof typeof t.types;
-  const typeLabel = t.types[typeKey] ?? property.type;
+  const pd = t.propertyDetail;
+  const typeLabel = t.types[property.type as keyof typeof t.types] ?? property.type;
+  const area = (n: number) => formatArea(n, lang);
 
-  // Stat boxes — Figma order: bedrooms · living area · land area · year · bathrooms.
-  const stats: { icon: string; label: string; value: React.ReactNode }[] = [];
-  if (property.bedrooms > 0)
-    stats.push({ icon: "bed", label: t.propertyDetail.bedrooms, value: property.bedrooms });
-  if (property.area > 0)
-    stats.push({ icon: "area", label: t.propertyDetail.area, value: `${property.area} m²` });
-  if (property.landArea)
-    stats.push({ icon: "land", label: t.propertyDetail.landArea, value: `${property.landArea} m²` });
-  if (property.yearBuilt)
-    stats.push({
-      icon: "calendar",
-      label: property.yearBuilt < 1900 ? t.propertyDetail.origin : t.propertyDetail.year,
-      value: property.yearBuilt,
-    });
-  if (property.bathrooms > 0)
-    stats.push({ icon: "bath", label: t.propertyDetail.bathrooms, value: property.bathrooms });
+  // Figma key figures: bedrooms · living area · land area · bathrooms.
+  // Written like Figma ("3016 m²", no thousands separator) so they fit the
+  // 176px columns in the large H2 figure style; no wrapping inside a figure.
+  const stats = [
+    property.bedrooms > 0 && { figure: property.bedrooms, label: pd.bedrooms },
+    property.area > 0 && { figure: `${property.area} m²`, label: pd.area },
+    property.landArea && { figure: `${property.landArea} m²`, label: pd.landArea },
+    property.bathrooms > 0 && { figure: property.bathrooms, label: pd.bathrooms },
+  ].filter(Boolean) as { figure: React.ReactNode; label: string }[];
 
-  const statCols =
-    stats.length >= 5
-      ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
-      : stats.length === 4
-        ? "grid-cols-2 sm:grid-cols-4"
-        : stats.length === 3
-          ? "grid-cols-3"
-          : stats.length === 2
-            ? "grid-cols-2"
-            : "grid-cols-1";
+  // Figma property details, in two columns (row order)
+  const details = [
+    { label: pd.type, value: typeLabel },
+    { label: pd.location, value: property.city },
+    property.area > 0 && { label: pd.area, value: area(property.area) },
+    property.landArea && { label: pd.landArea, value: area(property.landArea) },
+    property.bedrooms > 0 && { label: pd.bedrooms, value: property.bedrooms },
+    property.bathrooms > 0 && { label: pd.bathrooms, value: property.bathrooms },
+    property.yearBuilt && { label: pd.year, value: property.yearBuilt },
+    { label: pd.reference, value: property.reference },
+  ].filter(Boolean) as { label: string; value: React.ReactNode }[];
 
-  // Property Details table — Figma pairs (row-flow: Type/Location, Living/Land, …).
-  const details: { label: string; value: React.ReactNode }[] = [
-    { label: t.propertyDetail.type, value: typeLabel },
-    { label: t.propertyDetail.location, value: property.city },
-    ...(property.area > 0
-      ? [{ label: t.propertyDetail.area, value: `${property.area} m²` }]
-      : []),
-    ...(property.landArea
-      ? [{ label: t.propertyDetail.landArea, value: `${property.landArea} m²` }]
-      : []),
-    ...(property.bedrooms > 0
-      ? [{ label: t.propertyDetail.bedrooms, value: property.bedrooms }]
-      : []),
-    ...(property.bathrooms > 0
-      ? [{ label: t.propertyDetail.bathrooms, value: property.bathrooms }]
-      : []),
-    ...(property.yearBuilt
-      ? [{ label: t.propertyDetail.year, value: property.yearBuilt }]
-      : []),
-    { label: t.propertyDetail.reference, value: property.reference },
-  ];
+  const sectionCls = "flex flex-col gap-[20px] md:gap-[24px]";
 
   return (
-    <div className="pt-28 pb-20">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <Link
-          href="/properties"
-          className="inline-flex items-center gap-2 px-8 py-4 border border-[var(--border-strong)] hover:border-accent hover:bg-accent hover:text-white text-[11px] tracking-[0.22em] uppercase transition mb-10"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M15 6l-6 6 6 6" />
-          </svg>
-          {t.common.backToPortfolio}
-        </Link>
+    <div className="container-wrap pt-[calc(var(--nav-height)+48px)] pb-section">
+      {/* flex row: keeps the link at its own height (no inline line-height gap) */}
+      <div className="flex">
+        <TextLink href="/properties">← {t.common.backToPortfolio}</TextLink>
+      </div>
 
-        {/* HEADER */}
-        <div className="mb-10 flex items-start justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2 text-accent text-[11px] tracking-[0.22em] uppercase mb-4">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 2c-3.5 0-6 2.5-6 6 0 4 6 12 6 12s6-8 6-12c0-3.5-2.5-6-6-6z" />
-                <circle cx="12" cy="8" r="2" />
-              </svg>
-              <span>{property.city}</span>
-              {property.isExclusive && (
-                <>
-                  <span className="opacity-50">·</span>
-                  <span>{t.propertyDetail.exclusive}</span>
-                </>
-              )}
-            </div>
-            {/* Lighter, lower-case + italic (client: type-h1 looked too heavy here) */}
-            <h1 className="font-serif italic font-medium normal-case text-4xl md:text-6xl leading-[1.1] mb-3">
-              {property.title}
-            </h1>
-            {/* Price uses the same (sans) font as the property cards — client feedback */}
-            <p className="text-2xl text-accent">
-              {formatPriceShort(property.price)}
-            </p>
-            {property.subtitle && (
-              <p className="text-lg text-muted-strong italic font-serif mt-3">
-                {property.subtitle}
-              </p>
-            )}
-          </div>
-          <FavoriteButton
-            propertyId={property.id}
-            initialFavored={initialFavored}
-            variant="detail"
-          />
+      {/* TITLE ROW */}
+      <div className="mt-[32px] flex flex-col md:flex-row md:items-end md:justify-between gap-[16px] md:gap-[40px]">
+        <div className="flex flex-col gap-[16px] max-w-[820px]">
+          <p className="type-eyebrow text-brand-accent">{property.city}</p>
+          <h1 className="type-title">{property.title}</h1>
         </div>
+        <p className="type-title text-brand-accent whitespace-nowrap">{formatPriceShort(property.price)}</p>
+      </div>
 
-        {/* GALLERY */}
-        <PropertyGallery pictures={property.pictures} title={property.title} />
+      {/* GALLERY */}
+      <div className="mt-[36px]">
+        <PropertyGallery
+          pictures={property.pictures}
+          title={property.title}
+          overlay={<FavoriteButton propertyId={property.id} initialFavored={initialFavored} variant="detail" />}
+        />
+      </div>
 
-        {/* CONTENT */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-16">
-          <div className="lg:col-span-2 space-y-14">
-            {/* KEY FACTS — left-aligned blue boxes with gaps */}
-            {stats.length > 0 && (
-              <div className={`grid ${statCols} gap-3`}>
-                {stats.map((s, i) => (
-                  <div key={i} className="bg-[var(--panel)] p-6">
-                    <div className="mb-4 text-accent">
-                      <KeyIcon name={s.icon} />
-                    </div>
-                    <p className="font-serif text-2xl mb-1">{s.value}</p>
-                    <p className="text-[10px] tracking-[0.22em] uppercase text-muted">
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* DESCRIPTION */}
-            <div>
-              <h2 className="type-h3 mb-6">
-                {t.propertyDetail.description}
-              </h2>
-              <p className="text-muted-strong text-[14px] leading-[1.85] whitespace-pre-line">
-                {property.description}
-              </p>
-            </div>
-
-            {/* KEY FEATURES — navy pills */}
-            {property.features.length > 0 && (
-              <div>
-                <h2 className="type-h3 mb-6">
-                  {t.propertyDetail.features}
-                </h2>
-                <div className="flex flex-wrap gap-3">
-                  {property.features.map((f) => (
-                    <span
-                      key={f}
-                      className="bg-accent text-white text-[11px] tracking-[0.18em] uppercase px-5 py-3"
-                    >
-                      {localizeFeature(f, lang)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* PROPERTY DETAILS — blue table */}
-            <div>
-              <h2 className="type-h3 mb-6">
-                {t.propertyDetail.propertyDetailsTitle}
-              </h2>
-              <div className="bg-[var(--panel)] p-8 grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
-                {details.map((d, i) => (
-                  <div key={i}>
-                    <p className="text-[10px] tracking-[0.22em] uppercase text-muted mb-1">
-                      {d.label}
-                    </p>
-                    <p className="text-sm text-accent">{d.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ENERGY DIAGNOSTICS (DPE) */}
-            <EnergyDiagnostics property={property} />
-
-            {/* LOCATION */}
-            <div>
-              <h2 className="type-h3 mb-6">
-                {t.propertyDetail.location}
-              </h2>
-              <div className="aspect-[16/9] bg-[var(--background-card)] border border-[var(--border)] flex items-center justify-center text-muted relative overflow-hidden">
-                {property.coordinates ? (
-                  <iframe
-                    title="Map"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${
-                      property.coordinates.lng - 0.05
-                    }%2C${property.coordinates.lat - 0.03}%2C${
-                      property.coordinates.lng + 0.05
-                    }%2C${
-                      property.coordinates.lat + 0.03
-                    }&layer=mapnik&marker=${property.coordinates.lat}%2C${property.coordinates.lng}`}
-                    className="absolute inset-0 w-full h-full grayscale opacity-90"
-                    loading="lazy"
-                  />
-                ) : (
-                  <p className="text-sm">{t.propertyDetail.mapUnavailable}</p>
-                )}
-              </div>
-              <p className="text-sm text-muted mt-4">
-                {t.propertyDetail.addressNote}
-              </p>
-            </div>
-          </div>
-
-          {/* SIDEBAR */}
-          <aside className="space-y-6 lg:sticky lg:top-28 self-start">
-            {/* Interested — white card (borders allowed on white) */}
-            <div className="bg-[var(--background-card)] border border-[var(--border)] p-8">
-              <h3 className="type-h4 mb-2">
-                {t.propertyDetail.interestedTitle}
-              </h3>
-              <p className="text-sm text-muted mb-6">
-                {t.propertyDetail.interestedBody}
-              </p>
-              <Link
-                href={`/contact?property=${property.reference}`}
-                className="flex items-center justify-center gap-2 px-5 py-3.5 border border-[var(--border-strong)] hover:border-accent text-[11px] tracking-[0.22em] uppercase transition mb-3"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="3" y="5" width="18" height="14" rx="1" />
-                  <path d="M3 7l9 6 9-6" />
-                </svg>
-                {t.common.contactUs}
-              </Link>
-              <a
-                href="tel:+33674750703"
-                className="flex items-center justify-center gap-2 px-5 py-3.5 bg-accent hover:bg-accent-hover text-white text-[11px] tracking-[0.22em] uppercase transition"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M5 4h4l2 5-3 2a12 12 0 006 6l2-3 5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" />
-                </svg>
-                +33 6 74 75 07 03
-              </a>
-            </div>
-
-            {/* Dedicated agent — white card */}
-            <div className="bg-[var(--background-card)] border border-[var(--border)] p-8">
-              <h3 className="type-h4 mb-5">
-                {t.propertyDetail.yourAdvisor}
-              </h3>
-              <dl className="space-y-4 text-sm">
-                <div>
-                  <dt className="text-[10px] tracking-[0.22em] uppercase text-muted mb-1">
-                    {t.propertyDetail.phone}
-                  </dt>
-                  <dd>+33 6 74 75 07 03</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] tracking-[0.22em] uppercase text-muted mb-1">
-                    {t.propertyDetail.email}
-                  </dt>
-                  <dd>marc@ellington-international.com</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] tracking-[0.22em] uppercase text-muted mb-1">
-                    {t.propertyDetail.officeHours}
-                  </dt>
-                  <dd>
-                    {t.footer.monFri}
-                    <br />
-                    {t.footer.sat}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-
-            {/* Confidential — blue card (no border) */}
-            <div className="bg-[var(--panel)] p-6">
-              <h4 className="font-serif text-lg mb-2">
-                {t.propertyDetail.confidentialTitle}
-              </h4>
-              <p className="text-xs text-muted leading-relaxed">
-                {t.propertyDetail.confidentialBody}
-              </p>
-            </div>
-          </aside>
-        </div>
-
-        {/* SIMILAR */}
-        {similar.length > 0 && (
-          <div className="mt-28 pt-20 border-t border-[var(--border)]">
-            <h2 className="type-h2 mb-10">
-              {t.propertyDetail.similar}{" "}
-              <em className="not-italic">{t.propertyDetail.similarAccent}</em>
-            </h2>
-            <div className={cardGridCls}>
-              {similar.map((p) => (
-                <PropertyCard
-                  key={p.id}
-                  property={p}
-                  initialFavored={similarFavoredIds.includes(p.id)}
+      {/* BODY */}
+      {/* side by side from 1280px (below, the 800px Figma column doesn't fit next to the aside) */}
+      <div className="mt-[48px] md:mt-[72px] grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-x-[80px] gap-y-[56px]">
+        <div className="min-w-0 flex flex-col gap-[56px]">
+          {stats.length > 0 && (
+            // 4 equal columns 32px apart (below 1024px 2 × 2), like Figma's
+            // 176px columns; a long figure (e.g. 80000 m²) takes the room it
+            // needs from the others instead of overflowing, and the row wraps
+            // only if nothing fits.
+            <div className="flex flex-wrap gap-x-[20px] md:gap-x-[32px] gap-y-[24px]">
+              {stats.map((s) => (
+                <Stat
+                  key={s.label}
+                  className="grow basis-[calc(50%-16px)] lg:basis-0 min-w-max"
+                  figure={<span className="whitespace-nowrap">{s.figure}</span>}
+                  label={s.label}
                 />
               ))}
             </div>
+          )}
+
+          <section className={sectionCls}>
+            <h2 className="type-h2">{pd.description}</h2>
+            <p className="type-body whitespace-pre-line">{property.description}</p>
+          </section>
+
+          {property.features.length > 0 && (
+            <section className={sectionCls}>
+              <h2 className="type-h2">{pd.features}</h2>
+              <ul className="flex flex-wrap gap-[8px]">
+                {property.features.map((f) => (
+                  <li key={f}>
+                    <Tag>{localizeFeature(f, lang)}</Tag>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <section className={sectionCls}>
+            <h2 className="type-h2">{pd.propertyDetailsTitle}</h2>
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-[40px] border-t border-hairline">
+              {details.map((d) => (
+                <DetailRow key={d.label} label={d.label} value={d.value} />
+              ))}
+            </dl>
+          </section>
+
+          <EnergyDiagnostics property={property} />
+
+          <section className={sectionCls}>
+            <h2 className="type-h2">{pd.location}</h2>
+            <p className="type-body">{pd.addressNote}</p>
+          </section>
+        </div>
+
+        {/* ASIDE (11:131): boxes 48px apart (mobile 36) */}
+        <aside className="flex flex-col gap-[36px] md:gap-[48px]">
+          <div className="border-t border-hairline pt-[24px] flex flex-col gap-[20px]">
+            <h3 className="type-h3">{pd.interestedTitle}</h3>
+            <p className="type-body">{pd.interestedBody}</p>
+            <ButtonLink href={`/contact?property=${encodeURIComponent(property.reference)}`} variant="primary" className="w-full">
+              {t.common.contactUs}
+            </ButtonLink>
+            {/* Figma Outline button with the phone number (a tel: link) */}
+            <a href="tel:+33674750703" className={buttonClasses({ variant: "outline", className: "w-full" })}>
+              +33 6 74 75 07 03
+            </a>
           </div>
-        )}
+
+          <div className="border-t border-hairline pt-[24px] flex flex-col gap-[20px]">
+            <h3 className="type-h3">{pd.yourAdvisor}</h3>
+            <AdvisorRow icon="/ui/icons/phone.svg" label={pd.phone}>
+              <a href="tel:+33674750703" className="hover:text-brand-blue transition-colors">
+                +33 6 74 75 07 03
+              </a>
+            </AdvisorRow>
+            <AdvisorRow icon="/ui/icons/mail.svg" label={pd.email}>
+              <a href="mailto:marc@ellington-international.com" className="hover:text-brand-blue transition-colors break-all">
+                marc@ellington-international.com
+              </a>
+            </AdvisorRow>
+            <AdvisorRow icon="/ui/icons/clock.svg" label={pd.officeHours}>
+              {t.footer.monFri}
+              <br />
+              {t.footer.sat}
+            </AdvisorRow>
+          </div>
+
+          <InfoBox title={pd.confidentialTitle}>
+            <p>{pd.confidentialBody}</p>
+          </InfoBox>
+        </aside>
       </div>
+
+      {/* SIMILAR PROPERTIES */}
+      {similar.length > 0 && (
+        <section className="mt-[80px] md:mt-[128px]">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-[16px]">
+            <h2 className="type-h2">{pd.similarTitle}</h2>
+            <TextLink href="/properties" className="self-start md:self-auto">
+              {pd.viewAll}
+            </TextLink>
+          </div>
+          <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
+            {similar.map((p) => (
+              <PropertyCard key={p.id} property={p} initialFavored={similarFavoredIds.includes(p.id)} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
 
-function KeyIcon({ name }: { name: string }) {
-  const props = {
-    width: 22,
-    height: 22,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.4,
-  };
-  switch (name) {
-    case "bed":
-      return (
-        <svg {...props}>
-          <path d="M3 18v-6a3 3 0 013-3h12a3 3 0 013 3v6M3 14h18M7 11V8a1 1 0 011-1h3a1 1 0 011 1v3" />
-        </svg>
-      );
-    case "bath":
-      return (
-        <svg {...props}>
-          <path d="M4 12h16v5a3 3 0 01-3 3H7a3 3 0 01-3-3v-5zM6 12V7a2 2 0 012-2h2v3" />
-        </svg>
-      );
-    case "area":
-      return (
-        <svg {...props}>
-          <rect x="4" y="4" width="16" height="16" />
-          <path d="M4 9h3M4 15h3M9 4v3M15 4v3M9 20v-3M15 20v-3M17 9h3M17 15h3" />
-        </svg>
-      );
-    case "land":
-      return (
-        <svg {...props}>
-          <rect x="4" y="4" width="16" height="16" />
-          <path d="M7 16l3-3.5 2.5 3L16 11l3 5" />
-        </svg>
-      );
-    case "calendar":
-      return (
-        <svg {...props}>
-          <rect x="4" y="5" width="16" height="16" rx="1" />
-          <path d="M4 10h16M9 3v4M15 3v4" />
-        </svg>
-      );
-    default:
-      return null;
-  }
+// Figma "Phone / Email / Office hours row": 40px champagne circle with a 20px
+// icon, 14px, Caps/Label + Text/Small 4px apart.
+function AdvisorRow({ icon, label, children }: { icon: string; label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-[14px]">
+      <span className="size-[40px] shrink-0 rounded-full border border-brand-accent flex items-center justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element -- 20px static icon from Figma */}
+        <img src={icon} alt="" width={20} height={20} />
+      </span>
+      <div className="min-w-0 flex flex-col gap-[4px]">
+        <p className="type-label">{label}</p>
+        <p className="type-small text-body-text">{children}</p>
+      </div>
+    </div>
+  );
 }

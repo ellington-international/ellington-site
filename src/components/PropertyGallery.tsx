@@ -1,23 +1,43 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useLanguage } from "./LanguageProvider";
 
 interface Picture {
   url: string;
   alt?: string;
 }
 
-export function PropertyGallery({ pictures, title }: { pictures: Picture[]; title: string }) {
+// Figma "Gallery" (2048:1087, on the page 2049:1170 / mobile 2049:2545) +
+// "Thumbnails" (11:22 / 11:290):
+//   main photo 16:9 (mobile 334 × 197), white 92 % square arrows (48px,
+//   ‹ › in H3) 20px from the sides, counter "1 / 8" bottom right (Text/Small
+//   on white 92 %, 12 × 6). Swipe left / right on touch screens.
+//   Thumbnails 8px below: 8 in a row (mobile 2 rows of 4), 8px apart, ratio
+//   148 × 99; current one full opacity with a 2px champagne line below, the
+//   others at 50 %. Only the first 8 are shown; the arrows go through all.
+//   Clicking the photo opens it full screen (Esc / arrows / click to close).
+export function PropertyGallery({
+  pictures,
+  title,
+  overlay,
+}: {
+  pictures: Picture[];
+  title: string;
+  /** Extra element on the photo (the favourite heart, top right) */
+  overlay?: ReactNode;
+}) {
+  const { t } = useLanguage();
+  const pd = t.propertyDetail;
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
-  const thumbsRef = useRef<HTMLDivElement>(null);
+  const touchX = useRef<number | null>(null);
 
   const total = pictures.length;
   const next = useCallback(() => setActive((a) => (a + 1) % total), [total]);
   const prev = useCallback(() => setActive((a) => (a - 1 + total) % total), [total]);
 
-  // Keyboard navigation in lightbox
   useEffect(() => {
     if (!lightbox) return;
     const onKey = (e: KeyboardEvent) => {
@@ -26,128 +46,95 @@ export function PropertyGallery({ pictures, title }: { pictures: Picture[]; titl
       else if (e.key === "ArrowLeft") prev();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
   }, [lightbox, next, prev]);
-
-  // Auto-scroll the thumbnail strip to keep the active one visible
-  useEffect(() => {
-    const strip = thumbsRef.current;
-    if (!strip) return;
-    const child = strip.children[active] as HTMLElement | undefined;
-    if (!child) return;
-    const stripRect = strip.getBoundingClientRect();
-    const childRect = child.getBoundingClientRect();
-    const offset =
-      child.offsetLeft - strip.offsetLeft - (stripRect.width - childRect.width) / 2;
-    strip.scrollTo({ left: offset, behavior: "smooth" });
-  }, [active]);
 
   if (total === 0) return null;
   const main = pictures[active];
+  const arrowCls =
+    "absolute top-1/2 -translate-y-1/2 size-[48px] flex items-center justify-center bg-white/92 hover:bg-white text-brand-blue font-serif font-medium text-[24px] leading-none transition-colors";
 
   return (
     <>
-      {/* MAIN IMAGE — full width with arrows + counter */}
-      <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden bg-[var(--background-card)] group">
-        <button
-          type="button"
-          onClick={() => setLightbox(true)}
-          className="absolute inset-0 cursor-zoom-in"
-          aria-label="Agrandir la photo"
-        >
+      <div
+        className="relative aspect-[334/197] md:aspect-[16/9] overflow-hidden bg-surface-light"
+        onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+        onTouchEnd={(e) => {
+          if (touchX.current == null || total < 2) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          touchX.current = null;
+          if (Math.abs(dx) > 40) (dx < 0 ? next : prev)();
+        }}
+      >
+        <button type="button" onClick={() => setLightbox(true)} className="absolute inset-0 cursor-zoom-in" aria-label={pd.photoOpen}>
           <Image
             src={main.url}
             alt={main.alt ?? title}
             fill
-            priority
-            sizes="(min-width: 1280px) 1400px, 100vw"
+            loading="eager"
+            fetchPriority="high"
+            sizes="(min-width: 1440px) 1240px, (min-width: 768px) calc(100vw - 200px), calc(100vw - 56px)"
             className="object-cover"
           />
         </button>
 
-        {/* Counter */}
-        <div className="absolute bottom-5 right-5 bg-black/65 backdrop-blur-sm text-white px-4 py-2 text-[10px] tracking-[0.22em] uppercase pointer-events-none">
-          {active + 1} / {total}
-        </div>
-
-        {/* Prev arrow */}
         {total > 1 && (
-          <button
-            type="button"
-            onClick={prev}
-            aria-label="Photo précédente"
-            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/85 hover:bg-white text-[var(--brand-navy)] flex items-center justify-center transition opacity-0 group-hover:opacity-100 focus:opacity-100 shadow-lg"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M15 6l-6 6 6 6" />
-            </svg>
-          </button>
+          <>
+            <button type="button" onClick={prev} aria-label={pd.photoPrev} className={`${arrowCls} left-[12px] md:left-[20px]`}>
+              ‹
+            </button>
+            <button type="button" onClick={next} aria-label={pd.photoNext} className={`${arrowCls} right-[12px] md:right-[20px]`}>
+              ›
+            </button>
+            <p className="absolute bottom-[12px] right-[12px] md:bottom-[20px] md:right-[20px] bg-white/92 px-[12px] py-[6px] type-small text-brand-blue pointer-events-none" aria-live="polite">
+              {active + 1} / {total}
+            </p>
+          </>
         )}
 
-        {/* Next arrow */}
-        {total > 1 && (
-          <button
-            type="button"
-            onClick={next}
-            aria-label="Photo suivante"
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/85 hover:bg-white text-[var(--brand-navy)] flex items-center justify-center transition opacity-0 group-hover:opacity-100 focus:opacity-100 shadow-lg"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M9 6l6 6-6 6" />
-            </svg>
-          </button>
-        )}
+        {overlay && <div className="absolute top-[12px] right-[12px] md:top-[20px] md:right-[20px]">{overlay}</div>}
       </div>
 
-      {/* THUMBNAIL STRIP — horizontal scroll, active highlighted */}
       {total > 1 && (
-        <div
-          ref={thumbsRef}
-          className="mt-3 flex gap-2 overflow-x-auto scroll-smooth pb-2 -mx-6 md:mx-0 px-6 md:px-0 [scrollbar-width:thin]"
-          style={{ scrollbarColor: "var(--border-strong) transparent" }}
-        >
-          {pictures.map((p, i) => (
+        <div className="mt-[8px] grid grid-cols-4 md:grid-cols-8 gap-[8px]">
+          {pictures.slice(0, 8).map((p, i) => (
             <button
               key={i}
               type="button"
               onClick={() => setActive(i)}
-              aria-label={`Voir photo ${i + 1}`}
+              aria-label={pd.photoN(i + 1)}
               aria-current={i === active}
-              className={`relative flex-none w-[110px] sm:w-[140px] aspect-[4/3] overflow-hidden transition-all duration-300 ${
-                i === active
-                  ? "ring-2 ring-accent ring-offset-2 ring-offset-[var(--background)] opacity-100"
-                  : "opacity-65 hover:opacity-100"
+              className={`relative aspect-[148/99] overflow-hidden transition-opacity ${
+                i === active ? "border-b-2 border-brand-accent" : "opacity-50 hover:opacity-100"
               }`}
             >
-              <Image
-                src={p.url}
-                alt={p.alt ?? `${title} — photo ${i + 1}`}
-                fill
-                sizes="140px"
-                className="object-cover"
-              />
+              <Image src={p.url} alt="" fill sizes="(min-width: 768px) 148px, 80px" className="object-cover" />
             </button>
           ))}
         </div>
       )}
 
-      {/* LIGHTBOX */}
+      {/* Full-screen view (not in Figma; kept from the previous gallery) */}
       {lightbox && (
         <div
           className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
           onClick={() => setLightbox(false)}
         >
           <button
             type="button"
             onClick={() => setLightbox(false)}
-            className="absolute top-6 right-6 text-white p-3 hover:bg-white/10 transition"
-            aria-label="Fermer"
+            className="absolute top-6 right-6 text-white font-light text-[32px] leading-none p-3 hover:bg-white/10 transition"
+            aria-label={t.nav.close}
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
+            ×
           </button>
-
           {total > 1 && (
             <button
               type="button"
@@ -155,28 +142,15 @@ export function PropertyGallery({ pictures, title }: { pictures: Picture[]; titl
                 e.stopPropagation();
                 prev();
               }}
-              aria-label="Précédent"
-              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white p-3 hover:bg-white/10 transition"
+              aria-label={pd.photoPrev}
+              className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white font-serif text-[40px] leading-none p-3 hover:bg-white/10 transition"
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-                <path d="M15 6l-6 6 6 6" />
-              </svg>
+              ‹
             </button>
           )}
-
-          <div
-            className="relative max-w-6xl w-full aspect-[3/2]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Image
-              src={main.url}
-              alt={main.alt ?? title}
-              fill
-              className="object-contain"
-              sizes="100vw"
-            />
+          <div className="relative max-w-6xl w-full aspect-[3/2]" onClick={(e) => e.stopPropagation()}>
+            <Image src={main.url} alt={main.alt ?? title} fill className="object-contain" sizes="100vw" />
           </div>
-
           {total > 1 && (
             <button
               type="button"
@@ -184,16 +158,13 @@ export function PropertyGallery({ pictures, title }: { pictures: Picture[]; titl
                 e.stopPropagation();
                 next();
               }}
-              aria-label="Suivant"
-              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white p-3 hover:bg-white/10 transition"
+              aria-label={pd.photoNext}
+              className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white font-serif text-[40px] leading-none p-3 hover:bg-white/10 transition"
             >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-                <path d="M9 6l6 6-6 6" />
-              </svg>
+              ›
             </button>
           )}
-
-          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 text-sm">
+          <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/80 type-small">
             {active + 1} / {total}
           </p>
         </div>
