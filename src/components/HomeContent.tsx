@@ -8,6 +8,7 @@ import { HeroSearch } from "@/components/HeroSearch";
 import { BlogCard } from "@/components/BlogCard";
 import { useLanguage } from "@/components/LanguageProvider";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { reveal } from "./ui/Reveal";
 import { TextLink } from "@/components/ui/TextLink";
 import { ScrollCue } from "@/components/ui/ScrollCue";
 import { cardGridCls } from "@/components/ui/card";
@@ -72,11 +73,11 @@ export function HomeContent({
           (mobile stacked, 32 apart). */}
       <section id="ellington-standard" className="bg-surface scroll-mt-nav">
         <div className="container-wrap section-y flex flex-col items-start gap-[40px] md:gap-[64px]">
-          <p className="type-eyebrow">{h.whyEyebrow}</p>
-          <h2 className="type-h1 max-w-[1000px]">{h.whyStatement}</h2>
+          <p className="type-eyebrow" {...reveal}>{h.whyEyebrow}</p>
+          <h2 className="type-h1 max-w-[1000px]" {...reveal}>{h.whyStatement}</h2>
           <ul className="w-full grid grid-cols-1 md:grid-cols-3 gap-[32px] md:gap-[64px]">
             {h.points.map((p, i) => (
-              <li key={p.title} className="flex flex-col items-start gap-[10px]">
+              <li key={p.title} className="flex flex-col items-start gap-[10px]" {...reveal}>
                 <span className="size-[56px] rounded-full border border-brand-accent flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element -- 28px static icon from Figma */}
                   <img src={POINT_ICONS[i]} alt="" width={28} height={28} />
@@ -86,7 +87,9 @@ export function HomeContent({
               </li>
             ))}
           </ul>
-          <TextLink href="/sell">{h.whyCta}</TextLink>
+          <TextLink href="/sell" {...reveal}>
+            {h.whyCta}
+          </TextLink>
         </div>
       </section>
 
@@ -102,7 +105,7 @@ export function HomeContent({
             subtitle={h.featuredSubtitle}
             action={<TextLink href="/properties">{h.featuredCta}</TextLink>}
           />
-          <div className="relative mt-[40px] md:mt-[56px] -mx-margin px-margin scroll-px-margin flex gap-[20px] md:gap-gap overflow-x-auto snap-x snap-mandatory overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="reveal-grid relative mt-[40px] md:mt-[56px] -mx-margin px-margin scroll-px-margin flex gap-[20px] md:gap-gap overflow-x-auto snap-x snap-mandatory overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {featured.map((p, i) => (
               <div
                 key={p.id}
@@ -116,7 +119,7 @@ export function HomeContent({
               positioned against it, so they can't widen the page on phones. */}
           {/* Shown only where there is something to swipe (3 cards fill the
               desktop row). */}
-          <p className="type-label text-muted text-center mt-[40px] md:mt-[56px] lg:hidden" aria-hidden>
+          <p className="type-label text-muted text-center mt-[40px] md:mt-[56px] lg:hidden" aria-hidden {...reveal}>
             {t.common.swipeHint}
           </p>
         </div>
@@ -145,6 +148,7 @@ export function HomeContent({
             <nav
               aria-label={h.browseByCategory}
               className="mt-[40px] md:mt-[56px] pt-[28px] border-t border-hairline flex flex-wrap items-center gap-x-[28px] gap-y-[12px]"
+              {...reveal}
             >
               <p className="type-label text-muted">{h.browseByCategory}</p>
               {CATEGORIES_ORDER.map((cat) => (
@@ -171,7 +175,7 @@ export function HomeContent({
             title={h.newsletterTitle}
             subtitle={h.newsletterSubtitle}
           />
-          <div className="w-full mt-[32px] md:mt-[40px]">
+          <div className="w-full mt-[32px] md:mt-[40px]" {...reveal}>
             <NewsletterForm />
           </div>
         </div>
@@ -181,37 +185,44 @@ export function HomeContent({
 }
 
 // "Our signature". Desktop (from 1280px, where the Figma composition fits):
-// photo 720px high bleeding to the left edge of the screen, text column
+// graphic (was a photo) in a 720px-high box bleeding to the left edge of the screen, text column
 // 384px on the right (96px gap), white quote box (560px, padding 40 × 48,
 // quote in H2 italic) overlapping the photo's bottom by 140px, 460px into
-// the content area. Below 1280px (Figma mobile): photo full width 460px high,
+// the content area. Below 1280px (Figma mobile): graphic full width (its own proportions),
 // quote box overlapping its bottom by 90px (padding 28), text 75px below.
 function Signature() {
   const { t } = useLanguage();
   const h = t.home;
   const text = (
     <>
-      <p className="type-eyebrow">{h.signatureEyebrow}</p>
-      <h2 className="type-h2">{h.signatureTitle}</h2>
-      <p className="type-subtitle">{h.signatureLead}</p>
-      <p className="type-body">{h.signatureText}</p>
+      <p className="type-eyebrow" {...reveal}>{h.signatureEyebrow}</p>
+      <h2 className="type-h2" {...reveal}>{h.signatureTitle}</h2>
+      <p className="type-subtitle" {...reveal}>{h.signatureLead}</p>
+      <p className="type-body" {...reveal}>{h.signatureText}</p>
       <div className="h-[8px]" aria-hidden />
-      <TextLink href="/about" className="self-start">
+      <TextLink href="/about" className="self-start" {...reveal}>
         {h.signatureCta}
       </TextLink>
     </>
   );
+  // Client change: the Golfe graphic (brand/blue SVG, no empty margin)
+  // instead of the photo — shown whole (contain, no crop, no overlay),
+  // anchored top-left so it lines up with the text. Decorative.
   const photo = (
-    <Image src="/home/signature.jpg" alt={h.signatureAlt} fill sizes="(min-width: 1280px) 60vw, 100vw" className="object-cover" />
+    <Image src="/locations/golfe-graphic.svg" alt="" fill unoptimized className="object-contain object-left-top" />
   );
 
   return (
     <section className="bg-surface">
       {/* Mobile / tablet */}
       <div className="xl:hidden">
-        <div className="relative h-[460px] md:h-[560px]">{photo}</div>
+        <div className="relative aspect-[1088/917]" {...reveal}>
+          {photo}
+        </div>
         <div className="container-wrap">
-          <blockquote className="relative z-10 -mt-[90px] bg-surface p-[28px]">
+          {/* With the graphic (client change) the quote no longer overlaps its
+              bottom on mobile — it would hide the coastline: 12px below it. */}
+          <blockquote className="relative z-10 mt-[12px] bg-surface p-[28px]" {...reveal}>
             <p className="type-h2">{h.signatureQuote}</p>
           </blockquote>
           <div className="mt-[75px] pb-[69px] flex flex-col items-start gap-[20px]">{text}</div>
@@ -220,13 +231,15 @@ function Signature() {
 
       {/* Desktop */}
       <div className="hidden xl:block relative pt-[144px] pb-[98px]">
-        <div className="absolute left-0 top-[144px] h-[720px] w-[min(calc(100vw-580px),calc(50vw+140px))]">{photo}</div>
+        <div className="absolute left-0 top-[144px] h-[720px] w-[min(calc(100vw-580px),calc(50vw+140px))]" {...reveal}>
+          {photo}
+        </div>
         <div className="container-wrap relative">
           <div className="min-h-[720px] flex justify-end">
             {/* pb 178 = room for the quote box below the text (580 − 40 − 502 + 140 + 38) */}
             <div className="w-[384px] pt-[40px] pb-[178px] flex flex-col items-start gap-[24px]">{text}</div>
           </div>
-          <blockquote className="relative z-10 -mt-[140px] ml-[460px] w-[560px] bg-surface px-[48px] py-[40px]">
+          <blockquote className="relative z-10 -mt-[140px] ml-[460px] w-[560px] bg-surface px-[48px] py-[40px]" {...reveal}>
             <p className="type-h2">{h.signatureQuote}</p>
           </blockquote>
         </div>

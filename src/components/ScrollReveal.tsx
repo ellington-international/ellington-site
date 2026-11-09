@@ -1,56 +1,131 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { useLanguage } from "./LanguageProvider";
+import { REVEAL_SELECTOR } from "@/lib/reveal";
 
-// Global scroll-reveal observer. Any element tagged with `data-reveal`
-// fades/slides in the first time it enters the viewport. Mounted once in the
-// root layout — re-scans on every route change AND on language change (lists
-// keyed by translated text remount, losing the is-visible class) so nothing
-// stays stuck at opacity:0. Pair with the [data-reveal] rules in globals.css.
+// Engine of the shared scroll reveal (components/ui/Reveal.tsx), mounted
+// once in the layout. The elements (lib/reveal.ts) are hidden by CSS from
+// the first paint while html[data-reveal-on] is set (head script). Each is
+// faded in once, when it comes into view: opacity 0 → 1 and 20px up, 0.7s,
+// ease-out; elements arriving together follow each other 80ms apart (cards
+// of a grid one after another). The fade is a Web Animation that keeps its
+// end state, so nothing is written to the elements (React sees no
+// difference between server and client HTML).
+// A MutationObserver picks up everything added later: cards after
+// filtering, Apimo results, the next page after client navigation. A
+// language switch reloads the page, so it starts fresh.
+// TEMPORARY (client check): very obvious motion — 80px over 1.5s. To be
+// toned down to the subtle version (20px, 700ms) once confirmed; the same
+// distance is in globals.css (› Scroll reveal).
+const DURATION = 1500;
+const STAGGER_MS = 80;
+const MAX_STAGGER = 6;
+// Standard ease-out: the movement is spread over the whole duration (the
+// previous curve did ~99 % of it in the first half, so it hardly showed).
+const EASING = "ease-out";
+const FRAMES: Keyframe[] = [
+  { opacity: 0, transform: "translateY(80px)" },
+  { opacity: 1, transform: "none" },
+];
+
+declare global {
+  interface Window {
+    __revealStarted?: boolean;
+    __revealTimedOut?: boolean;
+  }
+}
+
 export function ScrollReveal() {
-  const pathname = usePathname();
-  const { lang } = useLanguage();
-
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const html = document.documentElement;
+    const main = document.querySelector("main");
+    if (!main) return;
+    const seen = new WeakSet<Element>();
+    const shown = new WeakSet<Element>();
+    const show = (el: Element, delay: number, duration = DURATION) => {
+      shown.add(el);
+      el.animate(FRAMES, { duration, delay, easing: EASING, fill: "forwards" });
+    };
 
-    const els = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-reveal]"),
-    );
-    if (els.length === 0) return;
-
-    // Reduced-motion users get content immediately (CSS already shows it).
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      els.forEach((el) => el.classList.add("is-visible"));
-      return;
+    if (!html.hasAttribute("data-reveal-on")) {
+      // Not on: reduced motion / old browser (stay off), or the head
+      // script's 5s safety net fired because this script started late
+      // (slow first load). Then switch it back on — but first show
+      // everything already on screen or above at once (a 0ms animation
+      // that keeps its end state), so nothing visible disappears.
+      if (!window.__revealTimedOut || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      main.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          seen.add(el);
+          show(el, 0, 0);
+        }
+      });
+      html.setAttribute("data-reveal-on", "");
     }
+    window.__revealStarted = true;
+
+    // Cards of the same grid row that are not shown yet come along with a
+    // card that enters: e.g. a horizontal swipe row (Home, mobile) clips the
+    // cards beyond the screen edge, so they would never count as "in view".
+    const rowMates = (el: Element): Element[] => {
+      const grid = el.parentElement;
+      if (!grid?.classList.contains("reveal-grid")) return [];
+      const r = el.getBoundingClientRect();
+      return Array.from(grid.children).filter((c) => {
+        if (c === el || shown.has(c) || !seen.has(c)) return false;
+        const rc = c.getBoundingClientRect();
+        return rc.top < r.bottom && rc.bottom > r.top; // same row
+      });
+    };
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
+        const set = new Set<Element>();
+        for (const e of entries) {
+          if (!e.isIntersecting || shown.has(e.target)) continue;
+          set.add(e.target);
+          rowMates(e.target).forEach((m) => set.add(m));
+        }
+        const entering = [...set].sort((a, b) => {
+          const ra = a.getBoundingClientRect();
+          const rb = b.getBoundingClientRect();
+          return ra.top - rb.top || ra.left - rb.left;
+        });
+        entering.forEach((el, i) => {
+          observer.unobserve(el);
+          show(el, Math.min(i, MAX_STAGGER) * STAGGER_MS);
         });
       },
-      // threshold 0 = fire as soon as any part enters; the -12% bottom margin
-      // delays the reveal until the element is a little way into view. Works for
-      // sections of any height (a percentage threshold can fail very tall ones
-      // on large desktop viewports).
-      { threshold: 0, rootMargin: "0px 0px -12% 0px" },
+      { threshold: 0, rootMargin: "0px 0px -6% 0px" },
     );
 
-    // Always observe — the observer reveals in-view elements on the next frame
-    // and below-the-fold elements as they scroll into view. (A manual
-    // "above-the-fold" shortcut races with browser scroll-restoration and can
-    // mark below-fold elements visible on load, which kills the animation.)
-    els.forEach((el) => observer.observe(el));
+    const scan = () => {
+      main.querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+        if (seen.has(el)) return;
+        seen.add(el);
+        // Already scrolled past (back navigation, anchor link): show at once.
+        if (el.getBoundingClientRect().bottom < 0) show(el, 0, 0);
+        else observer.observe(el);
+      });
+    };
 
-    return () => observer.disconnect();
-  }, [pathname, lang]);
+    scan();
+    let queued = 0;
+    const mutations = new MutationObserver(() => {
+      if (!queued)
+        queued = requestAnimationFrame(() => {
+          queued = 0;
+          scan();
+        });
+    });
+    mutations.observe(main, { childList: true, subtree: true });
+
+    return () => {
+      mutations.disconnect();
+      observer.disconnect();
+      cancelAnimationFrame(queued);
+    };
+  }, []);
 
   return null;
 }

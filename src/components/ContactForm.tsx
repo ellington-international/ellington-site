@@ -8,6 +8,7 @@ import { useLanguage } from "./LanguageProvider";
 import { ThankYouOverlay } from "./ThankYouOverlay";
 import { Button } from "./ui/Button";
 import { inputCls } from "./ui/input";
+import { reveal } from "./ui/Reveal";
 
 // Figma "09 Contact" › Form column (13:1934 / mobile 13:2049):
 //   "Send us a message" (H2) + subtitle, 24px apart (mobile 20); form 28px
@@ -109,18 +110,18 @@ export function ContactForm() {
     <div>
       <ThankYouOverlay open={state === "ok"} variant="request" onClose={() => setState("idle")} />
       <div className="flex flex-col gap-[20px] md:gap-[24px]">
-        <h2 className="type-h2">{c.formTitle}</h2>
-        <p className="type-body">{c.formSubtitle}</p>
+        <h2 className="type-h2" {...reveal}>{c.formTitle}</h2>
+        <p className="type-body" {...reveal}>{c.formSubtitle}</p>
       </div>
 
       {request && (
-        <p className="mt-[28px] flex flex-wrap items-baseline gap-x-[12px] gap-y-[4px]">
+        <p className="mt-[28px] flex flex-wrap items-baseline gap-x-[12px] gap-y-[4px]" {...reveal}>
           <span className="type-label">{c.requestLabel}</span>
           <span className="type-eyebrow text-brand-accent">{request.line}</span>
         </p>
       )}
 
-      <form onSubmit={onSubmit} className="mt-[28px] grid grid-cols-1 md:grid-cols-2 gap-x-[20px] gap-y-[24px] md:gap-y-[20px]">
+      <form onSubmit={onSubmit} className="mt-[28px] grid grid-cols-1 md:grid-cols-2 gap-x-[20px] gap-y-[24px] md:gap-y-[20px]" {...reveal}>
         {/* Honeypot — bots fill this, humans don't (FormSubmit spam filter) */}
         <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
         <Field label={c.firstName} name="firstName" required placeholder={c.firstNamePh} autoComplete="given-name" />

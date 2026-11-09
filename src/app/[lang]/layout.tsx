@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { CookieBanner } from "@/components/CookieBanner";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { REVEAL_HEAD_SCRIPT } from "@/lib/reveal";
 import { JsonLd } from "@/components/JsonLd";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
@@ -105,7 +106,13 @@ export default async function RootLayout({
       // Scroll cue; page-to-page navigation stays instant (Next.js 16).
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${cormorant.variable} h-full antialiased`}
+      // The head script adds data-reveal-on before React hydrates.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Scroll reveal: switch on before the first paint (lib/reveal.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_HEAD_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <JsonLd data={[organizationSchema(), websiteSchema(lang)]} />
         <LanguageProvider lang={lang}>

@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { PageHero } from "./PageHero";
 import { locations, villageTagline } from "@/lib/properties";
 import { useLanguage } from "@/components/LanguageProvider";
 import { VillageCard } from "@/components/VillageCard";
 import { cardGridCls } from "@/components/ui/card";
+import { reveal } from "@/components/ui/Reveal";
 
 // Figma "05 Locations — Desktop" (11:1405) / "— Mobile" (11:1534).
 // Card display order (Figma).
@@ -37,14 +39,33 @@ export function LocationsIndexContent() {
         subtitle={t.heroes.locationsSubtitle}
       />
 
-      {/* LOCATIONS (11:1410): "The Golfe de Saint-Tropez" (Caps/Eyebrow) +
-          intro in Text/Subtitle (max 760, 24px apart; mobile 20), then the
-          nine village cards 56px below (mobile 40), 3 / 2 / 1 columns. */}
+      {/* INTRO + VILLAGES (Figma 11:1410, client change): white section.
+          Desktop (from 1024px): two columns 96px apart — eyebrow + intro
+          (Text/Subtitle, our blue text styles) left, the Golfe graphic right,
+          vertically centred. Mobile: text, then the graphic at full content
+          width 40px below. The village cards follow 56px below (mobile 40),
+          3 / 2 / 1 columns. The graphic (brand/blue SVG) has no empty margin
+          in its viewBox, so it lines up with the text. */}
       <section className="bg-surface">
         <div className="container-wrap section-y">
-          <div className="max-w-[760px] flex flex-col gap-[20px] md:gap-[24px]">
-            <p className="type-eyebrow">{t.locationsPage.eyebrow}</p>
-            <p className="type-subtitle">{t.locationsPage.intro}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px] items-center">
+            <div className="flex flex-col gap-[20px] md:gap-[24px]">
+              <p className="type-eyebrow" {...reveal}>
+                {t.locationsPage.eyebrow}
+              </p>
+              <p className="type-subtitle" {...reveal}>
+                {t.locationsPage.intro}
+              </p>
+            </div>
+            <Image
+              src="/locations/golfe-graphic.svg"
+              alt=""
+              width={1088}
+              height={917}
+              unoptimized
+              className="block w-full h-auto"
+              {...reveal}
+            />
           </div>
           <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
             {ordered.map((loc, i) => (

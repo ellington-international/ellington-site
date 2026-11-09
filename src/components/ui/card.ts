@@ -22,9 +22,10 @@ export const cardLinkCls =
 
 /** Every card grid: 3 columns desktop, 2 tablet, 1 mobile. Columns 32px
  *  apart (space/gap); rows 56px desktop / 48px mobile (client feedback:
- *  Figma's 36px read as too tight between tall photos). */
+ *  Figma's 36px read as too tight between tall photos). `reveal-grid`: the
+ *  cards fade in one after another (ScrollReveal). */
 export const cardGridCls =
-  "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-gap gap-y-[48px] md:gap-y-[56px]";
+  "reveal-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-gap gap-y-[48px] md:gap-y-[56px]";
 
 /** Number formatting for areas, per language (504 m², 3,016 / 3 016 / 3.016 m²). */
 export function formatArea(n: number, lang: "fr" | "en" | "nl") {

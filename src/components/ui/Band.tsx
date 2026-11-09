@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { reveal } from "./Reveal";
 
 // Full-width closing bands from the Figma pages:
 //   variant "light" = "Closing band (light blue)" (Sell 11:1221, About 13:88):
@@ -28,11 +29,11 @@ export function Band({
     >
       <div className="container-wrap section-y flex flex-col items-center text-center">
         <div className="max-w-[720px] flex flex-col gap-[20px] md:gap-[24px]">
-          <h2 className="type-h2">{title}</h2>
-          {subtitle && <p className="type-subtitle">{subtitle}</p>}
+          <h2 className="type-h2" {...reveal}>{title}</h2>
+          {subtitle && <p className="type-subtitle" {...reveal}>{subtitle}</p>}
         </div>
         {children && (
-          <div className="mt-[40px] md:mt-[48px] flex flex-wrap items-center justify-center gap-[14px]">
+          <div className="mt-[40px] md:mt-[48px] flex flex-wrap items-center justify-center gap-[14px]" {...reveal}>
             {children}
           </div>
         )}

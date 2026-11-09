@@ -6,6 +6,7 @@ import { BlogCard } from "./BlogCard";
 import { PageHero } from "./PageHero";
 import { useLanguage } from "./LanguageProvider";
 import { Chip } from "./ui/SmallParts";
+import { reveal } from "./ui/Reveal";
 import type { BlogCategory, Post } from "@/lib/blog-shared";
 import { cardGridCls } from "@/components/ui/card";
 
@@ -50,7 +51,7 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
       <section className="bg-surface">
         <div className="container-wrap pt-[48px] md:pt-[72px] pb-section">
           {/* Category filter: Chips 28px apart (rows 12), hairline below */}
-          <div className="flex flex-wrap gap-x-[28px] gap-y-[12px] pb-[16px] border-b border-hairline" role="group" aria-label={j.eyebrow}>
+          <div className="flex flex-wrap gap-x-[28px] gap-y-[12px] pb-[16px] border-b border-hairline" role="group" aria-label={j.eyebrow} {...reveal}>
             <Chip active={filter === "all"} onClick={() => choose("all")}>
               {j.all}
             </Chip>
@@ -63,7 +64,7 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
 
           {/* Cards 56px below (mobile 40) */}
           {filtered.length === 0 ? (
-            <p className="type-body mt-[40px] md:mt-[56px]" aria-live="polite">
+            <p className="type-body mt-[40px] md:mt-[56px]" aria-live="polite" {...reveal}>
               {j.empty}
             </p>
           ) : (
@@ -76,7 +77,7 @@ function BlogIndexInner({ posts }: { posts: Post[] }) {
 
           {/* Notes (13:1764): hairline on top, 28px; "French only" notice
               (EN / NL pages) left, contact right; mobile stacked */}
-          <div className="mt-[40px] md:mt-[56px] pt-[28px] border-t border-hairline flex flex-col md:flex-row md:justify-between gap-x-[40px] gap-y-[4px] type-small">
+          <div className="mt-[40px] md:mt-[56px] pt-[28px] border-t border-hairline flex flex-col md:flex-row md:justify-between gap-x-[40px] gap-y-[4px] type-small" {...reveal}>
             {j.frenchOnly ? <p>{j.frenchOnly}</p> : <span aria-hidden />}
             <p>
               {t.common.contactUs} ·{" "}

@@ -11,6 +11,7 @@ import type { Property } from "@/lib/types";
 import { cardGridCls, formatArea } from "@/components/ui/card";
 import { Stat, DetailRow, Tag, InfoBox } from "@/components/ui/SmallParts";
 import { ButtonLink, buttonClasses } from "@/components/ui/Button";
+import { reveal } from "./ui/Reveal";
 import { TextLink } from "@/components/ui/TextLink";
 
 // Figma "03 Property — Desktop" (11:2) / "— Mobile" (11:270).
@@ -108,14 +109,14 @@ export function PropertyDetailContent({
           )}
 
           <section className={sectionCls}>
-            <h2 className="type-h2">{pd.description}</h2>
-            <p className="type-body whitespace-pre-line">{property.description}</p>
+            <h2 className="type-h2" {...reveal}>{pd.description}</h2>
+            <p className="type-body whitespace-pre-line" {...reveal}>{property.description}</p>
           </section>
 
           {property.features.length > 0 && (
             <section className={sectionCls}>
-              <h2 className="type-h2">{pd.features}</h2>
-              <ul className="flex flex-wrap gap-[8px]">
+              <h2 className="type-h2" {...reveal}>{pd.features}</h2>
+              <ul className="flex flex-wrap gap-[8px]" {...reveal}>
                 {property.features.map((f) => (
                   <li key={f}>
                     <Tag>{localizeFeature(f, lang)}</Tag>
@@ -126,8 +127,8 @@ export function PropertyDetailContent({
           )}
 
           <section className={sectionCls}>
-            <h2 className="type-h2">{pd.propertyDetailsTitle}</h2>
-            <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-[40px] border-t border-hairline">
+            <h2 className="type-h2" {...reveal}>{pd.propertyDetailsTitle}</h2>
+            <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-[40px] border-t border-hairline" {...reveal}>
               {details.map((d) => (
                 <DetailRow key={d.label} label={d.label} value={d.value} />
               ))}
@@ -137,14 +138,14 @@ export function PropertyDetailContent({
           <EnergyDiagnostics property={property} />
 
           <section className={sectionCls}>
-            <h2 className="type-h2">{pd.location}</h2>
-            <p className="type-body">{pd.addressNote}</p>
+            <h2 className="type-h2" {...reveal}>{pd.location}</h2>
+            <p className="type-body" {...reveal}>{pd.addressNote}</p>
           </section>
         </div>
 
         {/* ASIDE (11:131): boxes 48px apart (mobile 36) */}
         <aside className="flex flex-col gap-[36px] md:gap-[48px]">
-          <div className="border-t border-hairline pt-[24px] flex flex-col gap-[20px]">
+          <div className="border-t border-hairline pt-[24px] flex flex-col gap-[20px]" {...reveal}>
             <h3 className="type-h3">{pd.interestedTitle}</h3>
             <p className="type-body">{pd.interestedBody}</p>
             <ButtonLink href={`/contact?property=${encodeURIComponent(property.reference)}`} variant="primary" className="w-full">
@@ -156,7 +157,7 @@ export function PropertyDetailContent({
             </a>
           </div>
 
-          <div className="border-t border-hairline pt-[24px] flex flex-col gap-[20px]">
+          <div className="border-t border-hairline pt-[24px] flex flex-col gap-[20px]" {...reveal}>
             <h3 className="type-h3">{pd.yourAdvisor}</h3>
             <AdvisorRow icon="/ui/icons/phone.svg" label={pd.phone}>
               <a href="tel:+33674750703" className="hover:text-brand-blue transition-colors">
@@ -185,8 +186,8 @@ export function PropertyDetailContent({
       {similar.length > 0 && (
         <section className="mt-[80px] md:mt-[128px]">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-[16px]">
-            <h2 className="type-h2">{pd.similarTitle}</h2>
-            <TextLink href="/properties" className="self-start md:self-auto">
+            <h2 className="type-h2" {...reveal}>{pd.similarTitle}</h2>
+            <TextLink href="/properties" className="self-start md:self-auto" {...reveal}>
               {pd.viewAll}
             </TextLink>
           </div>

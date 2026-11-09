@@ -7,6 +7,7 @@ import { PageHero } from "./PageHero";
 import { useLanguage } from "./LanguageProvider";
 import { TextLink } from "./ui/TextLink";
 import { Band } from "./ui/Band";
+import { reveal } from "./ui/Reveal";
 import { cardGridCls } from "./ui/card";
 
 // Figma "08.1–08.3 Article" (e.g. 2186:1439 / mobile 2189:1333):
@@ -49,7 +50,7 @@ export function BlogPostShell({
       <article className="bg-surface">
         <div className="container-wrap section-y">
           <div className="max-w-[720px] mx-auto">
-            <div className="flex">
+            <div className="flex" {...reveal}>
               <TextLink href="/blog">← {j.back}</TextLink>
             </div>
             <div className="article-prose mt-[56px]">{children}</div>
@@ -66,7 +67,9 @@ export function BlogPostShell({
       {related.length > 0 && (
         <section className="bg-surface">
           <div className="container-wrap section-y">
-            <h2 className="type-h2">{j.keepReading}</h2>
+            <h2 className="type-h2" {...reveal}>
+              {j.keepReading}
+            </h2>
             <div className={`${cardGridCls} mt-[40px] md:mt-[48px]`}>
               {related.map((p) => (
                 <BlogCard key={p.slug} post={p} />

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { reveal } from "@/components/ui/Reveal";
 import { PageHero } from "@/components/PageHero";
 import { useLanguage } from "@/components/LanguageProvider";
 import { Stat } from "@/components/ui/SmallParts";
@@ -32,8 +33,8 @@ export default function AboutPage() {
       <section className="bg-surface">
         <div className="container-wrap section-y">
           <div className="max-w-[640px] flex flex-col gap-[20px] md:gap-[24px]">
-            <h2 className="type-h2">{a.introTitle}</h2>
-            <p className="type-subtitle">{a.introSubtitle}</p>
+            <h2 className="type-h2" {...reveal}>{a.introTitle}</h2>
+            <p className="type-subtitle" {...reveal}>{a.introSubtitle}</p>
           </div>
           <div className="mt-[48px] md:mt-[72px] grid grid-cols-2 lg:grid-cols-4 gap-x-[20px] md:gap-x-[32px] gap-y-[24px]">
             {a.stats.map((s) => (
@@ -51,16 +52,16 @@ export default function AboutPage() {
       <section className="bg-surface">
         <div className="container-wrap pb-section">
           <div className="flex flex-col md:flex-row md:items-center gap-[16px] md:gap-[48px]">
-            <p className="font-serif font-bold italic text-[110px] md:text-[180px] leading-[0.9] text-brand-accent" aria-hidden>
+            <p className="font-serif font-bold italic text-[110px] md:text-[180px] leading-[0.9] text-brand-accent" aria-hidden {...reveal}>
               2023
             </p>
             <div className="max-w-[520px] flex flex-col gap-[12px]">
-              <h2 className="type-eyebrow">{a.storyEyebrow}</h2>
-              <p className="type-subtitle">{a.storySubtitle}</p>
+              <h2 className="type-eyebrow" {...reveal}>{a.storyEyebrow}</h2>
+              <p className="type-subtitle" {...reveal}>{a.storySubtitle}</p>
             </div>
           </div>
           <div className="mt-[48px] md:mt-[72px] flex flex-col items-center gap-[40px] md:gap-[56px]">
-            <p className="w-full max-w-[640px] flex items-start gap-[14px] type-body">
+            <p className="w-full max-w-[640px] flex items-start gap-[14px] type-body" {...reveal}>
               <span className="font-serif font-medium italic text-[72px] md:text-[96px] leading-[0.8] text-brand-blue shrink-0" aria-hidden>
                 {first.charAt(0)}
               </span>
@@ -70,12 +71,12 @@ export default function AboutPage() {
               </span>
             </p>
             <div className="w-full flex justify-end md:pr-[80px]">
-              <div className="relative w-full md:w-[460px] aspect-[334/400] md:aspect-[460/560]">
+              <div className="relative w-full md:w-[460px] aspect-[334/400] md:aspect-[460/560]" {...reveal}>
                 <Image src="/about/story.jpg" alt={a.storyAlt} fill sizes="(min-width: 768px) 460px, 100vw" className="object-cover" />
               </div>
             </div>
             {moreStory.map((p) => (
-              <p key={p.slice(0, 24)} className="w-full max-w-[640px] type-body">
+              <p key={p.slice(0, 24)} className="w-full max-w-[640px] type-body" {...reveal}>
                 {p}
               </p>
             ))}
@@ -88,12 +89,15 @@ export default function AboutPage() {
           word above the text, 12px apart. */}
       <section className="bg-surface">
         <div className="container-wrap pb-section">
-          <h2 className="type-eyebrow">{a.valuesEyebrow}</h2>
+          <h2 className="type-eyebrow" {...reveal}>
+            {a.valuesEyebrow}
+          </h2>
           <ul className="mt-[40px] md:mt-[56px] border-b border-hairline">
             {a.values.map((v) => (
               <li
                 key={v.title}
                 className="border-t border-hairline py-[28px] md:py-[40px] flex flex-col md:flex-row md:items-center md:justify-between gap-[12px] md:gap-[40px]"
+                {...reveal}
               >
                 <h3 className="type-h1">{v.title}</h3>
                 <p className="type-body md:text-right md:max-w-[380px]">{v.body}</p>
@@ -105,7 +109,7 @@ export default function AboutPage() {
 
       {/* PHOTO STRIP (13:60): 480px (mobile 280), 30 % overlay, the village
           names in Caps/Label white, 32px from the bottom. Photo from Figma. */}
-      <section className="relative h-[280px] md:h-[480px] overflow-hidden on-photo flex items-end">
+      <section className="relative h-[280px] md:h-[480px] overflow-hidden on-photo flex items-end" {...reveal}>
         <Image src="/about/strip.jpg" alt="" fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-black/30" aria-hidden />
         <p className="relative container-wrap pb-[32px] type-label text-white">{STRIP_VILLAGES}</p>
@@ -116,7 +120,9 @@ export default function AboutPage() {
           (mobile 334 × 438, as in Figma). */}
       <section className="bg-surface">
         <div className="container-wrap section-y">
-          <h2 className="type-h2">{a.teamTitle}</h2>
+          <h2 className="type-h2" {...reveal}>
+            {a.teamTitle}
+          </h2>
           <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
             {a.team.map((m) => (
               <article key={m.name} className="flex flex-col gap-[10px]">

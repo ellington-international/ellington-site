@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PageHero } from "./PageHero";
 import { PropertyCard } from "./PropertyCard";
 import { useLanguage } from "./LanguageProvider";
+import { reveal } from "./ui/Reveal";
 import { TextLink } from "./ui/TextLink";
 import { Stat } from "./ui/SmallParts";
 import { Band } from "./ui/Band";
@@ -55,16 +56,16 @@ export function LocationDetail({
       {/* THE VILLAGE (12:7 / 12:169) */}
       <section className="bg-surface">
         <div className="container-wrap section-y">
-          <div className="flex">
+          <div className="flex" {...reveal}>
             <TextLink href="/locations">{v.back}</TextLink>
           </div>
           <div className="mt-[24px] md:mt-[32px] grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px]">
             <div className="flex flex-col gap-[20px] md:gap-[24px]">
-              <p className="type-eyebrow">{v.eyebrow}</p>
-              <h2 className="type-h2">{loc.name}</h2>
+              <p className="type-eyebrow" {...reveal}>{v.eyebrow}</p>
+              <h2 className="type-h2" {...reveal}>{loc.name}</h2>
             </div>
             <div className="flex flex-col gap-[32px]">
-              <p className="type-subtitle">{c?.intro[lang] ?? (lang === "fr" ? loc.description : loc.descriptionEn ?? loc.description)}</p>
+              <p className="type-subtitle" {...reveal}>{c?.intro[lang] ?? (lang === "fr" ? loc.description : loc.descriptionEn ?? loc.description)}</p>
               {c && (
                 <div className="grid grid-cols-2 gap-[20px] md:gap-[32px]">
                   <Stat figure={c.stats.averagePrice} label={v.averagePrice} />
@@ -82,11 +83,11 @@ export function LocationDetail({
         <section key={s.title} className={i % 2 === 0 ? "bg-surface-light" : "bg-surface"}>
           <div className="container-wrap section-y grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px]">
             <div className="flex flex-col gap-[20px] md:gap-[24px]">
-              <p className="type-eyebrow">{s.eyebrow}</p>
-              <h2 className="type-h2">{s.title}</h2>
-              {s.text && <p className="type-body">{s.text}</p>}
+              <p className="type-eyebrow" {...reveal}>{s.eyebrow}</p>
+              <h2 className="type-h2" {...reveal}>{s.title}</h2>
+              {s.text && <p className="type-body" {...reveal}>{s.text}</p>}
             </div>
-            <ul className="border-t border-hairline">
+            <ul className="border-t border-hairline" {...reveal}>
               {s.items.map((item) => (
                 <li key={item} className="py-[12px] border-b border-hairline type-body">
                   {item}
@@ -108,8 +109,8 @@ export function LocationDetail({
       <section className="bg-surface">
         <div className="container-wrap section-y">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-[20px]">
-            <h2 className="type-h2">{v.propertiesTitle}</h2>
-            <TextLink href={propsHref} className="self-start md:self-auto">
+            <h2 className="type-h2" {...reveal}>{v.propertiesTitle}</h2>
+            <TextLink href={propsHref} className="self-start md:self-auto" {...reveal}>
               {v.viewAll}
             </TextLink>
           </div>
@@ -120,7 +121,9 @@ export function LocationDetail({
               ))}
             </div>
           ) : (
-            <p className="type-body mt-[40px] md:mt-[56px]">{v.empty}</p>
+            <p className="type-body mt-[40px] md:mt-[56px]" {...reveal}>
+              {v.empty}
+            </p>
           )}
         </div>
       </section>
@@ -137,7 +140,8 @@ function Mosaic({ photos, name }: { photos: string[]; name: string }) {
   const [main, ...rest] = photos.slice(0, 3);
   const img = (src: string, sizes: string) => <Image src={src} alt={name} fill sizes={sizes} className="object-cover" />;
   return (
-    <div className="mt-[80px] md:mt-[120px] grid grid-cols-2 md:grid-cols-[819fr_409fr] gap-[12px]">
+    // reveal-grid: the photos fade in one after another, like cards
+    <div className="reveal-grid mt-[80px] md:mt-[120px] grid grid-cols-2 md:grid-cols-[819fr_409fr] gap-[12px]">
       <div className="relative col-span-2 md:col-span-1 md:row-span-2 aspect-[334/262] md:aspect-[819/620]">
         {img(main, "(min-width: 768px) 66vw, 100vw")}
       </div>

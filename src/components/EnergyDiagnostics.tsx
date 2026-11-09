@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "./LanguageProvider";
+import { reveal } from "./ui/Reveal";
 import { ENERGY_CLASSES, energyInfo, type EnergyClass } from "@/lib/energy";
 import type { Property } from "@/lib/types";
 
@@ -85,8 +86,8 @@ export function EnergyDiagnostics({ property }: { property: Property }) {
 
   return (
     <section className="flex flex-col gap-[20px] md:gap-[24px]">
-      <h2 className="type-h2">{pd.energyTitle}</h2>
-      <div className="flex flex-col md:flex-row gap-[32px] md:gap-[40px]">
+      <h2 className="type-h2" {...reveal}>{pd.energyTitle}</h2>
+      <div className="flex flex-col md:flex-row gap-[32px] md:gap-[40px]" {...reveal}>
         <Scale
           label={pd.energyClass}
           active={e.energyClass}
@@ -102,9 +103,9 @@ export function EnergyDiagnostics({ property }: { property: Property }) {
       </div>
       {e.hasData ? (
         e.costMin != null &&
-        e.costMax != null && <p className="type-small text-muted">{pd.energyCost(euro(e.costMin), euro(e.costMax), e.costYear)}</p>
+        e.costMax != null && <p className="type-small text-muted" {...reveal}>{pd.energyCost(euro(e.costMin), euro(e.costMax), e.costYear)}</p>
       ) : (
-        <p className="type-small text-muted">{pd.energyUnavailable}</p>
+        <p className="type-small text-muted" {...reveal}>{pd.energyUnavailable}</p>
       )}
     </section>
   );

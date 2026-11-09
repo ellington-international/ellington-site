@@ -6,6 +6,7 @@ import { PropertyCard } from "./PropertyCard";
 import type { Property } from "@/lib/types";
 import { useLanguage } from "./LanguageProvider";
 import { Dropdown } from "./ui/Dropdown";
+import { reveal } from "./ui/Reveal";
 import { Button } from "./ui/Button";
 import { textLinkClasses } from "./ui/TextLink";
 import { PRICE_RANGES, filterOptions } from "@/lib/filters";
@@ -98,7 +99,8 @@ function PropertiesBrowserInner({
   // The list updates live as filters change; the button scrolls to the results.
   return (
     <div className="container-wrap">
-      <div className="grid grid-cols-2 md:grid-cols-[repeat(4,minmax(0,1fr))_auto] gap-[12px] md:gap-[14px] items-end">
+      {/* relative z-20: the open dropdown lists stay above the revealed cards */}
+      <div className="relative z-20 grid grid-cols-2 md:grid-cols-[repeat(4,minmax(0,1fr))_auto] gap-[12px] md:gap-[14px] items-end" {...reveal}>
         <Dropdown label={t.search.location} value={city} onChange={setCity} options={opts.location} />
         <Dropdown label={t.search.type} value={type} onChange={setType} options={opts.type} />
         <Dropdown
@@ -123,12 +125,12 @@ function PropertiesBrowserInner({
       </div>
 
       <div id="results" className="scroll-mt-nav">
-        <p className="mt-[32px] md:mt-[40px] py-[16px] border-b border-hairline type-small text-muted" aria-live="polite">
+        <p className="mt-[32px] md:mt-[40px] py-[16px] border-b border-hairline type-small text-muted" aria-live="polite" {...reveal}>
           {t.search.results(filtered.length)}
         </p>
 
         {filtered.length === 0 ? (
-          <div className="py-section flex flex-col items-center gap-[24px] text-center">
+          <div className="py-section flex flex-col items-center gap-[24px] text-center" {...reveal}>
             <p className="type-subtitle">{t.search.noResults}</p>
             <button type="button" onClick={reset} className={textLinkClasses()}>
               {t.search.noResultsCta}

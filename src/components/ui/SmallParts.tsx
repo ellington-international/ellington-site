@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
+import { reveal } from "./Reveal";
 
 // Small Figma components (step 10). All server-safe (no state).
 
@@ -41,7 +42,7 @@ export function Tag({ children, className = "" }: { children: ReactNode; classNa
  */
 export function Stat({ figure, label, className = "" }: { figure: ReactNode; label: ReactNode; className?: string }) {
   return (
-    <div className={`border-t border-hairline pt-[24px] flex flex-col gap-[12px] ${className}`}>
+    <div className={`border-t border-hairline pt-[24px] flex flex-col gap-[12px] ${className}`} {...reveal}>
       <p className="type-h2 text-brand-accent">{figure}</p>
       <p className="type-label">{label}</p>
     </div>
@@ -69,7 +70,7 @@ export function DetailRow({ label, value, className = "" }: { label: ReactNode; 
  */
 export function InfoBox({ title, children, className = "" }: { title: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <div className={`border-t border-hairline pt-[24px] flex flex-col gap-[14px] ${className}`}>
+    <div className={`border-t border-hairline pt-[24px] flex flex-col gap-[14px] ${className}`} {...reveal}>
       <h3 className="type-h3">{title}</h3>
       <div className="type-small flex flex-col gap-[14px]">{children}</div>
     </div>

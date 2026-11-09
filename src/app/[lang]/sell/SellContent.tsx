@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { PageHero } from "@/components/PageHero";
+import { reveal } from "@/components/ui/Reveal";
 import { TextLink } from "@/components/ui/TextLink";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Band } from "@/components/ui/Band";
@@ -33,12 +34,12 @@ export default function SellPage() {
       <section className="bg-surface">
         <div className="container-wrap section-y grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px]">
           <div className="flex flex-col gap-[20px] md:gap-[24px]">
-            <h2 className="type-h2">{s.whyTitle}</h2>
-            <p className="type-subtitle">{s.whyLead}</p>
+            <h2 className="type-h2" {...reveal}>{s.whyTitle}</h2>
+            <p className="type-subtitle" {...reveal}>{s.whyLead}</p>
           </div>
           <div className="flex flex-col gap-[16px]">
             {s.whyBody.map((p) => (
-              <p key={p.slice(0, 24)} className="type-body">
+              <p key={p.slice(0, 24)} className="type-body" {...reveal}>
                 {p}
               </p>
             ))}
@@ -60,13 +61,13 @@ export default function SellPage() {
           padding, 48px champagne circle with icon, H3, body, 12px apart. */}
       <section className="bg-surface">
         <div className="container-wrap section-y grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px] items-center">
-          <div className="relative aspect-[4/5]">
+          <div className="relative aspect-[4/5]" {...reveal}>
             <Image src="/sell/trust.jpg" alt={s.trustAlt} fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
           </div>
           <div>
             <div className="flex flex-col gap-[20px] md:gap-[24px] pb-[40px]">
-              <p className="type-eyebrow">{s.trustEyebrow}</p>
-              <h2 className="type-h2">{s.trustTitle}</h2>
+              <p className="type-eyebrow" {...reveal}>{s.trustEyebrow}</p>
+              <h2 className="type-h2" {...reveal}>{s.trustTitle}</h2>
             </div>
             <ul>
               {s.trustCards.map((c, i) => (
@@ -75,6 +76,7 @@ export default function SellPage() {
                   className={`border-t border-hairline py-[24px] flex flex-col items-start gap-[12px] ${
                     i === s.trustCards.length - 1 ? "border-b" : ""
                   }`}
+                  {...reveal}
                 >
                   <span className="size-[48px] rounded-full border border-brand-accent flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element -- 24px static icon from Figma */}
@@ -117,7 +119,7 @@ function Timeline({
       {steps.map((step, i) => {
         const last = i === steps.length - 1;
         return (
-          <li key={step.title} className="relative flex lg:flex-col gap-[20px] lg:gap-[28px]">
+          <li key={step.title} className="relative flex lg:flex-col gap-[20px] lg:gap-[28px]" {...reveal}>
             {!last && (
               <span
                 aria-hidden

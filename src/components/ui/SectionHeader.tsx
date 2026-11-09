@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { reveal } from "./Reveal";
 
 // Section header used across the Figma pages (e.g. Home › Featured properties
 // › Head 9:60): eyebrow (Caps/Eyebrow), H2, optional subtitle (Text/Subtitle),
@@ -30,11 +31,11 @@ export function SectionHeader({
       } ${className}`}
     >
       <div className={`flex flex-col gap-[20px] md:gap-[24px] max-w-[640px] ${centered ? "items-center" : ""}`}>
-        {eyebrow && <p className="type-eyebrow">{eyebrow}</p>}
-        <H className="type-h2">{title}</H>
-        {subtitle && <p className="type-subtitle">{subtitle}</p>}
+        {eyebrow && <p className="type-eyebrow" {...reveal}>{eyebrow}</p>}
+        <H className="type-h2" {...reveal}>{title}</H>
+        {subtitle && <p className="type-subtitle" {...reveal}>{subtitle}</p>}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
+      {action && <div className="shrink-0" {...reveal}>{action}</div>}
     </div>
   );
 }
