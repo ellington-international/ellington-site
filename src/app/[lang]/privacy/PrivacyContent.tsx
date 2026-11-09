@@ -2,168 +2,94 @@
 
 import { ManageCookiesButton } from "@/components/ManageCookiesButton";
 import { useLanguage } from "@/components/LanguageProvider";
+import { TextPage, joinTitle } from "@/components/ui/TextPage";
+import { buttonClasses } from "@/components/ui/Button";
 
 const EMAIL = "marc@ellington-international.com";
+
+// Not in Figma (step 23): TextPage frame + article typography (intro as the
+// lead, H2 headings, champagne-dot lists, bold parts in blue).
+type Item = { label: string; body: string };
+function List({ items, dash = true }: { items: readonly Item[]; dash?: boolean }) {
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item.label}>
+          <div className="min-w-0 flex-1">
+            <strong>{item.label}</strong>
+            {dash ? " — " : " "}
+            {item.body}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default function PrivacyContent() {
   const { t } = useLanguage();
   const p = t.privacyPage;
+  const mail = <a href={`mailto:${EMAIL}`}>{EMAIL}</a>;
 
   return (
-    <div className="pt-32 pb-20">
-      <div className="max-w-3xl mx-auto px-6 md:px-10">
-        <header className="mb-14">
-          <p className="text-[11px] tracking-[0.32em] uppercase text-accent mb-5">
-            {p.eyebrow}
-          </p>
-          <h1 className="font-serif text-5xl md:text-6xl">
-            {p.titleBefore} <em className="italic">{p.titleAccent}</em>
-          </h1>
-          <p className="text-sm text-muted mt-4">{p.lastUpdated}</p>
-        </header>
+    <TextPage eyebrow={p.eyebrow} title={joinTitle(p.titleBefore, p.titleAccent)} note={p.lastUpdated}>
+      <p>{p.intro}</p>
 
-        <div className="space-y-12 text-foreground/90 leading-[1.85]">
-          <section>
-            <p className="text-sm">{p.intro}</p>
-          </section>
+      <h2>{p.controllerHeading}</h2>
+      <p>
+        {p.controllerBody}
+        <br />
+        {p.controllerContact}
+        {mail} · +33 6 74 75 07 03
+      </p>
 
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.controllerHeading}</h2>
-            <p className="text-sm">
-              {p.controllerBody}
-              <br />
-              {p.controllerContact}
-              <a
-                href={`mailto:${EMAIL}`}
-                className="text-accent underline-offset-4 hover:underline"
-              >
-                {EMAIL}
-              </a>{" "}
-              · +33 6 74 75 07 03
-            </p>
-          </section>
+      <h2>{p.collectedHeading}</h2>
+      <p>{p.collectedIntro}</p>
+      <List items={p.collectedItems} />
 
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.collectedHeading}</h2>
-            <p className="text-sm mb-4">{p.collectedIntro}</p>
-            <ul className="text-sm space-y-3 list-none">
-              {p.collectedItems.map((item) => (
-                <li
-                  key={item.label}
-                  className="pl-5 border-l border-accent/40"
-                >
-                  <strong className="text-foreground">{item.label}</strong> —{" "}
-                  {item.body}
-                </li>
-              ))}
-            </ul>
-          </section>
+      <h2>{p.legalBasisHeading}</h2>
+      <p>{p.legalBasisIntro}</p>
+      <List items={p.legalBasisItems} />
 
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.legalBasisHeading}</h2>
-            <p className="text-sm mb-3">{p.legalBasisIntro}</p>
-            <ul className="text-sm space-y-2 list-disc pl-5">
-              {p.legalBasisItems.map((item) => (
-                <li key={item.label}>
-                  <strong>{item.label}</strong> — {item.body}
-                </li>
-              ))}
-            </ul>
-          </section>
+      <h2>{p.recipientsHeading}</h2>
+      <p>{p.recipientsIntro}</p>
+      <List items={p.recipientsItems} dash={false} />
 
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.recipientsHeading}</h2>
-            <p className="text-sm mb-3">{p.recipientsIntro}</p>
-            <ul className="text-sm space-y-2 list-disc pl-5">
-              {p.recipientsItems.map((item) => (
-                <li key={item.label}>
-                  <strong>{item.label}</strong> {item.body}
-                </li>
-              ))}
-            </ul>
-          </section>
+      <h2>{p.retentionHeading}</h2>
+      <List items={p.retentionItems} />
 
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.retentionHeading}</h2>
-            <ul className="text-sm space-y-2 list-disc pl-5">
-              {p.retentionItems.map((item) => (
-                <li key={item.label}>
-                  <strong>{item.label}</strong> — {item.body}
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section id="cookies" className="scroll-mt-32">
-            <h2 className="font-serif text-2xl mb-4">{p.cookiesHeading}</h2>
-            <p className="text-sm mb-4">{p.cookiesIntro}</p>
-            <ul className="text-sm space-y-3 list-none">
-              {p.cookiesItems.map((item) => (
-                <li
-                  key={item.label}
-                  className="pl-5 border-l border-accent/40"
-                >
-                  <strong className="text-foreground">{item.label}</strong> —{" "}
-                  {item.body}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6">
-              <ManageCookiesButton className="text-[12px] tracking-[0.18em] uppercase px-5 py-3 border border-[var(--border-strong)] text-foreground hover:bg-[var(--background-elev)] transition">
-                {p.cookiesManageBtn}
-              </ManageCookiesButton>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.rightsHeading}</h2>
-            <p className="text-sm mb-3">{p.rightsIntro}</p>
-            <ul className="text-sm space-y-2 list-disc pl-5">
-              {p.rightsItems.map((item) => (
-                <li key={item.label}>
-                  <strong>{item.label}</strong> — {item.body}
-                </li>
-              ))}
-            </ul>
-            <p className="text-sm mt-4">
-              {p.rightsFooterBefore}
-              <a
-                href={`mailto:${EMAIL}`}
-                className="text-accent underline-offset-4 hover:underline"
-              >
-                {EMAIL}
-              </a>
-              {p.rightsFooterAfter}
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.complaintHeading}</h2>
-            <p className="text-sm">
-              {p.complaintBefore}
-              <a
-                href="https://www.cnil.fr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent underline-offset-4 hover:underline"
-              >
-                CNIL
-              </a>
-              {p.complaintAfter}
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.securityHeading}</h2>
-            <p className="text-sm">{p.securityBody}</p>
-          </section>
-
-          <section>
-            <h2 className="font-serif text-2xl mb-4">{p.evolutionHeading}</h2>
-            <p className="text-sm">{p.evolutionBody}</p>
-          </section>
-        </div>
+      <h2 id="cookies" className="scroll-mt-nav">
+        {p.cookiesHeading}
+      </h2>
+      <p>{p.cookiesIntro}</p>
+      <List items={p.cookiesItems} />
+      <div className="pt-[8px]">
+        <ManageCookiesButton className={buttonClasses({ variant: "outline" })}>{p.cookiesManageBtn}</ManageCookiesButton>
       </div>
-    </div>
+
+      <h2>{p.rightsHeading}</h2>
+      <p>{p.rightsIntro}</p>
+      <List items={p.rightsItems} />
+      <p>
+        {p.rightsFooterBefore}
+        {mail}
+        {p.rightsFooterAfter}
+      </p>
+
+      <h2>{p.complaintHeading}</h2>
+      <p>
+        {p.complaintBefore}
+        <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">
+          CNIL
+        </a>
+        {p.complaintAfter}
+      </p>
+
+      <h2>{p.securityHeading}</h2>
+      <p>{p.securityBody}</p>
+
+      <h2>{p.evolutionHeading}</h2>
+      <p>{p.evolutionBody}</p>
+    </TextPage>
   );
 }

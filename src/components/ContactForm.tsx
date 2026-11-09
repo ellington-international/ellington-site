@@ -7,6 +7,7 @@ import { dict } from "@/lib/i18n";
 import { useLanguage } from "./LanguageProvider";
 import { ThankYouOverlay } from "./ThankYouOverlay";
 import { Button } from "./ui/Button";
+import { inputCls } from "./ui/input";
 
 // Figma "09 Contact" › Form column (13:1934 / mobile 13:2049):
 //   "Send us a message" (H2) + subtitle, 24px apart (mobile 20); form 28px
@@ -166,9 +167,6 @@ export function ContactForm() {
     </div>
   );
 }
-
-const inputCls =
-  "w-full px-[14px] py-[10px] bg-surface border border-hairline type-input text-body-text placeholder:text-[#8ea0b3] focus:border-brand-blue transition-colors";
 
 function Field({
   label,

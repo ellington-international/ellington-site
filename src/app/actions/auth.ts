@@ -20,7 +20,17 @@ function safeNext(value: unknown, fallback: string): string {
     : fallback;
 }
 
-export type AuthState = { error?: string } | null;
+// `code` is translated by AuthForm (t.auth); `error` is Supabase's own
+// message, shown only when there is no translation for it.
+export type AuthErrorCode = "passwordShort" | "invalidCredentials" | "alreadyRegistered";
+export type AuthState = { code?: AuthErrorCode; error?: string } | null;
+
+function authError(error: { code?: string; message: string }): AuthState {
+  if (error.code === "invalid_credentials" || /invalid login credentials/i.test(error.message)) return { code: "invalidCredentials" };
+  if (error.code === "user_already_exists" || error.code === "email_exists" || /already registered/i.test(error.message))
+    return { code: "alreadyRegistered" };
+  return { error: error.message };
+}
 
 // Absolute site URL for the email-confirmation link. Prefers NEXT_PUBLIC_SITE_URL
 // but falls back to the incoming request host, so confirmation links work on
@@ -41,7 +51,7 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
   const password = String(formData.get("password") ?? "");
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: error.message };
+  if (error) return authError(error);
 
   revalidatePath("/", "layout");
   const lang = formLang(formData);
@@ -54,7 +64,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   const password = String(formData.get("password") ?? "");
 
   if (password.length < 8) {
-    return { error: "Le mot de passe doit contenir au moins 8 caractères." };
+    return { code: "passwordShort" };
   }
 
   const { error } = await supabase.auth.signUp({
@@ -64,7 +74,7 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
       emailRedirectTo: `${await getSiteUrl()}/auth/callback?next=/${formLang(formData)}/mes-favoris`,
     },
   });
-  if (error) return { error: error.message };
+  if (error) return authError(error);
 
   revalidatePath("/", "layout");
   redirect(`/${formLang(formData)}/login?signup=success`);

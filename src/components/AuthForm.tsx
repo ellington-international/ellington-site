@@ -1,15 +1,18 @@
 "use client";
 
-import Link from "@/components/LocaleLink";
 import { useActionState, useState } from "react";
 import { login, signup, type AuthState } from "@/app/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 import { useLanguage } from "./LanguageProvider";
+import { Button } from "./ui/Button";
+import { TextLink } from "./ui/TextLink";
+import { inputCls } from "./ui/input";
 
 type Mode = "login" | "signup";
 
 export function AuthForm({ mode, signupSuccess, next }: { mode: Mode; signupSuccess?: boolean; next?: string }) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
+  const a = t.auth;
   // Where to go after logging in (the server action checks it is a page of this site)
   const after = next ?? `/${lang}/mes-favoris`;
   const action = mode === "login" ? login : signup;
@@ -32,122 +35,85 @@ export function AuthForm({ mode, signupSuccess, next }: { mode: Mode; signupSucc
     });
     // On success the browser redirects to Google; we only get here on error.
     if (error) {
-      setOauthError(
-        "La connexion Google n'est pas encore disponible. Réessayez plus tard.",
-      );
+      setOauthError(a.googleError);
       setOauthPending(false);
     }
   }
 
+  const errorText = state?.code ? a[state.code] : state?.error;
+
+  // Not in Figma (step 23): restyled with the Figma tokens — H2 title,
+  // Text/Body subtitle, Outline button for Google, Figma inputs, Primary
+  // submit, Link component for the switch between login and signup.
   return (
-    <div className="max-w-md mx-auto px-6 py-24 md:py-32">
-      <h1 className="font-serif text-4xl md:text-5xl text-foreground mb-3 text-center">
-        {isLogin ? "Connexion" : "Créer un compte"}
-      </h1>
-      <p className="text-sm text-muted text-center mb-10 tracking-[0.05em]">
-        {isLogin
-          ? "Accédez à votre sélection de biens favoris."
-          : "Sauvegardez les biens qui vous inspirent."}
-      </p>
+    <section className="bg-surface pt-nav">
+      <div className="container-wrap section-y">
+        <div className="max-w-[440px] mx-auto">
+          <div className="flex flex-col gap-[20px] md:gap-[24px] text-center">
+            <h1 className="type-h2">{isLogin ? a.loginTitle : a.signupTitle}</h1>
+            <p className="type-body">{isLogin ? a.loginSubtitle : a.signupSubtitle}</p>
+          </div>
 
-      {signupSuccess && (
-        <div className="mb-6 p-4 border border-accent/30 bg-accent/5 text-sm text-foreground">
-          Compte créé. Vérifiez votre boîte mail pour confirmer votre adresse, puis connectez-vous.
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={signInWithGoogle}
-        disabled={oauthPending}
-        className="w-full flex items-center justify-center gap-3 border border-[var(--border-strong)] px-5 py-3.5 text-[13px] tracking-[0.06em] text-foreground hover:border-accent transition disabled:opacity-50"
-      >
-        <GoogleIcon />
-        {oauthPending ? "Redirection…" : "Continuer avec Google"}
-      </button>
-
-      {oauthError && (
-        <p className="text-sm text-red-600 mt-3 text-center">{oauthError}</p>
-      )}
-
-      <div className="flex items-center gap-4 my-7 text-[10px] uppercase tracking-[0.22em] text-muted">
-        <span className="flex-1 h-px bg-[var(--border)]" />
-        ou
-        <span className="flex-1 h-px bg-[var(--border)]" />
-      </div>
-
-      <form action={formAction} className="space-y-5">
-        <input type="hidden" name="lang" value={lang} />
-        <input type="hidden" name="next" value={after} />
-        <div>
-          <label htmlFor="email" className="block text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-2">
-            Adresse email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--border)] focus:border-accent focus:outline-none text-foreground"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password" className="block text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-2">
-            Mot de passe
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            minLength={isLogin ? undefined : 8}
-            autoComplete={isLogin ? "current-password" : "new-password"}
-            className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--border)] focus:border-accent focus:outline-none text-foreground"
-          />
-          {!isLogin && (
-            <p className="text-xs text-muted mt-2">8 caractères minimum.</p>
+          {signupSuccess && (
+            <p className="mt-[40px] border-t border-brand-accent pt-[16px] type-small text-brand-blue" role="status">
+              {a.signupSuccess}
+            </p>
           )}
-        </div>
 
-        {state?.error && (
-          <p className="text-sm text-red-600 border border-red-200 bg-red-50 px-4 py-3">
-            {state.error}
+          <Button variant="outline" onClick={signInWithGoogle} disabled={oauthPending} className="w-full mt-[40px] gap-[12px]">
+            <GoogleIcon />
+            {oauthPending ? a.googleRedirect : a.google}
+          </Button>
+          {oauthError && (
+            <p className="type-small text-[#b42318] mt-[12px] text-center" role="alert">
+              {oauthError}
+            </p>
+          )}
+
+          <div className="flex items-center gap-[16px] my-[28px] type-label" aria-hidden>
+            <span className="flex-1 h-px bg-hairline" />
+            {a.or}
+            <span className="flex-1 h-px bg-hairline" />
+          </div>
+
+          <form action={formAction} className="flex flex-col gap-[20px]">
+            <input type="hidden" name="lang" value={lang} />
+            <input type="hidden" name="next" value={after} />
+            <label className="flex flex-col gap-[8px]">
+              <span className="type-label text-brand-blue">{a.email}</span>
+              <input name="email" type="email" required autoComplete="email" className={inputCls} />
+            </label>
+            <label className="flex flex-col gap-[8px]">
+              <span className="type-label text-brand-blue">{a.password}</span>
+              <input
+                name="password"
+                type="password"
+                required
+                minLength={isLogin ? undefined : 8}
+                autoComplete={isLogin ? "current-password" : "new-password"}
+                className={inputCls}
+              />
+              {!isLogin && <span className="type-small">{a.passwordHint}</span>}
+            </label>
+
+            {errorText && (
+              <p className="type-small text-[#b42318]" role="alert">
+                {errorText}
+              </p>
+            )}
+
+            <Button type="submit" variant="primary" disabled={pending} className="w-full mt-[8px]">
+              {pending ? "…" : isLogin ? a.loginBtn : a.signupBtn}
+            </Button>
+          </form>
+
+          <p className="type-small text-center mt-[32px] flex flex-wrap justify-center items-baseline gap-x-[8px]">
+            {isLogin ? a.noAccount : a.haveAccount}
+            <TextLink href={isLogin ? "/signup" : "/login"}>{isLogin ? a.signupTitle : a.loginBtn}</TextLink>
           </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={pending}
-          className="w-full text-[13px] tracking-[0.18em] uppercase px-5 py-3.5 bg-accent text-white hover:bg-accent-hover transition disabled:opacity-50"
-        >
-          {pending
-            ? "..."
-            : isLogin
-            ? "Se connecter"
-            : "Créer mon compte"}
-        </button>
-      </form>
-
-      <p className="text-sm text-muted text-center mt-8">
-        {isLogin ? (
-          <>
-            Pas encore de compte ?{" "}
-            <Link href="/signup" className="text-accent hover:underline">
-              Créer un compte
-            </Link>
-          </>
-        ) : (
-          <>
-            Déjà inscrit ?{" "}
-            <Link href="/login" className="text-accent hover:underline">
-              Se connecter
-            </Link>
-          </>
-        )}
-      </p>
-    </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

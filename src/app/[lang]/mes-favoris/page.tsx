@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import Link from "@/components/LocaleLink";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProperties } from "@/lib/properties";
 import { PropertyCard } from "@/components/PropertyCard";
 import { LogoutButton } from "@/components/LogoutButton";
 import { cardGridCls } from "@/components/ui/card";
+import { ButtonLink } from "@/components/ui/Button";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { dict } from "@/lib/i18n";
 import { asLang } from "@/lib/locale";
 import { PAGE_META } from "@/lib/seo";
 
@@ -36,42 +38,43 @@ export default async function MesFavorisPage({ params }: Props) {
     .map((id) => all.find((p) => p.id === id))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
-  return (
-    <div className="pt-28 pb-20">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <p className="text-[11px] tracking-[0.22em] uppercase text-muted-strong mb-3">
-              Espace personnel
-            </p>
-            <h1 className="font-serif text-4xl md:text-5xl mb-2">Mes favoris</h1>
-            <p className="text-sm text-muted">
-              Connecté avec <span className="text-foreground">{user.email}</span>
-            </p>
-          </div>
-          <LogoutButton />
-        </div>
+  const f = dict[lang].favoritesPage;
 
-        {favorites.length === 0 ? (
-          <div className="border border-[var(--border)] py-20 text-center">
-            <p className="text-muted mb-6">
-              Vous n&apos;avez pas encore de bien favori.
-            </p>
-            <Link
-              href="/properties"
-              className="inline-block text-[13px] tracking-[0.18em] uppercase px-6 py-3 bg-accent text-white hover:bg-accent-hover transition"
-            >
-              Découvrir le portefeuille
-            </Link>
-          </div>
-        ) : (
-          <div className={cardGridCls}>
-            {favorites.map((p) => (
-              <PropertyCard key={p.id} property={p} initialFavored />
-            ))}
-          </div>
-        )}
+  // Not in Figma (step 23): Section header (H1 in the H2 style), logout as a
+  // text link, the property cards grid; empty state in a hairline box with a
+  // Primary button.
+  return (
+    <section className="bg-surface pt-nav">
+      <div className="container-wrap section-y">
+        <SectionHeader
+          as="h1"
+          eyebrow={f.eyebrow}
+          title={f.title}
+          subtitle={
+            <span className="type-small block">
+              {f.signedInAs} <span className="text-brand-blue">{user.email}</span>
+            </span>
+          }
+          action={<LogoutButton />}
+        />
+
+        <div className="mt-[40px] md:mt-[56px]">
+          {favorites.length === 0 ? (
+            <div className="border border-hairline px-[24px] py-[64px] md:py-[96px] flex flex-col items-center gap-[28px] text-center">
+              <p className="type-body">{f.empty}</p>
+              <ButtonLink href="/properties" variant="primary">
+                {f.discover}
+              </ButtonLink>
+            </div>
+          ) : (
+            <div className={cardGridCls}>
+              {favorites.map((p) => (
+                <PropertyCard key={p.id} property={p} initialFavored />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

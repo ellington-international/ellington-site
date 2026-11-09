@@ -3,6 +3,7 @@
 import Link from "@/components/LocaleLink";
 import { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageProvider";
+import { Button } from "./ui/Button";
 import {
   OPEN_CONSENT_EVENT,
   readConsent,
@@ -44,86 +45,51 @@ export function CookieBanner() {
     setOpen(false);
   };
 
+  // Not in Figma (step 23): white panel with a hairline border (kept
+  // floating with a soft shadow), H3 title, Text/Small text,
+  // inline underlined link (as on Contact), Primary / Outline buttons, Caps/Label toggle for the details.
   return (
-    <div
-      role="dialog"
-      aria-label={t.cookies.title}
-      aria-modal="false"
-      className="fixed bottom-0 inset-x-0 z-[60] p-4 md:p-6 pointer-events-none"
-    >
-      <div className="max-w-[1100px] mx-auto pointer-events-auto bg-[var(--background)] border border-[var(--border)] shadow-xl">
-        <div className="p-6 md:p-8">
-          <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-            <div className="flex-1">
-              <h2 className="font-serif text-xl md:text-2xl text-foreground mb-2">
-                {t.cookies.title}
-              </h2>
-              <p className="text-sm text-muted-strong leading-relaxed max-w-3xl">
+    <div role="dialog" aria-label={t.cookies.title} aria-modal="false" className="fixed bottom-0 inset-x-0 z-[60] p-[16px] md:p-[24px] pointer-events-none">
+      <div className="max-w-[1100px] mx-auto pointer-events-auto bg-surface border border-hairline shadow-[0_12px_40px_rgba(21,65,102,0.12)]">
+        <div className="p-[24px] md:p-[32px]">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-[24px] lg:gap-[40px]">
+            <div className="flex-1 flex flex-col gap-[12px]">
+              <h2 className="type-h3">{t.cookies.title}</h2>
+              <p className="type-small max-w-[720px]">
                 {t.cookies.description}{" "}
-                <Link
-                  href="/privacy"
-                  className="text-accent underline-offset-4 hover:underline"
-                >
-                  {t.cookies.learnMore} →
+                <Link href="/privacy" className="text-brand-blue underline decoration-hairline underline-offset-[0.2em] hover:decoration-brand-accent transition-colors">
+                  {t.cookies.learnMore}
                 </Link>
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-2 shrink-0 lg:min-w-[200px]">
-              <button
-                type="button"
-                onClick={acceptAll}
-                className="text-[12px] tracking-[0.18em] uppercase px-5 py-3 bg-accent text-white hover:bg-accent-hover transition"
-              >
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-[8px] shrink-0 lg:min-w-[200px]">
+              <Button variant="primary" onClick={acceptAll}>
                 {t.cookies.acceptAll}
-              </button>
-              <button
-                type="button"
-                onClick={refuseAll}
-                className="text-[12px] tracking-[0.18em] uppercase px-5 py-3 border border-[var(--border-strong)] text-foreground hover:bg-[var(--background-elev)] transition"
-              >
+              </Button>
+              <Button variant="outline" onClick={refuseAll}>
                 {t.cookies.refuse}
-              </button>
+              </Button>
               <button
                 type="button"
                 onClick={() => setExpanded((v) => !v)}
-                className="text-[11px] tracking-[0.18em] uppercase text-muted-strong hover:text-foreground transition py-2"
+                className="type-label py-[8px] hover:text-brand-blue transition-colors"
                 aria-expanded={expanded}
               >
-                {t.cookies.customize} {expanded ? "▲" : "▼"}
+                {t.cookies.customize} {expanded ? "−" : "+"}
               </button>
             </div>
           </div>
 
           {expanded && (
-            <div className="mt-8 pt-6 border-t border-[var(--border)] space-y-5">
-              <CategoryRow
-                label={t.cookies.essentialLabel}
-                desc={t.cookies.essentialDesc}
-                checked
-                disabled
-              />
-              <CategoryRow
-                label={t.cookies.analyticsLabel}
-                desc={t.cookies.analyticsDesc}
-                checked={analytics}
-                onChange={setAnalytics}
-              />
-              <CategoryRow
-                label={t.cookies.marketingLabel}
-                desc={t.cookies.marketingDesc}
-                checked={marketing}
-                onChange={setMarketing}
-              />
-
-              <div className="pt-4 flex justify-end">
-                <button
-                  type="button"
-                  onClick={saveCustom}
-                  className="text-[12px] tracking-[0.18em] uppercase px-6 py-3 bg-accent text-white hover:bg-accent-hover transition"
-                >
+            <div className="mt-[28px] pt-[24px] border-t border-hairline flex flex-col gap-[20px]">
+              <CategoryRow label={t.cookies.essentialLabel} desc={t.cookies.essentialDesc} checked disabled />
+              <CategoryRow label={t.cookies.analyticsLabel} desc={t.cookies.analyticsDesc} checked={analytics} onChange={setAnalytics} />
+              <CategoryRow label={t.cookies.marketingLabel} desc={t.cookies.marketingDesc} checked={marketing} onChange={setMarketing} />
+              <div className="pt-[8px] flex justify-end">
+                <Button variant="primary" onClick={saveCustom}>
                   {t.cookies.save}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -133,6 +99,7 @@ export function CookieBanner() {
   );
 }
 
+// Square switch (no round shapes): hairline track, brand/blue when on.
 function CategoryRow({
   label,
   desc,
@@ -147,27 +114,15 @@ function CategoryRow({
   onChange?: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-start gap-4">
-      <div className="flex-1">
-        <p className="text-[13px] tracking-[0.06em] uppercase text-foreground font-medium mb-1">
-          {label}
-        </p>
-        <p className="text-xs text-muted leading-relaxed">{desc}</p>
+    <div className="flex items-start gap-[16px]">
+      <div className="flex-1 flex flex-col gap-[4px]">
+        <p className="type-label text-brand-blue">{label}</p>
+        <p className="type-small">{desc}</p>
       </div>
-      <label className={`relative inline-flex items-center shrink-0 mt-1 ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}>
-        <input
-          type="checkbox"
-          className="sr-only peer"
-          checked={checked}
-          disabled={disabled}
-          onChange={(e) => onChange?.(e.target.checked)}
-        />
-        <span className="w-10 h-5 bg-[var(--border-strong)] peer-checked:bg-accent transition relative">
-          <span
-            className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white transition-transform ${
-              checked ? "translate-x-5" : ""
-            }`}
-          />
+      <label className={`relative inline-flex items-center shrink-0 mt-[2px] ${disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}>
+        <input type="checkbox" className="sr-only peer" checked={checked} disabled={disabled} onChange={(e) => onChange?.(e.target.checked)} aria-label={label} />
+        <span className="w-[40px] h-[20px] bg-hairline peer-checked:bg-brand-blue peer-focus-visible:outline peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-blue transition-colors relative">
+          <span className={`absolute top-[2px] left-[2px] w-[16px] h-[16px] bg-white transition-transform ${checked ? "translate-x-[20px]" : ""}`} />
         </span>
       </label>
     </div>
