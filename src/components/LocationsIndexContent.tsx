@@ -1,12 +1,12 @@
 "use client";
 
 import { PageHero } from "./PageHero";
-import Image from "next/image";
-import { locations } from "@/lib/properties";
+import { locations, villageTagline } from "@/lib/properties";
 import { useLanguage } from "@/components/LanguageProvider";
 import { VillageCard } from "@/components/VillageCard";
 import { cardGridCls } from "@/components/ui/card";
 
+// Figma "05 Locations — Desktop" (11:1405) / "— Mobile" (11:1534).
 // Card display order (Figma).
 const ORDER = [
   "saint-tropez",
@@ -22,15 +22,13 @@ const ORDER = [
 
 export function LocationsIndexContent() {
   const { t, lang } = useLanguage();
-  const isEn = lang === "en";
-  const ordered = ORDER.map((slug) =>
-    locations.find((l) => l.slug === slug),
-  ).filter((l): l is (typeof locations)[number] => Boolean(l));
+  const ordered = ORDER.map((slug) => locations.find((l) => l.slug === slug)).filter(
+    (l): l is (typeof locations)[number] => Boolean(l),
+  );
 
   return (
-    <div>
-      {/* HERO — Figma "05 Locations" › Hero (11:1406): view over the Golfe,
-          anchored to the top (sky behind the title) */}
+    <>
+      {/* HERO (11:1406): view over the Golfe, anchored to the top */}
       <PageHero
         image="/heroes/locations.jpg"
         position="center top"
@@ -39,40 +37,29 @@ export function LocationsIndexContent() {
         subtitle={t.heroes.locationsSubtitle}
       />
 
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-20 pb-20">
-        {/* INTRO — title placeholder instead of the long text (client) */}
-        <div className="text-center max-w-3xl mx-auto mb-20" data-reveal>
-          <p className="type-eyebrow mb-5">{t.locationsPage.eyebrow}</p>
-          <h2 className="type-h2">
-            {t.locationsPage.titleBefore} {t.locationsPage.titleAccent}
-          </h2>
+      {/* LOCATIONS (11:1410): "The Golfe de Saint-Tropez" (Caps/Eyebrow) +
+          intro in Text/Subtitle (max 760, 24px apart; mobile 20), then the
+          nine village cards 56px below (mobile 40), 3 / 2 / 1 columns. */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y">
+          <div className="max-w-[760px] flex flex-col gap-[20px] md:gap-[24px]">
+            <p className="type-eyebrow">{t.locationsPage.eyebrow}</p>
+            <p className="type-subtitle">{t.locationsPage.intro}</p>
+          </div>
+          <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
+            {ordered.map((loc, i) => (
+              <VillageCard
+                key={loc.slug}
+                href={`/locations/${loc.slug}`}
+                name={loc.name}
+                tagline={villageTagline(loc, lang)}
+                image={loc.image}
+                priority={i < 3}
+              />
+            ))}
+          </div>
         </div>
-
-        {/* MAP — Gulf of Saint-Tropez */}
-        <div className="mb-20">
-          <Image
-            src="/locations/golfe-map.png"
-            alt="Golfe de Saint-Tropez"
-            width={1536}
-            height={1024}
-            sizes="100vw"
-            className="w-full h-auto"
-          />
-        </div>
-
-        {/* CARDS — Figma "Village card" in "Grid 3 col" / mobile "Grid 1 col" */}
-        <div className={cardGridCls}>
-          {ordered.map((loc) => (
-            <VillageCard
-              key={loc.slug}
-              href={`/locations/${loc.slug}`}
-              name={loc.name}
-              tagline={isEn ? loc.taglineEn ?? loc.tagline : loc.tagline}
-              image={loc.image}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }

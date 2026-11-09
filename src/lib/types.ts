@@ -70,6 +70,8 @@ export interface Location {
   /** Short one-liner shown under the title on the detail page */
   tagline?: string;
   taglineEn?: string;
+  /** Dutch tagline (draft, client review) */
+  taglineNl?: string;
   /** Lead paragraph (already used on the index list) */
   description: string;
   descriptionEn?: string;

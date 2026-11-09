@@ -236,17 +236,10 @@ const dictRaw = {
         "Découvrez les biens d'exception sélectionnés par Ellington sur l'ensemble de la Côte d'Azur.",
     },
     locationsPage: {
-      eyebrow: "La Riviera française",
-      titleBefore: "Nos",
-      titleAccent: "régions",
-      subtitle:
-        "Explorez les emplacements les plus prestigieux le long de la Côte d'Azur, où le luxe rencontre l'art de vivre méditerranéen.",
+      // Locations redesign (step 17). TODO client review (FR draft)
+      eyebrow: "Le Golfe de Saint-Tropez",
       intro:
-        "Découvrez l'agence Ellington, votre partenaire immobilier de renom depuis 1987. Nichée au cœur du Golfe de Saint-Tropez, notre expertise et passion pour les biens d'exception nous permettent de dénicher les joyaux cachés de la Côte d'Azur. Avec une présence digitale avant-gardiste et un accompagnement sur-mesure, nous sommes votre allié pour trouver la perle rare qui saura combler vos attentes. Réputés pour notre sérieux, nous sommes fiers de compter une clientèle internationale fidèle à notre agence !",
-      regionLabel: (i: number, total: number) => `Région ${i} / ${total}`,
-      currentlyAvailable: (n: number) =>
-        `${n} bien${n > 1 ? "s" : ""} actuellement en portefeuille`,
-      viewProperties: "Voir les propriétés →",
+        "Des villages perchés de Gassin et Ramatuelle aux canaux de Port Grimaud et aux baies plus paisibles de Cavalaire et du Rayol-Canadel, chaque village du Golfe a son caractère, son rythme et son type de maison. Choisissez un village pour découvrir la vie qu'on y mène et les biens que nous y représentons actuellement.",
     },
     aboutPage: {
       eyebrow: "À propos d'Ellington",
@@ -880,17 +873,10 @@ const dictRaw = {
         "Discover the exceptional properties curated by Ellington across the entire French Riviera.",
     },
     locationsPage: {
-      eyebrow: "The French Riviera",
-      titleBefore: "Our",
-      titleAccent: "Locations",
-      subtitle:
-        "Explore the most prestigious locations along the Côte d'Azur, where luxury meets the Mediterranean lifestyle.",
+      // Locations redesign (step 17): Figma "05 Locations" copy
+      eyebrow: "The Golfe de Saint-Tropez",
       intro:
-        "Discover Ellington, your renowned real estate partner since 1987. Nestled in the heart of the Gulf of Saint-Tropez, our expertise and passion for exceptional properties allow us to uncover the hidden gems of the Côte d'Azur. With a forward-thinking digital presence and bespoke support, we are your ally in finding the rare gem that will fulfil your every expectation. Renowned for our integrity, we are proud to count a loyal international clientele!",
-      regionLabel: (i: number, total: number) => `Region ${i} / ${total}`,
-      currentlyAvailable: (n: number) =>
-        `${n} propert${n > 1 ? "ies" : "y"} currently in portfolio`,
-      viewProperties: "View properties →",
+        "From the hilltop villages of Gassin and Ramatuelle to the canals of Port Grimaud and the quieter bays of Cavalaire and Rayol-Canadel, every village around the Golfe has its own character, its own pace and its own kind of home. Choose a village to see what life there is like and which properties we currently represent.",
     },
     aboutPage: {
       eyebrow: "About Ellington",
@@ -1526,17 +1512,10 @@ const dictRaw = {
         "Ontdek de uitzonderlijke woningen die Ellington over de hele Franse Rivièra heeft samengesteld.",
     },
     locationsPage: {
-      eyebrow: "De Franse Rivièra",
-      titleBefore: "Onze",
-      titleAccent: "Locaties",
-      subtitle:
-        "Verken de meest prestigieuze locaties langs de Côte d'Azur, waar luxe en de mediterrane levensstijl samenkomen.",
+      // Locations redesign (step 17). TODO client review (NL draft)
+      eyebrow: "De Golfe de Saint-Tropez",
       intro:
-        "Maak kennis met Ellington, uw gerenommeerde vastgoedpartner sinds 1987. Genesteld in het hart van de Golf van Saint-Tropez stellen onze expertise en passie voor uitzonderlijke woningen ons in staat de verborgen parels van de Côte d'Azur te ontdekken. Met een vooruitstrevende digitale aanwezigheid en begeleiding op maat zijn wij uw bondgenoot bij het vinden van die zeldzame parel die aan al uw verwachtingen voldoet. Bekend om onze integriteit, zijn wij er trots op een trouwe internationale clientèle te mogen tellen!",
-      regionLabel: (i: number, total: number) => `Regio ${i} / ${total}`,
-      currentlyAvailable: (n: number) =>
-        `${n} ${n > 1 ? "woningen" : "woning"} momenteel in portfolio`,
-      viewProperties: "Bekijk woningen →",
+        "Van de heuveldorpen Gassin en Ramatuelle tot de kanalen van Port Grimaud en de rustigere baaien van Cavalaire en Rayol-Canadel: elk dorp rond de Golfe heeft zijn eigen karakter, zijn eigen ritme en zijn eigen soort woning. Kies een dorp om te zien hoe het leven er is en welke woningen wij er momenteel vertegenwoordigen.",
     },
     aboutPage: {
       eyebrow: "Over Ellington",

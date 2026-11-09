@@ -369,6 +369,7 @@ export const locations: Location[] = [
     name: "Saint-Tropez",
     tagline: "Le glamour iconique et l'élégance intemporelle de la Riviera",
     taglineEn: "Iconic glamour meets timeless Riviera elegance",
+    taglineNl: "Iconische glamour en tijdloze elegantie aan de Rivièra", // TODO client review
     description:
       "De la Place des Lices aux plages de Pampelonne, Saint-Tropez incarne la quintessence de la Riviera française. Domaines viticoles, bastides provençales et villas contemporaines composent un patrimoine d'exception.",
     descriptionEn:
@@ -428,7 +429,8 @@ export const locations: Location[] = [
     slug: "grimaud",
     name: "Grimaud",
     tagline: "Le caractère médiéval au cœur du Golfe",
-    taglineEn: "Medieval character in the heart of the Gulf",
+    taglineEn: "Medieval character at the heart of the Golfe",
+    taglineNl: "Middeleeuws karakter in het hart van de Golfe", // TODO client review
     description:
       "Au cœur du Golfe de Saint-Tropez, Grimaud séduit par son village médiéval perché, ses ruelles pavées et ses villas en bord de mer. Une adresse confidentielle et préservée de la Côte d'Azur.",
     descriptionEn:
@@ -467,6 +469,7 @@ export const locations: Location[] = [
     name: "Port Grimaud",
     tagline: "La Venise provençale, l'art de vivre au bord de l'eau",
     taglineEn: "The Provençal Venice with waterfront living",
+    taglineNl: "Het Provençaalse Venetië, wonen aan het water", // TODO client review
     description:
       "Conçue dans les années 1960 par l'architecte François Spoerry, Port Grimaud est une cité lacustre unique en France. Maisons aux façades pastel, canaux navigables, anneaux d'amarrage privés : la Venise provençale conjugue charme méditerranéen et raffinement contemporain.",
     descriptionEn:
@@ -505,6 +508,7 @@ export const locations: Location[] = [
     name: "Ramatuelle",
     tagline: "Le charme perché dominant la Méditerranée",
     taglineEn: "Hilltop charm overlooking the Mediterranean",
+    taglineNl: "Charme op een heuvel met uitzicht op de Middellandse Zee", // TODO client review
     description:
       "Village perché entre vignobles et mer, Ramatuelle abrite la mythique plage de Pampelonne. Bastides en pierre, ruelles ombragées et mas d'exception composent un patrimoine d'une rare authenticité, à quelques minutes de Saint-Tropez.",
     descriptionEn:
@@ -543,6 +547,7 @@ export const locations: Location[] = [
     name: "Gassin",
     tagline: "Village provençal authentique aux vues panoramiques",
     taglineEn: "Authentic Provençal village with panoramic views",
+    taglineNl: "Authentiek Provençaals dorp met panoramisch uitzicht", // TODO client review
     description:
       "Classé parmi les Plus Beaux Villages de France, Gassin couronne une colline avec vue à 360° sur le Golfe de Saint-Tropez, les Maures et la Méditerranée. Villas de prestige et propriétés viticoles s'épanouissent dans un cadre préservé.",
     descriptionEn:
@@ -579,8 +584,9 @@ export const locations: Location[] = [
   {
     slug: "sainte-maxime",
     name: "Sainte-Maxime",
-    tagline: "L'élégance familiale sur la rive nord",
-    taglineEn: "Family-friendly elegance on the northern shore",
+    tagline: "Une vie de famille raffinée sur la rive nord", // TODO client review,
+    taglineEn: "Refined family living on the northern shore",
+    taglineNl: "Verfijnd gezinsleven aan de noordkust", // TODO client review
     description:
       "Face à Saint-Tropez sur le Golfe, Sainte-Maxime allie élégance balnéaire et authenticité provençale. Plages de sable fin, villas contemporaines et propriétés historiques en font une destination privilégiée.",
     descriptionEn:
@@ -619,6 +625,7 @@ export const locations: Location[] = [
     name: "La Croix-Valmer",
     tagline: "Retraite côtière sereine aux plages préservées",
     taglineEn: "Serene coastal retreat with pristine beaches",
+    taglineNl: "Rustige kustplek met ongerepte stranden", // TODO client review
     description:
       "Entre Saint-Tropez et le Lavandou, La Croix-Valmer déroule des plages de sable fin protégées, des vignobles AOP Côtes-de-Provence et un arrière-pays sauvage. Une adresse confidentielle pour qui cherche la quiétude méditerranéenne loin de l'effervescence du Golfe.",
     descriptionEn:
@@ -657,6 +664,7 @@ export const locations: Location[] = [
     name: "Cavalaire-sur-Mer",
     tagline: "La douceur d'une baie au charme français authentique",
     taglineEn: "Gentle bay living with authentic French charm",
+    taglineNl: "Wonen aan een zachte baai met authentieke Franse charme", // TODO client review
     description:
       "Adossée à l'une des plus belles baies de la Côte d'Azur, Cavalaire-sur-Mer conjugue 3 km de plage de sable fin, marina active et villas perchées sur les hauteurs. Une destination familiale et raffinée, à mi-chemin entre Saint-Tropez et Le Lavandou.",
     descriptionEn:
@@ -695,6 +703,7 @@ export const locations: Location[] = [
     name: "Rayol-Canadel-sur-Mer",
     tagline: "L'enclave exclusive de la corniche des Maures",
     taglineEn: "Exclusive enclave on the Corniche des Maures",
+    taglineNl: "Exclusieve enclave aan de Corniche des Maures", // TODO client review
     description:
       "Sur la mythique corniche des Maures, Rayol-Canadel-sur-Mer est l'une des adresses les plus confidentielles du littoral varois. Pinèdes plongeant dans la mer, propriétés d'architecte et calanques discrètes : une parenthèse rare entre Saint-Tropez et Hyères.",
     descriptionEn:
@@ -819,4 +828,11 @@ export function propertyTypeLabel(type: string): string {
     land: "Terrain",
   };
   return labels[type] ?? type;
+}
+
+/** Village tagline in the page language (NL falls back to EN, then FR). */
+export function villageTagline(loc: Location, lang: "fr" | "en" | "nl"): string | undefined {
+  if (lang === "en") return loc.taglineEn ?? loc.tagline;
+  if (lang === "nl") return loc.taglineNl ?? loc.taglineEn ?? loc.tagline;
+  return loc.tagline;
 }

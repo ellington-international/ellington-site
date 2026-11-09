@@ -1,6 +1,8 @@
 "use client";
 
 import { PageHero } from "./PageHero";
+import { TextLink } from "./ui/TextLink";
+import { villageTagline } from "@/lib/properties";
 import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { useLanguage } from "./LanguageProvider";
@@ -36,23 +38,20 @@ export function LocationDetail({
   return (
     <div>
       {/* HERO — Figma "06 Village" › Hero (12:3): village name + tagline */}
-      {/* Figma: the subtitle is the village's tagline (FR / EN data; NL uses
-          the French one until the village texts come in step 18) */}
+      {/* Figma: the subtitle is the village's tagline (FR / EN / NL) */}
       <PageHero
         image={mainImage}
         imageAlt={loc.name}
         title={loc.name}
-        subtitle={isEn ? loc.taglineEn ?? loc.tagline : loc.tagline}
+        subtitle={villageTagline(loc, lang)}
       />
 
       {/* BACK LINK */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-8">
-        <Link
-          href="/locations"
-          className="inline-block px-8 py-4 border border-[var(--border-strong)] hover:border-accent hover:bg-accent hover:text-white text-[11px] tracking-[0.22em] uppercase transition"
-        >
-          {tr("← Retour aux régions", "← Back to locations", "← Terug naar regio's")}
-        </Link>
+      {/* Same text link as "← Back to portfolio" on the property page */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-8 flex">
+        <TextLink href="/locations">
+          {tr("← Retour aux régions", "← Back to locations", "← Terug naar locaties")}
+        </TextLink>
       </div>
 
       {/* STATS PANEL (light-blue) + INTRO */}
