@@ -78,8 +78,9 @@ export function Header() {
     { href: "/locations", label: t.nav.regionsNav },
     { href: "/about", label: t.nav.about },
   ];
-  // The mobile menu also lists the Journal (Figma "00 Menu — Mobile").
-  const menuLinks = [...navLinks, { href: "/blog", label: t.nav.journal }];
+  // The mobile menu shows the same links as the desktop navigation (client
+  // decision: no Journal here; it stays in the footer and on Home).
+  const menuLinks = navLinks;
 
   const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`);
 
