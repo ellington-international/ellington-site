@@ -1,17 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import { PageHero } from "@/components/PageHero";
 import { TextLink } from "@/components/ui/TextLink";
-import Link from "@/components/LocaleLink";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Band } from "@/components/ui/Band";
 import { useLanguage } from "@/components/LanguageProvider";
 
+// Figma "04 Sell — Desktop" (11:1163) / "— Mobile" (11:1291).
+const TRUST_ICONS = ["/ui/icons/tag.svg", "/ui/icons/doc.svg", "/ui/icons/lock.svg", "/ui/icons/team.svg"];
+
 export default function SellPage() {
-  const { t, lang } = useLanguage();
-  const methodEyebrow =
-    lang === "en" ? "Our method" : lang === "nl" ? "Onze methode" : "Notre méthode";
+  const { t } = useLanguage();
+  const s = t.sellPage;
   return (
-    <div className="bg-white">
-      {/* HERO — Figma "04 Sell" › Hero (11:1164) + white "Request a valuation" link */}
+    <>
+      {/* HERO (11:1164) + white "Request a valuation" link */}
       <PageHero
         image="/heroes/sell.jpg"
         position="20% center"
@@ -24,148 +28,111 @@ export default function SellPage() {
         </TextLink>
       </PageHero>
 
-      {/* WHY ELLINGTON — bordered card (unchanged) */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 pt-24">
-        <section
-          className="border border-[var(--border)] bg-[var(--background)] px-8 md:px-14 py-12 md:py-16"
-          data-reveal
-        >
-          <h2 className="type-h2 mb-8">{t.sellPage.whyTitle}</h2>
-          <div className="space-y-5 text-muted leading-[1.85]">
-            <p>{t.sellPage.whyBody1}</p>
-            <p>{t.sellPage.whyBody2}</p>
-            <p>{t.sellPage.whyBody3}</p>
-            <p>{t.sellPage.whyBody4}</p>
+      {/* WHY ELLINGTON? (11:1170): H2 + subtitle left, three paragraphs right,
+          96px apart (two 572px columns); mobile stacked, 40px apart */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px]">
+          <div className="flex flex-col gap-[20px] md:gap-[24px]">
+            <h2 className="type-h2">{s.whyTitle}</h2>
+            <p className="type-subtitle">{s.whyLead}</p>
           </div>
-        </section>
-      </div>
-
-      {/* OUR SELLING PROCESS — light-blue band, white bordered cards (prototype) */}
-      <section className="bg-[var(--panel)] mt-24 py-24 md:py-28 px-6 md:px-10">
-        <div className="max-w-[1400px] mx-auto">
-          <p
-            className="text-[11px] tracking-[0.32em] uppercase text-[var(--gold)] mb-4"
-            data-reveal
-          >
-            {methodEyebrow}
-          </p>
-          <h2 className="type-h2 mb-12" data-reveal>
-            {t.sellPage.processTitle}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {t.sellPage.steps.map((step, i) => (
-              <div
-                key={i}
-                data-reveal
-                style={{ "--reveal-delay": `${(i % 2) * 90}ms` } as React.CSSProperties}
-                className="bg-white border border-[var(--border)] p-8 md:p-10"
-              >
-                <span className="block font-serif text-3xl text-[var(--gold)] mb-5 tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="type-card-title mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-sm md:text-base text-muted-strong leading-relaxed">
-                  {step.body}
-                </p>
-              </div>
+          <div className="flex flex-col gap-[16px]">
+            {s.whyBody.map((p) => (
+              <p key={p.slice(0, 24)} className="type-body">
+                {p}
+              </p>
             ))}
           </div>
         </div>
       </section>
 
-      {/* WHY CLIENTS TRUST US — bordered icon cards (prototype) */}
-      <section className="py-24 md:py-28 px-6 md:px-10">
-        <div className="max-w-[1400px] mx-auto">
-          <h2 className="type-h2 mb-12 text-center" data-reveal>
-            {t.sellPage.trustTitle}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {t.sellPage.trustCards.map((card, i) => (
-              <div
-                key={i}
-                data-reveal
-                style={{ "--reveal-delay": `${(i % 4) * 80}ms` } as React.CSSProperties}
-                className="border border-[var(--border)] p-8 text-center"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-accent text-white mb-5">
-                  <TrustIcon index={i} />
-                </div>
-                <h3 className="type-card-title mb-3">
-                  {card.title}
-                </h3>
-                <p className="text-sm text-muted-strong leading-relaxed">
-                  {card.body}
-                </p>
-              </div>
-            ))}
+      {/* OUR SELLING PROCESS (11:1180 / 11:1308) */}
+      <section className="bg-surface-light">
+        <div className="container-wrap section-y">
+          <SectionHeader eyebrow={s.methodEyebrow} title={s.processTitle} />
+          <Timeline steps={s.steps} label={s.stepLabel} />
+        </div>
+      </section>
+
+      {/* WHY CLIENTS TRUST US (11:1201 / 11:1329): photo 4:5 left (vertically
+          centred), promise list right, 96px apart; mobile photo on top, list
+          40px below. Promises: hairline on top (last one also below), 24px
+          padding, 48px champagne circle with icon, H3, body, 12px apart. */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px] items-center">
+          <div className="relative aspect-[4/5]">
+            <Image src="/sell/trust.jpg" alt={s.trustAlt} fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover" />
+          </div>
+          <div>
+            <div className="flex flex-col gap-[20px] md:gap-[24px] pb-[40px]">
+              <p className="type-eyebrow">{s.trustEyebrow}</p>
+              <h2 className="type-h2">{s.trustTitle}</h2>
+            </div>
+            <ul>
+              {s.trustCards.map((c, i) => (
+                <li
+                  key={c.title}
+                  className={`border-t border-hairline py-[24px] flex flex-col items-start gap-[12px] ${
+                    i === s.trustCards.length - 1 ? "border-b" : ""
+                  }`}
+                >
+                  <span className="size-[48px] rounded-full border border-brand-accent flex items-center justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- 24px static icon from Figma */}
+                    <img src={TRUST_ICONS[i]} alt="" width={24} height={24} />
+                  </span>
+                  <h3 className="type-h3">{c.title}</h3>
+                  <p className="type-body">{c.body}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* CTA — full-bleed navy band, gold button (prototype) */}
-      <section className="bg-[var(--accent)] text-white py-16 md:py-20 px-6" data-reveal>
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="type-h2 text-white mb-6">{t.sellPage.ctaTitle}</h2>
-          <p className="text-white/75 max-w-2xl mx-auto mb-10">
-            {t.sellPage.ctaSubtitle}
-          </p>
-          <Link
-            href="/contact?subject=valuation"
-            className="inline-block px-[60px] py-4 bg-[var(--gold)] text-[var(--accent)] hover:bg-[var(--gold-hover)] text-[11px] tracking-[0.22em] uppercase transition"
-          >
-            {t.sellPage.ctaButton}
-          </Link>
-        </div>
-      </section>
-    </div>
+      {/* CLOSING BAND (light blue) (11:1221) */}
+      <Band variant="light" title={s.ctaTitle} subtitle={s.ctaSubtitle}>
+        <TextLink href="/contact?subject=valuation">{s.ctaButton}</TextLink>
+      </Band>
+    </>
   );
 }
 
-// 4 icons matching the i18n trustCards order:
-// 0 Discretion · 1 International network · 2 Dedicated support · 3 Tailored approach
-function TrustIcon({ index }: { index: number }) {
-  const common = {
-    width: 24,
-    height: 24,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.6,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-  switch (index) {
-    case 0: // Discretion — shield
-      return (
-        <svg {...common}>
-          <path d="M12 3l8 3v5c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z" />
-        </svg>
-      );
-    case 1: // International network — globe
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18" />
-        </svg>
-      );
-    case 2: // Dedicated support — headphones
-      return (
-        <svg {...common}>
-          <path d="M4 14v-2a8 8 0 0116 0v2" />
-          <path d="M4 14h3v6H5a1 1 0 01-1-1v-5zM20 14h-3v6h2a1 1 0 001-1v-5z" />
-        </svg>
-      );
-    case 3: // Tailored approach — target
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <circle cx="12" cy="12" r="5" />
-          <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-        </svg>
-      );
-    default:
-      return null;
-  }
+// Figma "Timeline" (2215:2477 / mobile 2215:4857).
+// Desktop (from 1024px): 4 steps in a row, 32px apart; each = 11px champagne
+// dot, 28px, content. A 1px champagne line at 60 % joins the dots (drawn per
+// step to the next dot). Mobile: steps stacked 40px apart, dot on the left
+// (6px down, level with the label), content 20px to its right, the line runs
+// down through the dots. Dots have a 4px surface/light ring that cuts the
+// line, as in Figma. Content: "Step 01" (Caps/Eyebrow champagne), H3, body,
+// 12px apart.
+function Timeline({
+  steps,
+  label,
+}: {
+  steps: { title: string; body: string }[];
+  label: (n: number) => string;
+}) {
+  return (
+    <ol className="mt-[40px] md:mt-[56px] grid grid-cols-1 lg:grid-cols-4 gap-[40px] lg:gap-[32px]">
+      {steps.map((step, i) => {
+        const last = i === steps.length - 1;
+        return (
+          <li key={step.title} className="relative flex lg:flex-col gap-[20px] lg:gap-[28px]">
+            {!last && (
+              <span
+                aria-hidden
+                className="absolute bg-brand-accent/60 left-[5px] top-[11.5px] w-px bottom-[-51.5px] lg:left-[5.5px] lg:top-[5px] lg:bottom-auto lg:h-px lg:w-[calc(100%+32px)]"
+              />
+            )}
+            <span aria-hidden className="relative shrink-0 mt-[6px] lg:mt-0 size-[11px] rounded-full bg-brand-accent ring-4 ring-surface-light" />
+            <div className="min-w-0 flex flex-col gap-[12px]">
+              <p className="type-eyebrow text-brand-accent">{label(i + 1)}</p>
+              <h3 className="type-h3">{step.title}</h3>
+              <p className="type-body">{step.body}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
 }

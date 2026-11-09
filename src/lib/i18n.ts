@@ -397,62 +397,59 @@ const dictRaw = {
         "Une sélection de villas, mas et appartements à louer sur le Golfe de Saint-Tropez et la Côte d'Azur.",
     },
     sellPage: {
-      eyebrow: "Vendre avec Ellington",
-      titleBefore: "Vendre",
-      titleAccent: "avec nous",
-      lead: "Expertise locale. Rayonnement international. Excellence sur-mesure.",
-      cta: "Demander une estimation",
+      // Sell redesign (step 16). Figma copy is English; FR draft.
+      // TODO client review (FR draft)
       whyTitle: "Pourquoi Ellington ?",
-      whyBody1:
-        "Née au cœur du Golfe de Saint-Tropez, Ellington est plus qu'une agence immobilière — c'est une signature.",
-      whyBody2:
-        "Son fondateur, ayant grandi dans la région, possède une compréhension instinctive de chaque adresse et de chaque nuance qui définit la valeur d'un bien sur la Côte d'Azur. Cette connaissance locale approfondie, combinée à un solide réseau international, nous permet de connecter les biens d'exception aux bons acquéreurs.",
-      whyBody3:
-        "Trilingues en français, anglais et néerlandais, et soutenus par des partenaires internationaux de confiance, Ellington garantit à chaque bien une exposition ciblée et globale.",
-      whyBody4:
-        "Chaque vente est abordée avec discrétion, précision et une stratégie sur-mesure — parce qu'aucun bien ne ressemble à un autre.",
+      whyLead:
+        "Fondée en 2023 dans le Golfe de Saint-Tropez par deux associés qui partagent une passion pour l'immobilier et l'architecture.",
+      whyBody: [
+        "Depuis notre bureau de Gassin, nous parcourons chaque jour le Golfe de Saint-Tropez, des Issambres au Lavandou. Savoir quels domaines, quelles rues et quelles vues recherchent les acheteurs nous permet de fixer un prix réaliste et de trouver le bon acquéreur.",
+        "Nos acheteurs viennent du monde entier. Nous travaillons en français, en anglais et en néerlandais, et présentons chaque nouveau bien directement aux acheteurs actifs inscrits chez nous.",
+        "Nous vous disons honnêtement à quel prix votre bien se vendra selon nous — même si ce n'est pas ce que vous espériez entendre — et vous gardez toujours le dernier mot.",
+      ] as string[],
+      methodEyebrow: "Notre méthode",
       processTitle: "Notre processus de vente",
+      stepLabel: (n: number) => `Étape ${String(n).padStart(2, "0")}`,
       steps: [
         {
-          title: "Estimation sur-mesure",
-          body: "Nous établissons une estimation précise et stratégique, fondée sur notre expertise du marché, pour positionner votre bien et obtenir les meilleurs résultats.",
+          title: "Une estimation honnête",
+          body: "Nous visitons, comparons avec les ventes récentes du secteur et vous donnons un prix réaliste — en vous disant si nous jugeons les attentes trop élevées.",
         },
         {
-          title: "Exposition ciblée",
-          body: "Nous activons notre réseau international et notre base de clients privés pour atteindre des acquéreurs sérieux et pertinents.",
+          title: "La présentation",
+          body: "Dès que vous nous confiez la vente, nous préparons les photos, une description complète et les documents que les acheteurs demanderont.",
         },
         {
-          title: "Marketing sur-mesure",
-          body: "Votre bien est présenté à travers des visuels soigneusement réalisés et promu auprès d'une audience internationale qualifiée.",
+          title: "Les bons acheteurs",
+          body: "Votre bien est d'abord présenté aux acheteurs actifs inscrits chez nous, puis aux agences partenaires et aux portails internationaux.",
         },
         {
-          title: "Négociation & finalisation",
-          body: "Nous vous accompagnons à chaque étape, de l'offre à la signature, en sécurisant la transaction dans les meilleures conditions possibles.",
+          title: "Offres et signature",
+          body: "Nous accompagnons chaque visite, négocions les offres et coordonnons les diagnostics et le notaire jusqu'à la signature finale.",
         },
-      ],
+      ] as { title: string; body: string }[],
+      trustEyebrow: "Notre promesse",
       trustTitle: "Pourquoi nos clients nous font confiance",
+      trustAlt: "Vue sur le Golfe de Saint-Tropez depuis une terrasse",
       trustCards: [
         {
-          title: "Discrétion",
-          body: "Nous comprenons l'importance de la confidentialité et traitons chaque transaction avec une discrétion absolue.",
+          title: "Un prix honnête",
+          body: "Nous vous conseillons honnêtement sur le prix, quitte à ne pas être d'accord avec vous. Vous gardez le dernier mot.",
         },
         {
-          title: "Réseau international",
-          body: "Nos connexions mondiales attirent des acquéreurs qualifiés au-delà des frontières.",
+          title: "Un rapport mensuel",
+          body: "Un compte rendu écrit chaque mois : visites, retours, offres et ce que nous suggérons d'ajuster.",
         },
         {
-          title: "Accompagnement dédié",
-          body: "Une équipe réactive et attentive vous guide à chaque étape du processus.",
+          title: "La discrétion",
+          body: "Si vous le souhaitez, votre bien n'est présenté qu'à des acheteurs qualifiés — hors des portails publics.",
         },
-        {
-          title: "Approche sur-mesure",
-          body: "Chaque bien bénéficie d'une stratégie personnalisée conçue pour maximiser sa valeur.",
-        },
-      ],
+        { title: "Une petite équipe", body: "Vous traitez avec les mêmes personnes, de l'estimation à la signature." },
+      ] as { title: string; body: string }[],
       ctaTitle: "Découvrez la vraie valeur de votre bien",
       ctaSubtitle:
-        "Que vous envisagiez de vendre ou que vous exploriez simplement vos options, notre équipe est à votre disposition.",
-      ctaButton: "Demander votre estimation confidentielle",
+        "Vous pensez vendre, ou êtes simplement curieux de savoir ce que vaut votre bien aujourd'hui ? Nous vous donnerons un chiffre honnête.",
+      ctaButton: "Demander votre estimation confidentielle →",
     },
     footer: {
       tagline:
@@ -1044,62 +1041,58 @@ const dictRaw = {
         "A curated selection of villas, country houses and apartments for rent on the Gulf of Saint-Tropez and the French Riviera.",
     },
     sellPage: {
-      eyebrow: "Sell with Ellington",
-      titleBefore: "Sell",
-      titleAccent: "with us",
-      lead: "Local expertise. International reach. Tailored excellence.",
-      cta: "Request a valuation",
+      // Sell redesign (step 16): Figma "04 Sell" copy
       whyTitle: "Why Ellington?",
-      whyBody1:
-        "Born in the heart of the Gulf of Saint-Tropez, Ellington is more than a real estate agency — it is a signature.",
-      whyBody2:
-        "Its founder, having grown up in the region, offers an instinctive understanding of every address and nuance that defines the value of a property on the French Riviera. This deep local knowledge, combined with a strong international network, allows us to connect exceptional properties with the right buyers.",
-      whyBody3:
-        "Fluent in French, English, and Dutch, and supported by trusted international partners, Ellington ensures each property benefits from targeted global exposure.",
-      whyBody4:
-        "We approach every sale with discretion, precision, and a bespoke strategy — because no property is ever the same.",
+      whyLead:
+        "Founded in 2023 in the Golfe de Saint-Tropez by two partners who share a passion for property and architecture.",
+      whyBody: [
+        "From our office in Gassin we work the Golfe de Saint-Tropez every day, from Les Issambres to Le Lavandou. Knowing which domains, streets and views buyers ask for is what lets us set a realistic price and find the right buyer.",
+        "Our buyers come from all over the world. We work in French, English and Dutch, and share every new listing directly with the active buyers registered with us.",
+        "We tell you honestly what we think your property will sell for — even if it is not what you hoped to hear — and you always keep the final word.",
+      ] as string[],
+      methodEyebrow: "Our method",
       processTitle: "Our selling process",
+      stepLabel: (n: number) => `Step ${String(n).padStart(2, "0")}`,
       steps: [
         {
-          title: "Tailored valuation",
-          body: "We provide a precise and strategic valuation based on market expertise, positioning your property for optimal results.",
+          title: "Honest valuation",
+          body: "We visit, compare with recent sales in the area and give you a realistic price — and tell you if we think expectations are too high.",
         },
         {
-          title: "Targeted exposure",
-          body: "We activate our global network and private client base to reach serious and relevant buyers.",
+          title: "Presentation",
+          body: "Once you entrust us with the sale, we prepare photos, a full description and the documents buyers will ask for.",
         },
         {
-          title: "Bespoke marketing",
-          body: "Your property is presented through carefully crafted visuals and promoted to a qualified international audience.",
+          title: "The right buyers",
+          body: "Your property goes first to the active buyers registered with us, then to partner agencies and international portals.",
         },
         {
-          title: "Negotiation & completion",
-          body: "We guide you at every step from offer to signature, securing the transaction under the best possible conditions.",
+          title: "Offers & signature",
+          body: "We accompany every visit, negotiate offers and coordinate diagnostics and the notary until the final signature.",
         },
-      ],
+      ] as { title: string; body: string }[],
+      trustEyebrow: "Our promise",
       trustTitle: "Why clients trust us",
+      trustAlt: "View over the Golfe de Saint-Tropez from a terrace",
       trustCards: [
         {
+          title: "Honest pricing",
+          body: "We advise on price honestly, even if it means disagreeing with you. You keep the final word.",
+        },
+        {
+          title: "Monthly reports",
+          body: "A written update every month: visits, feedback, offers and what we suggest adjusting.",
+        },
+        {
           title: "Discretion",
-          body: "We understand the importance of privacy and handle every transaction with complete confidentiality.",
+          body: "If you prefer, your property is only shown to qualified buyers — off the public portals.",
         },
-        {
-          title: "International network",
-          body: "Our global connections bring qualified buyers beyond borders.",
-        },
-        {
-          title: "Dedicated support",
-          body: "A responsive, attentive team guiding you at every step.",
-        },
-        {
-          title: "Tailored approach",
-          body: "Every property benefits from a personalized strategy designed to maximize its value.",
-        },
-      ],
+        { title: "One small team", body: "You deal with the same people from valuation to signature." },
+      ] as { title: string; body: string }[],
       ctaTitle: "Discover the true value of your property",
       ctaSubtitle:
-        "Whether you are considering selling or simply exploring your options, our team is at your disposal.",
-      ctaButton: "Request your confidential valuation",
+        "Thinking about selling, or simply curious what your property is worth today? We will give you an honest figure.",
+      ctaButton: "Request your confidential valuation →",
     },
     footer: {
       tagline:
@@ -1694,62 +1687,59 @@ const dictRaw = {
         "Een zorgvuldig samengestelde selectie van villa's, landhuizen en appartementen te huur aan de Golf van Saint-Tropez en de Franse Rivièra.",
     },
     sellPage: {
-      eyebrow: "Verkopen met Ellington",
-      titleBefore: "Verkoop",
-      titleAccent: "met ons",
-      lead: "Lokale expertise. Internationaal bereik. Uitmuntendheid op maat.",
-      cta: "Vraag een taxatie aan",
+      // Sell redesign (step 16). Figma copy is English; NL draft.
+      // TODO client review (NL draft)
       whyTitle: "Waarom Ellington?",
-      whyBody1:
-        "Geboren in het hart van de Golf van Saint-Tropez is Ellington meer dan een vastgoedkantoor — het is een handtekening.",
-      whyBody2:
-        "De oprichter, opgegroeid in de regio, biedt een instinctief begrip van elk adres en elke nuance die de waarde van een woning aan de Franse Rivièra bepaalt. Deze diepgaande lokale kennis, gecombineerd met een sterk internationaal netwerk, stelt ons in staat uitzonderlijke woningen te verbinden met de juiste kopers.",
-      whyBody3:
-        "Vloeiend in het Frans, Engels en Nederlands, en ondersteund door vertrouwde internationale partners, zorgt Ellington ervoor dat elke woning gerichte wereldwijde zichtbaarheid geniet.",
-      whyBody4:
-        "Wij benaderen elke verkoop met discretie, precisie en een strategie op maat — omdat geen enkele woning hetzelfde is.",
+      whyLead:
+        "Opgericht in 2023 in de Golfe de Saint-Tropez door twee partners die een passie delen voor vastgoed en architectuur.",
+      whyBody: [
+        "Vanuit ons kantoor in Gassin werken we elke dag in de Golfe de Saint-Tropez, van Les Issambres tot Le Lavandou. Weten naar welke domeinen, straten en uitzichten kopers vragen, maakt het mogelijk een realistische prijs te bepalen en de juiste koper te vinden.",
+        "Onze kopers komen van over de hele wereld. We werken in het Frans, Engels en Nederlands en delen elk nieuw aanbod rechtstreeks met de actieve kopers die bij ons ingeschreven staan.",
+        "We zeggen u eerlijk voor welke prijs uw woning volgens ons zal verkopen — ook als dat niet is wat u hoopte te horen — en u houdt altijd het laatste woord.",
+      ] as string[],
+      methodEyebrow: "Onze methode",
       processTitle: "Ons verkoopproces",
+      stepLabel: (n: number) => `Stap ${String(n).padStart(2, "0")}`,
       steps: [
         {
-          title: "Taxatie op maat",
-          body: "Wij bieden een nauwkeurige en strategische taxatie op basis van marktexpertise, waarmee uw woning optimaal wordt gepositioneerd voor het beste resultaat.",
+          title: "Eerlijke waardebepaling",
+          body: "We bezoeken de woning, vergelijken met recente verkopen in de buurt en geven u een realistische prijs — en zeggen het als we de verwachtingen te hoog vinden.",
         },
         {
-          title: "Gerichte zichtbaarheid",
-          body: "Wij activeren ons wereldwijde netwerk en privécliëntenbestand om serieuze en relevante kopers te bereiken.",
+          title: "Presentatie",
+          body: "Zodra u ons de verkoop toevertrouwt, maken we foto's, een volledige beschrijving en de documenten waar kopers om zullen vragen.",
         },
         {
-          title: "Marketing op maat",
-          body: "Uw woning wordt gepresenteerd met zorgvuldig vervaardigd beeldmateriaal en gepromoot bij een gekwalificeerd internationaal publiek.",
+          title: "De juiste kopers",
+          body: "Uw woning gaat eerst naar de actieve kopers die bij ons ingeschreven staan, daarna naar partnerkantoren en internationale portalen.",
         },
         {
-          title: "Onderhandeling & afronding",
-          body: "Wij begeleiden u bij elke stap van bod tot ondertekening en stellen de transactie veilig onder de best mogelijke voorwaarden.",
+          title: "Biedingen & ondertekening",
+          body: "We begeleiden elk bezoek, onderhandelen over biedingen en coördineren de keuringen en de notaris tot aan de definitieve ondertekening.",
         },
-      ],
-      trustTitle: "Waarom cliënten ons vertrouwen",
+      ] as { title: string; body: string }[],
+      trustEyebrow: "Onze belofte",
+      trustTitle: "Waarom klanten ons vertrouwen",
+      trustAlt: "Uitzicht op de Golfe de Saint-Tropez vanaf een terras",
       trustCards: [
         {
+          title: "Eerlijke prijzen",
+          body: "We adviseren eerlijk over de prijs, ook als we het daarover niet met u eens zijn. U houdt het laatste woord.",
+        },
+        {
+          title: "Maandelijkse rapporten",
+          body: "Elke maand een schriftelijke update: bezoeken, feedback, biedingen en wat we voorstellen bij te sturen.",
+        },
+        {
           title: "Discretie",
-          body: "Wij begrijpen het belang van privacy en behandelen elke transactie met volledige vertrouwelijkheid.",
+          body: "Als u dat wenst, wordt uw woning alleen aan gekwalificeerde kopers getoond — buiten de openbare portalen.",
         },
-        {
-          title: "Internationaal netwerk",
-          body: "Onze wereldwijde connecties brengen gekwalificeerde kopers van over de grenzen.",
-        },
-        {
-          title: "Toegewijde ondersteuning",
-          body: "Een responsief, attent team dat u bij elke stap begeleidt.",
-        },
-        {
-          title: "Aanpak op maat",
-          body: "Elke woning profiteert van een persoonlijke strategie die is ontworpen om haar waarde te maximaliseren.",
-        },
-      ],
+        { title: "Eén klein team", body: "U heeft van waardebepaling tot ondertekening met dezelfde mensen te maken." },
+      ] as { title: string; body: string }[],
       ctaTitle: "Ontdek de werkelijke waarde van uw woning",
       ctaSubtitle:
-        "Of u nu overweegt te verkopen of gewoon uw opties verkent, ons team staat tot uw beschikking.",
-      ctaButton: "Vraag uw vertrouwelijke taxatie aan",
+        "Overweegt u te verkopen, of bent u gewoon benieuwd wat uw woning vandaag waard is? We geven u een eerlijk cijfer.",
+      ctaButton: "Vraag uw vertrouwelijke waardebepaling aan →",
     },
     footer: {
       tagline:
