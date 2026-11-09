@@ -387,6 +387,18 @@ const dictRaw = {
       disclaimer:
         "En soumettant ce formulaire, vous acceptez notre politique de confidentialité. Nous ne partagerons jamais vos informations personnelles avec des tiers et ne les utiliserons que pour répondre à votre demande.",
       sendMessage: "Envoyer le message",
+      // Contact redesign (step 22). TODO client review (FR draft)
+      privacyPhrase: "politique de confidentialité",
+      requestLabel: "Votre demande",
+      reqValuation: "Demande d'estimation",
+      reqConsultation: "Demande de consultation",
+      reqConsultationIn: (place: string) => `Consultation au sujet de ${place}`,
+      reqProperty: (ref: string) => `Bien ${ref}`,
+      msgValuation: "Je souhaite faire estimer mon bien.",
+      msgConsultation: "Je souhaite échanger avec un conseiller.",
+      msgConsultationIn: (place: string) => `Je souhaite échanger avec un conseiller au sujet de ${place}.`,
+      msgProperty: (ref: string) => `Je suis intéressé(e) par le bien ${ref}.`,
+      sendError: "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
       consent:
         "J'accepte que mes informations soient utilisées pour me recontacter dans le cadre de ma demande.",
     },
@@ -984,11 +996,11 @@ const dictRaw = {
       titleAccent: "touch",
       subtitle:
         "We're here to answer your questions and guide you through your luxury real estate journey.",
-      formTitle: "Send Us a Message",
+      formTitle: "Send us a message",
       formSubtitle:
         "Fill out the form below and a member of our team will respond within 24 hours.",
-      detailsTitle: "Contact Information",
-      hoursTitle: "Office Hours",
+      detailsTitle: "Contact information",
+      hoursTitle: "Office hours",
       advisorBlock: {
         eyebrow: "Your contact",
         role: "Portfolio director",
@@ -1031,6 +1043,18 @@ const dictRaw = {
       disclaimer:
         "By submitting this form, you agree to our privacy policy. We will never share your personal information with third parties and will only use it to respond to your inquiry.",
       sendMessage: "Send message",
+      // Contact redesign (step 22)
+      privacyPhrase: "privacy policy",
+      requestLabel: "Your request",
+      reqValuation: "Valuation request",
+      reqConsultation: "Consultation request",
+      reqConsultationIn: (place: string) => `Consultation about ${place}`,
+      reqProperty: (ref: string) => `Property ${ref}`,
+      msgValuation: "I would like a valuation of my property.",
+      msgConsultation: "I would like to speak with an advisor.",
+      msgConsultationIn: (place: string) => `I would like to speak with an advisor about ${place}.`,
+      msgProperty: (ref: string) => `I am interested in property ${ref}.`,
+      sendError: "Sorry, something went wrong. Please try again or email us directly.",
       consent:
         "I agree that my information may be used to contact me in connection with my enquiry.",
     },
@@ -1678,6 +1702,18 @@ const dictRaw = {
       disclaimer:
         "Door dit formulier te verzenden, gaat u akkoord met ons privacybeleid. Wij delen uw persoonlijke gegevens nooit met derden en gebruiken deze uitsluitend om op uw aanvraag te reageren.",
       sendMessage: "Bericht versturen",
+      // Contact redesign (step 22). TODO client review (NL draft)
+      privacyPhrase: "privacybeleid",
+      requestLabel: "Uw aanvraag",
+      reqValuation: "Aanvraag waardebepaling",
+      reqConsultation: "Aanvraag adviesgesprek",
+      reqConsultationIn: (place: string) => `Adviesgesprek over ${place}`,
+      reqProperty: (ref: string) => `Woning ${ref}`,
+      msgValuation: "Ik wil graag een waardebepaling van mijn woning.",
+      msgConsultation: "Ik wil graag met een adviseur spreken.",
+      msgConsultationIn: (place: string) => `Ik wil graag met een adviseur spreken over ${place}.`,
+      msgProperty: (ref: string) => `Ik ben geïnteresseerd in woning ${ref}.`,
+      sendError: "Er ging iets mis. Probeer het opnieuw of mail ons rechtstreeks.",
       consent:
         "Ik ga ermee akkoord dat mijn gegevens worden gebruikt om contact met mij op te nemen in verband met mijn aanvraag.",
     },
