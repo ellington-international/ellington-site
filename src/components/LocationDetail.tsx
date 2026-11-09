@@ -1,16 +1,29 @@
 "use client";
 
-import { PageHero } from "./PageHero";
-import { TextLink } from "./ui/TextLink";
-import { villageTagline } from "@/lib/properties";
 import Image from "next/image";
-import Link from "@/components/LocaleLink";
-import { useLanguage } from "./LanguageProvider";
+import { PageHero } from "./PageHero";
 import { PropertyCard } from "./PropertyCard";
-import { LOCATION_CONTENT } from "@/lib/location-content";
+import { useLanguage } from "./LanguageProvider";
+import { TextLink } from "./ui/TextLink";
+import { Stat } from "./ui/SmallParts";
+import { Band } from "./ui/Band";
+import { cardGridCls } from "./ui/card";
+import { villageTagline } from "@/lib/properties";
+import { VILLAGE_CONTENT } from "@/lib/village-content";
 import type { Location, Property } from "@/lib/types";
-import { cardGridCls } from "@/components/ui/card";
 
+// Village page template, Figma "06 Village" (12:2 / mobile 12:164) and
+// "06.2–06.9" (one per village). Content: src/lib/village-content.ts (client
+// texts, EN / FR + NL draft).
+//   Hero: village photo, name, the village's tagline.
+//   The village: back link, "The village" + name | intro (Text/Subtitle) +
+//     Average price / Properties; photo mosaic below.
+//   List sections (heading left, hairline list right): Things to see & do,
+//     Experiences, Our favourites (hidden while not provided), Investment &
+//     market (Saint-Tropez only). Backgrounds alternate light / white.
+//   Blue band "Your local expert in this region" + Request a consultation.
+//   Properties in this region: up to 3 listings of this village, or the
+//     empty state.
 export function LocationDetail({
   location: loc,
   properties = [],
@@ -18,246 +31,127 @@ export function LocationDetail({
   location: Location;
   properties?: Property[];
 }) {
-  const { lang } = useLanguage();
-  const isEn = lang === "en";
-  // Rich location content only exists in fr/en — nl falls back to fr.
-  const pick = (l: { fr: string; en: string }) => (isEn ? l.en : l.fr);
-  const rich = LOCATION_CONTENT[loc.slug];
+  const { t, lang } = useLanguage();
+  const v = t.village;
+  const c = VILLAGE_CONTENT[loc.slug];
 
-  const tr = (fr: string, en: string, nl: string) =>
-    lang === "en" ? en : lang === "nl" ? nl : fr;
+  const sections: { eyebrow: string; title: string; text?: string; items: string[] }[] = [];
+  if (c) {
+    sections.push({ eyebrow: v.seeDoEyebrow, title: v.seeDoTitle, items: c.seeDo[lang] });
+    sections.push({ eyebrow: v.experiencesEyebrow, title: v.experiencesTitle, items: c.experiences[lang] });
+    // Names of places on one line, separated by dots
+    if (c.favourites?.length) sections.push({ eyebrow: v.favouritesEyebrow, title: v.favouritesTitle, items: [c.favourites.join(" · ")] });
+    if (c.investment)
+      sections.push({ eyebrow: v.investmentEyebrow, title: v.investmentTitle, text: c.investment.intro[lang], items: c.investment.items[lang] });
+  }
 
-  const intro = rich
-    ? pick(rich.intro)
-    : isEn
-      ? loc.descriptionEn ?? loc.description
-      : loc.description;
-  const mainImage = rich?.mainImage ?? loc.image;
+  const consultHref = `/contact?subject=consultation&city=${encodeURIComponent(loc.name)}`;
   const propsHref = `/properties?city=${encodeURIComponent(loc.name)}`;
 
   return (
-    <div>
-      {/* HERO — Figma "06 Village" › Hero (12:3): village name + tagline */}
-      {/* Figma: the subtitle is the village's tagline (FR / EN / NL) */}
-      <PageHero
-        image={mainImage}
-        imageAlt={loc.name}
-        title={loc.name}
-        subtitle={villageTagline(loc, lang)}
-      />
+    <>
+      <PageHero image={loc.image} imageAlt={loc.name} title={loc.name} subtitle={c?.tagline[lang] ?? villageTagline(loc, lang)} />
 
-      {/* BACK LINK */}
-      {/* Same text link as "← Back to portfolio" on the property page */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-8 flex">
-        <TextLink href="/locations">
-          {tr("← Retour aux régions", "← Back to locations", "← Terug naar locaties")}
-        </TextLink>
-      </div>
-
-      {/* STATS PANEL (light-blue) + INTRO */}
-      <section className="grid md:grid-cols-2">
-        <div className="bg-[var(--panel)] px-6 md:px-16 py-16 md:py-20 flex items-center">
-          <div className="grid grid-cols-2 gap-x-10 gap-y-12 w-full max-w-md mx-auto">
-            {(rich?.overview ?? []).map((o, i) => (
-              <div
-                key={i}
-                data-reveal
-                style={{ "--reveal-delay": `${i * 70}ms` } as React.CSSProperties}
-              >
-                <p className="font-serif text-lg md:text-xl mb-2 leading-snug">
-                  {pick(o.value)}
-                </p>
-                <p className="text-[10px] tracking-[0.22em] uppercase text-muted-strong">
-                  {pick(o.label)}
-                </p>
-              </div>
-            ))}
-            {!rich && (
-              <div data-reveal>
-                <p className="font-serif text-4xl md:text-5xl mb-2">
-                  {loc.propertyCount ? `${loc.propertyCount}+` : "—"}
-                </p>
-                <p className="text-[10px] tracking-[0.22em] uppercase text-muted-strong">
-                  {tr("Propriétés", "Properties", "Panden")}
-                </p>
-              </div>
-            )}
+      {/* THE VILLAGE (12:7 / 12:169) */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y">
+          <div className="flex">
+            <TextLink href="/locations">{v.back}</TextLink>
           </div>
-        </div>
-        <div className="px-6 md:px-16 py-16 md:py-20 flex flex-col justify-center" data-reveal>
-          <h2 className="font-serif text-2xl md:text-3xl tracking-[0.1em] uppercase mb-7">
-            {loc.name}
-          </h2>
-          <p className="text-muted-strong leading-[1.9] text-[14px] max-w-xl">
-            {intro}
-          </p>
+          <div className="mt-[24px] md:mt-[32px] grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px]">
+            <div className="flex flex-col gap-[20px] md:gap-[24px]">
+              <p className="type-eyebrow">{v.eyebrow}</p>
+              <h2 className="type-h2">{loc.name}</h2>
+            </div>
+            <div className="flex flex-col gap-[32px]">
+              <p className="type-subtitle">{c?.intro[lang] ?? (lang === "fr" ? loc.description : loc.descriptionEn ?? loc.description)}</p>
+              {c && (
+                <div className="grid grid-cols-2 gap-[20px] md:gap-[32px]">
+                  <Stat figure={c.stats.averagePrice} label={v.averagePrice} />
+                  <Stat figure={c.stats.properties} label={v.properties} />
+                </div>
+              )}
+            </div>
+          </div>
+          {c && c.gallery.length > 0 && <Mosaic photos={c.gallery} name={loc.name} />}
         </div>
       </section>
 
-      {/* IMAGE BAND */}
-      <section className="relative h-[40svh] min-h-[280px] overflow-hidden">
-        <Image src={mainImage} alt={loc.name} fill sizes="100vw" className="object-cover" />
-      </section>
-
-      {rich && (
-        <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-          {/* ART DE VIVRE — paragraph + bulleted list (kept content) */}
-          <ContentSection
-            label={tr("Art de vivre", "Lifestyle", "Levenskunst")}
-            heading={tr("Culture & Expériences", "Culture & Experiences", "Cultuur & Belevingen")}
-          >
-            <p className="text-muted-strong leading-[1.9] text-[14px] max-w-3xl mb-8">
-              {(isEn ? rich.lifestyle.en : rich.lifestyle.fr)[0]}
-            </p>
-            <ul className="max-w-3xl">
-              {rich.activities.map((a, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-3 py-4 border-b border-[var(--border)] text-[14px] text-foreground"
-                >
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[var(--gold)] flex-none" />
-                  {pick(a.title)}
+      {/* LIST SECTIONS (12:32 · 12:49 · 12:62) */}
+      {sections.map((s, i) => (
+        <section key={s.title} className={i % 2 === 0 ? "bg-surface-light" : "bg-surface"}>
+          <div className="container-wrap section-y grid grid-cols-1 lg:grid-cols-2 gap-[40px] lg:gap-[96px]">
+            <div className="flex flex-col gap-[20px] md:gap-[24px]">
+              <p className="type-eyebrow">{s.eyebrow}</p>
+              <h2 className="type-h2">{s.title}</h2>
+              {s.text && <p className="type-body">{s.text}</p>}
+            </div>
+            <ul className="border-t border-hairline">
+              {s.items.map((item) => (
+                <li key={item} className="py-[12px] border-b border-hairline type-body">
+                  {item}
                 </li>
               ))}
             </ul>
-          </ContentSection>
-
-          {/* POINTS FORTS — chips */}
-          {rich.highlights.length > 0 && (
-            <ContentSection
-              label={tr("À découvrir", "Discover", "Ontdekken")}
-              heading={tr("Le territoire", "The area", "De omgeving")}
-            >
-              <p className="text-muted-strong leading-[1.9] text-[14px] max-w-3xl mb-8">
-                {pick(rich.gastronomy)}
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {rich.highlights.map((h, i) => (
-                  <Chip key={i}>{pick(h.title)}</Chip>
-                ))}
-              </div>
-            </ContentSection>
-          )}
-
-          {/* MARCHÉ — chips */}
-          <ContentSection
-            label={tr("Marché", "Market", "Markt")}
-            heading={tr("Investissement & Marché", "Investment & Market", "Investering & Markt")}
-            last
-          >
-            <p className="text-muted-strong leading-[1.9] text-[14px] max-w-3xl mb-8">
-              {tr(
-                `Biens d'exception au fort potentiel patrimonial à ${loc.name}.`,
-                `Exceptional properties with strong asset potential in ${loc.name}.`,
-                `Uitzonderlijke panden met sterk vermogenspotentieel in ${loc.name}.`,
-              )}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {rich.realEstate.map((r, i) => (
-                <Chip key={i}>{pick(r)}</Chip>
-              ))}
-            </div>
-          </ContentSection>
-        </div>
-      )}
-
-      {/* EXPERT CTA — navy band */}
-      <section className="relative bg-[var(--accent)] text-white py-16 md:py-20 px-6 md:px-10 mt-4">
-        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-          <div>
-            <h2 className="font-serif italic text-2xl md:text-3xl mb-3">
-              {tr(
-                "Votre expert local dans cette région",
-                "Your local expert in this region",
-                "Uw lokale expert in deze regio",
-              )}
-            </h2>
-            <p className="text-white/70 text-[14px] max-w-xl">
-              {tr(
-                "Notre équipe connaît chaque rue, chaque vue, chaque bien exceptionnel.",
-                "Our team knows every street, every view, every exceptional property.",
-                "Ons team kent elke straat, elk uitzicht, elk uitzonderlijk pand.",
-              )}
-            </p>
-          </div>
-          <Link
-            href={`/contact?city=${encodeURIComponent(loc.name)}`}
-            className="flex-none self-start md:self-auto px-[60px] py-4 border border-white/40 text-white hover:bg-white hover:text-[var(--accent)] text-[11px] tracking-[0.22em] uppercase transition"
-          >
-            {tr("Demander une consultation", "Request a consultation", "Vraag een consult aan")}
-          </Link>
-        </div>
-      </section>
-
-      {/* PROPERTIES IN THIS REGION */}
-      {properties.length > 0 && (
-        <section className="max-w-[1400px] mx-auto px-6 md:px-10 py-20 md:py-28">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" data-reveal>
-            <h2 className="type-h2">
-              {tr(
-                "Propriétés dans cette région",
-                "Properties in this region",
-                "Panden in deze regio",
-              )}
-            </h2>
-            <Link
-              href={propsHref}
-              className="self-start md:self-end text-[11px] tracking-[0.22em] uppercase text-accent hover:text-link border-b border-accent pb-1"
-            >
-              {tr("Voir tout →", "View all →", "Alles bekijken →")}
-            </Link>
-          </div>
-          <div className={cardGridCls}>
-            {properties.map((p, i) => (
-              <div
-                key={p.id}
-                data-reveal
-                style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
-              >
-                <PropertyCard property={p} priority={i < 3} />
-              </div>
-            ))}
           </div>
         </section>
+      ))}
+
+      {/* BAND (Ellington blue) (12:77) */}
+      <Band variant="blue" title={v.bandTitle} subtitle={v.bandSubtitle}>
+        <TextLink href={consultHref} tone="white">
+          {v.bandCta}
+        </TextLink>
+      </Band>
+
+      {/* PROPERTIES IN THIS REGION (12:84 / 12:245) */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-[20px]">
+            <h2 className="type-h2">{v.propertiesTitle}</h2>
+            <TextLink href={propsHref} className="self-start md:self-auto">
+              {v.viewAll}
+            </TextLink>
+          </div>
+          {properties.length > 0 ? (
+            <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
+              {properties.map((p) => (
+                <PropertyCard key={p.id} property={p} />
+              ))}
+            </div>
+          ) : (
+            <p className="type-body mt-[40px] md:mt-[56px]">{v.empty}</p>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}
+
+// Figma "Mosaic (3 photos)" (12:24 / mobile 12:186): 120px below the text
+// (mobile 80), 12px gaps. Desktop: large photo (819 × 620) + two stacked on
+// the right (409 × 304); mobile: large photo (334 × 262) + two side by side
+// below (161 × 121). With 2 photos the right column holds one tall photo
+// (mobile: the second photo full width below).
+function Mosaic({ photos, name }: { photos: string[]; name: string }) {
+  const [main, ...rest] = photos.slice(0, 3);
+  const img = (src: string, sizes: string) => <Image src={src} alt={name} fill sizes={sizes} className="object-cover" />;
+  return (
+    <div className="mt-[80px] md:mt-[120px] grid grid-cols-2 md:grid-cols-[819fr_409fr] gap-[12px]">
+      <div className="relative col-span-2 md:col-span-1 md:row-span-2 aspect-[334/262] md:aspect-[819/620]">
+        {img(main, "(min-width: 768px) 66vw, 100vw")}
+      </div>
+      {rest.length === 2 &&
+        rest.map((src) => (
+          <div key={src} className="relative aspect-[161/121] md:aspect-[409/304]">
+            {img(src, "(min-width: 768px) 33vw, 50vw")}
+          </div>
+        ))}
+      {rest.length === 1 && (
+        <div className="relative col-span-2 md:col-span-1 md:row-span-2 aspect-[334/262] md:aspect-auto">
+          {img(rest[0], "(min-width: 768px) 33vw, 100vw")}
+        </div>
       )}
     </div>
-  );
-}
-
-// Section with a small left-aligned label and a serif heading (prototype).
-function ContentSection({
-  label,
-  heading,
-  children,
-  last = false,
-}: {
-  label: string;
-  heading: string;
-  children: React.ReactNode;
-  last?: boolean;
-}) {
-  return (
-    <section
-      className={`grid md:grid-cols-[180px_1fr] gap-6 md:gap-10 py-14 md:py-16 ${
-        last ? "" : "border-b border-[var(--border)]"
-      }`}
-      data-reveal
-    >
-      <p className="text-[10px] tracking-[0.28em] uppercase text-muted pt-2">
-        {label}
-      </p>
-      <div>
-        <h2 className="type-h3 mb-6">{heading}</h2>
-        {children}
-      </div>
-    </section>
-  );
-}
-
-function Chip({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-block border border-[var(--border)] px-5 py-2.5 text-[11px] tracking-[0.18em] uppercase text-muted-strong">
-      {children}
-    </span>
   );
 }
