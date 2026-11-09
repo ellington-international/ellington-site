@@ -1,187 +1,146 @@
 "use client";
 
-import { PageHero } from "@/components/PageHero";
 import Image from "next/image";
-import Link from "@/components/LocaleLink";
+import { PageHero } from "@/components/PageHero";
 import { useLanguage } from "@/components/LanguageProvider";
+import { Stat } from "@/components/ui/SmallParts";
+import { Band } from "@/components/ui/Band";
+import { ButtonLink } from "@/components/ui/Button";
+import { cardGridCls } from "@/components/ui/card";
 
-// Gulf of Saint-Tropez locality strip shown over the image band (prototype).
-const LOCATION_STRIP = [
-  "Saint-Tropez",
-  "Ramatuelle",
-  "Gassin",
-  "Grimaud",
-  "Port-Grimaud",
-  "Sainte-Maxime",
-  "Croix-Valmer",
-  "Cavalaire",
-  "Rayol-Canadel",
-];
+// Figma "07 About — Desktop" (13:2) / "— Mobile" (13:171).
+// The three white sections after the intro (Our story, What we stand for)
+// have no top padding: they follow the previous section's 144px (mobile 96)
+// bottom padding, as in Figma, so the gaps between them stay "reduced".
+
+// Figma photo strip caption (village names, the same in every language)
+const STRIP_VILLAGES =
+  "Saint-Tropez · Ramatuelle · Gassin · Grimaud · Port-Grimaud · Sainte-Maxime · Croix-Valmer · Cavalaire · Rayol-Canadel";
 
 export default function AboutPage() {
   const { t } = useLanguage();
+  const a = t.aboutPage;
+  const [first, ...moreStory] = a.story;
+
   return (
-    <div>
-      {/* HERO — Figma "07 About" › Hero (13:3); photo from Figma for now */}
+    <>
+      {/* HERO (13:3) — client photo */}
       <PageHero image="/heroes/about.jpg" title={t.heroes.aboutTitle} subtitle={t.heroes.aboutSubtitle} />
 
-      {/* EXPERT BAND (navy) — title placeholder replacing the long intro text */}
-      <section className="bg-[var(--accent)] text-white py-16 md:py-20 px-6" data-reveal>
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="block w-10 h-px bg-[var(--gold)] mx-auto mb-10" />
-          <h2 className="font-serif italic text-3xl md:text-5xl leading-[1.15] mb-8">
-            {t.home.expertTitle}
-          </h2>
-          <p className="font-serif italic text-base md:text-lg text-white/70">
-            {t.aboutPage.bandSubtitle}
-          </p>
-        </div>
-      </section>
-
-      {/* STATS (light-blue panel) + STORY */}
-      <section className="grid md:grid-cols-2">
-        <div className="bg-[var(--panel)] px-6 md:px-16 py-16 md:py-24 flex items-center">
-          <div className="grid grid-cols-2 gap-x-10 gap-y-14 w-full max-w-md mx-auto">
-            {t.aboutPage.stats.map((s, i) => (
-              <div
-                key={i}
-                data-reveal
-                style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
-              >
-                <p className="font-serif text-4xl md:text-5xl mb-2">{s.value}</p>
-                <p className="text-[10px] tracking-[0.22em] uppercase text-muted-strong">
-                  {s.label}
-                </p>
-              </div>
-            ))}
+      {/* INTRO + KEY FIGURES (13:7): H2 + subtitle (max 640), four Stats 72px
+          below (mobile 48), 4 columns (mobile 2 × 2) */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y">
+          <div className="max-w-[640px] flex flex-col gap-[20px] md:gap-[24px]">
+            <h2 className="type-h2">{a.introTitle}</h2>
+            <p className="type-subtitle">{a.introSubtitle}</p>
           </div>
-        </div>
-        <div className="px-6 md:px-16 py-16 md:py-24 flex flex-col justify-center" data-reveal>
-          <h2 className="font-serif text-2xl md:text-3xl tracking-[0.12em] uppercase mb-8">
-            {t.aboutPage.storyTitle}
-          </h2>
-          <div className="space-y-5 text-muted-strong leading-[1.85] text-[14px] max-w-xl">
-            <p>{t.aboutPage.lead}</p>
-            <p>{t.aboutPage.body}</p>
-            <p>{t.aboutPage.body2}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* VALUES — numbered cards, consistent grid borders */}
-      <section className="px-6 md:px-10 py-24 md:py-32">
-        <div className="max-w-[1400px] mx-auto">
-          <SectionHeading>{t.aboutPage.commitTitle}</SectionHeading>
-          {/* Separate bordered cards WITH gaps between them (client) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {t.aboutPage.values.map((v, i) => (
-              <div
-                key={i}
-                data-reveal
-                style={{
-                  "--reveal-delay": `${(i % 3) * 80}ms`,
-                } as React.CSSProperties}
-                className="border border-[var(--border)] p-8 md:p-10"
-              >
-                <span className="block text-xs tracking-[0.3em] text-[var(--gold)] mb-5 tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="type-card-title mb-3">{v.title}</h3>
-                <p className="text-sm text-muted-strong leading-relaxed">
-                  {v.body}
-                </p>
-              </div>
+          <div className="mt-[48px] md:mt-[72px] grid grid-cols-2 lg:grid-cols-4 gap-x-[20px] md:gap-x-[32px] gap-y-[24px]">
+            {a.stats.map((s) => (
+              <Stat key={s.label} figure={s.value} label={s.label} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* IMAGE BAND — Gulf localities */}
-      <section className="relative h-[42svh] min-h-[300px] overflow-hidden">
-        <Image
-          src="/locations/riviera.jpg"
-          alt="Golfe de Saint-Tropez"
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
-        <div className="absolute inset-x-0 bottom-0 p-8 md:p-14">
-          <p className="max-w-4xl text-[10px] md:text-[11px] tracking-[0.28em] uppercase text-white/85 leading-loose">
-            {LOCATION_STRIP.join("  ·  ")}
-          </p>
+      {/* OUR STORY (2158:1500): big "2023" (Cormorant Bold Italic 180 /
+          mobile 110, champagne) + "Our story" and subtitle; then a centred
+          640px column: first paragraph with a drop-cap E (96 / 72px), the
+          portrait photo (right-aligned, 80px from the edge; mobile full width),
+          then two paragraphs, 56px apart (mobile 40). */}
+      <section className="bg-surface">
+        <div className="container-wrap pb-section">
+          <div className="flex flex-col md:flex-row md:items-center gap-[16px] md:gap-[48px]">
+            <p className="font-serif font-bold italic text-[110px] md:text-[180px] leading-[0.9] text-brand-accent" aria-hidden>
+              2023
+            </p>
+            <div className="max-w-[520px] flex flex-col gap-[12px]">
+              <h2 className="type-eyebrow">{a.storyEyebrow}</h2>
+              <p className="type-subtitle">{a.storySubtitle}</p>
+            </div>
+          </div>
+          <div className="mt-[48px] md:mt-[72px] flex flex-col items-center gap-[40px] md:gap-[56px]">
+            <p className="w-full max-w-[640px] flex items-start gap-[14px] type-body">
+              <span className="font-serif font-medium italic text-[72px] md:text-[96px] leading-[0.8] text-brand-blue shrink-0" aria-hidden>
+                {first.charAt(0)}
+              </span>
+              <span>
+                <span className="sr-only">{first.charAt(0)}</span>
+                {first.slice(1)}
+              </span>
+            </p>
+            <div className="w-full flex justify-end md:pr-[80px]">
+              <div className="relative w-full md:w-[460px] aspect-[334/400] md:aspect-[460/560]">
+                <Image src="/about/story.jpg" alt={a.storyAlt} fill sizes="(min-width: 768px) 460px, 100vw" className="object-cover" />
+              </div>
+            </div>
+            {moreStory.map((p) => (
+              <p key={p.slice(0, 24)} className="w-full max-w-[640px] type-body">
+                {p}
+              </p>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* TEAM */}
-      <section className="px-6 md:px-10 py-24 md:py-32">
-        <div className="max-w-[1400px] mx-auto">
-          <SectionHeading>{t.aboutPage.teamEyebrow}</SectionHeading>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 max-w-5xl mx-auto">
-            {t.aboutPage.team.map((member) => (
-              <figure key={member.name} data-reveal>
-                <div className="relative aspect-[4/5] overflow-hidden bg-[var(--panel)] mb-5">
-                  <Image
-                    src={member.photo}
-                    alt={member.name}
-                    fill
-                    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover"
-                  />
+      {/* WHAT WE STAND FOR (2158:1514): eyebrow, three rows with hairlines:
+          the word in H1 italic left, text (max 380) right-aligned; mobile
+          word above the text, 12px apart. */}
+      <section className="bg-surface">
+        <div className="container-wrap pb-section">
+          <h2 className="type-eyebrow">{a.valuesEyebrow}</h2>
+          <ul className="mt-[40px] md:mt-[56px] border-b border-hairline">
+            {a.values.map((v) => (
+              <li
+                key={v.title}
+                className="border-t border-hairline py-[28px] md:py-[40px] flex flex-col md:flex-row md:items-center md:justify-between gap-[12px] md:gap-[40px]"
+              >
+                <h3 className="type-h1">{v.title}</h3>
+                <p className="type-body md:text-right md:max-w-[380px]">{v.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* PHOTO STRIP (13:60): 480px (mobile 280), 30 % overlay, the village
+          names in Caps/Label white, 32px from the bottom. Photo from Figma. */}
+      <section className="relative h-[280px] md:h-[480px] overflow-hidden on-photo flex items-end">
+        <Image src="/about/strip.jpg" alt="" fill sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-black/30" aria-hidden />
+        <p className="relative container-wrap pb-[32px] type-label text-white">{STRIP_VILLAGES}</p>
+      </section>
+
+      {/* THE TEAM (13:63): H2, cards 56px below (mobile 40): photo 4:5,
+          30px, name (H3), role (Caps/Eyebrow), bio — 10px apart. Photo 4:5
+          (mobile 334 × 438, as in Figma). */}
+      <section className="bg-surface">
+        <div className="container-wrap section-y">
+          <h2 className="type-h2">{a.teamTitle}</h2>
+          <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
+            {a.team.map((m) => (
+              <article key={m.name} className="flex flex-col gap-[10px]">
+                <div className="relative aspect-[334/438] md:aspect-[4/5] overflow-hidden bg-surface-light">
+                  <Image src={m.photo} alt={m.name} fill sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover" />
                 </div>
-                <figcaption>
-                  <p className="font-serif text-xl mb-1">{member.name}</p>
-                  <p className="text-[10px] tracking-[0.22em] uppercase text-[var(--gold)] mb-3">
-                    {member.role}
-                  </p>
-                  <p className="text-sm text-muted leading-relaxed">
-                    {member.bio}
-                  </p>
-                </figcaption>
-              </figure>
+                <h3 className="type-h3 mt-[20px]">{m.name}</h3>
+                <p className="type-eyebrow">{m.role}</p>
+                <p className="type-body">{m.bio}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA (navy) — gold + outline buttons */}
-      <section className="bg-[var(--accent)] text-white py-16 md:py-20 px-6" data-reveal>
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="type-h2 text-white mb-6">
-            {t.aboutPage.ctaTitleBefore} {t.aboutPage.ctaTitleAccent}
-          </h2>
-          <p className="font-serif italic text-base md:text-lg text-white/75 mb-10">
-            {t.aboutPage.ctaBody}
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link
-              href="/properties"
-              className="px-[60px] py-4 bg-[var(--gold)] text-[var(--accent)] hover:bg-[var(--gold-hover)] text-[11px] tracking-[0.22em] uppercase transition"
-            >
-              {t.aboutPage.ctaPrimary}
-            </Link>
-            <Link
-              href="/contact"
-              className="px-[60px] py-4 border border-white/40 text-white hover:bg-white hover:text-[var(--accent)] text-[11px] tracking-[0.22em] uppercase transition"
-            >
-              {t.common.contactUs}
-            </Link>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-// Centered serif heading flanked by thin gold hairlines (prototype).
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-5 md:gap-8 mb-14" data-reveal>
-      <span className="flex-1 h-px bg-[var(--gold)]/40" />
-      <h2 className="font-serif text-2xl md:text-3xl tracking-[0.14em] uppercase text-center">
-        {children}
-      </h2>
-      <span className="flex-1 h-px bg-[var(--gold)]/40" />
-    </div>
+      {/* CLOSING BAND (light blue) (13:88): Primary + Outline */}
+      <Band variant="light" title={a.ctaTitle} subtitle={a.ctaBody}>
+        <ButtonLink href="/properties" variant="primary">
+          {a.ctaPrimary}
+        </ButtonLink>
+        <ButtonLink href="/contact" variant="outline">
+          {t.common.contactUs}
+        </ButtonLink>
+      </Band>
+    </>
   );
 }

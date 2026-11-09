@@ -263,57 +263,40 @@ const dictRaw = {
         "Des villages perchés de Gassin et Ramatuelle aux canaux de Port Grimaud et aux baies plus paisibles de Cavalaire et du Rayol-Canadel, chaque village du Golfe a son caractère, son rythme et son type de maison. Choisissez un village pour découvrir la vie qu'on y mène et les biens que nous y représentons actuellement.",
     },
     aboutPage: {
-      eyebrow: "À propos d'Ellington",
-      titleBefore: "À propos",
-      titleAccent: "d'Ellington",
-      heroSubtitle:
-        "Née au cœur du Golfe de Saint-Tropez, bâtie sur la confiance.",
-      dividerLabel: "Notre signature",
-      bandSubtitle:
-        "Ellington est plus qu'une agence immobilière — c'est une signature.",
-      storyTitle: "Notre histoire",
-      lead: "Née au cœur du Golfe de Saint-Tropez, Ellington est plus qu'une agence immobilière — c'est une signature. Son fondateur, ayant grandi dans la région, possède une connaissance intime et instinctive de chaque secteur, chaque adresse et chaque détail subtil qui définit la valeur d'un bien sur la Côte d'Azur.",
-      body: "Animée par un esprit profondément international, Ellington s'adresse à une clientèle sans frontières — trilingue français, anglais et néerlandais, avec de solides relations au sein d'un réseau de partenaires internationaux.",
-      body2: "Choisir Ellington, c'est s'associer à un conseiller de confiance combinant des racines locales profondes, un rayonnement international et l'excellence du service.",
+      // About redesign (step 19). Figma copy is English; FR draft.
+      // TODO client review (FR draft)
+      introTitle: "Petite par choix, locale par nature.",
+      introSubtitle: "Une agence jeune et indépendante pour des biens d'exception sur la Riviera.",
       stats: [
-        { value: "30+", label: "Ans sur la Riviera" },
-        { value: "10+", label: "Pays internationaux" },
-        { value: "9", label: "Régions exclusives" },
-        { value: "3", label: "Langues parlées" },
+        { value: "2023", label: "Fondée dans le Golfe" },
+        { value: "3", label: "Langues · FR, EN, NL" },
+        { value: "9", label: "Villages du Golfe" },
+        { value: "Mensuel", label: "Compte rendu écrit aux propriétaires" },
       ],
-      valuesEyebrow: "Nos valeurs",
-      valuesTitleBefore: "Nos",
-      valuesTitleAccent: "valeurs",
-      commitTitle: "Ce pour quoi nous nous engageons",
+      storyEyebrow: "Notre histoire",
+      storySubtitle: "Fondée dans le Golfe de Saint-Tropez par deux associés passionnés d'immobilier et d'architecture.",
+      story: [
+        "Ellington a été fondée en 2023 par deux associés qui partagent une passion pour l'immobilier et l'architecture. Depuis notre bureau de Gassin, nous couvrons le Golfe de Saint-Tropez, des Issambres au Lavandou, et accompagnons des biens d'exception plus loin sur la Riviera.",
+        "Nos clients viennent du monde entier. Nous travaillons en français, en anglais et en néerlandais, pour que rien ne se perde entre acheteur, vendeur et notaire.",
+        "Notre approche est simple : être disponibles, être discrets et donner des conseils honnêtes. Si nous pensons qu'un prix n'est pas juste, nous vous le disons — la décision vous appartient toujours.",
+      ] as string[],
+      storyAlt: "Une ruelle du village de Gassin",
+      valuesEyebrow: "Ce qui nous guide",
       values: [
         {
-          title: "Intégrité",
-          body: "Transparence totale dans chaque transaction, chaque conversation.",
-        },
-        {
-          title: "Excellence",
-          body: "La perfection dans chaque détail, de la première consultation à la signature finale.",
+          title: "Honnêteté",
+          body: "Des réponses franches sur le prix et le marché, même quand elles ne sont pas les plus faciles. Vous gardez le dernier mot.",
         },
         {
           title: "Discrétion",
-          body: "Toutes les demandes traitées avec une absolue confidentialité et professionnalisme.",
+          body: "Vos projets, votre bien et vos informations restent entre nous — hors des portails publics si vous le souhaitez.",
         },
         {
-          title: "Rayonnement mondial",
-          body: "Notre réseau vous connecte aux acquéreurs les plus qualifiés du monde entier.",
+          title: "Ancrage local",
+          body: "Nous vivons et travaillons dans le Golfe et en connaissons les villages, les domaines et les vues.",
         },
-        {
-          title: "Racines locales",
-          body: "Trois décennies à vivre et respirer le marché de la Riviera.",
-        },
-        {
-          title: "Service bespoke",
-          body: "Chaque client, chaque bien, chaque stratégie — entièrement sur-mesure.",
-        },
-      ],
-      teamEyebrow: "L'équipe",
-      teamTitleBefore: "Notre",
-      teamTitleAccent: "équipe",
+      ] as { title: string; body: string }[],
+      teamTitle: "L'équipe",
       team: [
         {
           name: "Marc Mehagnoul",
@@ -340,12 +323,11 @@ const dictRaw = {
           phone: "+33 6 14 54 71 30",
         },
       ],
+      // Still used on the article pages (BlogPostShell)
       ctaEyebrow: "Une question ?",
-      ctaTitleBefore: "Trouvons ensemble votre",
-      ctaTitleAccent: "bien",
-      ctaBody:
-        "Que vous souhaitiez acheter, vendre ou estimer — notre équipe est à votre service.",
-      ctaPrimary: "Voir les propriétés",
+      ctaTitle: "Trouvons votre bien",
+      ctaBody: "Acheter, vendre ou estimer — dites-nous ce que vous avez en tête.",
+      ctaPrimary: "Voir les biens",
     },
     contactPage: {
       eyebrow: "Contact",
@@ -921,63 +903,45 @@ const dictRaw = {
         "From the hilltop villages of Gassin and Ramatuelle to the canals of Port Grimaud and the quieter bays of Cavalaire and Rayol-Canadel, every village around the Golfe has its own character, its own pace and its own kind of home. Choose a village to see what life there is like and which properties we currently represent.",
     },
     aboutPage: {
-      eyebrow: "About Ellington",
-      titleBefore: "About",
-      titleAccent: "Ellington",
-      heroSubtitle:
-        "Born in the heart of the Gulf of Saint-Tropez, built on trust.",
-      dividerLabel: "Our signature",
-      bandSubtitle:
-        "Ellington is more than a real estate agency — it is a signature.",
-      storyTitle: "Our story",
-      lead: "Born in the heart of the Gulf of Saint-Tropez, Ellington is more than a real estate agency — it is a signature. Its founder, having grown up in the region, possesses an intimate and instinctive knowledge of every area, every address, and every subtle detail that defines the value of a property on the French Riviera.",
-      body: "Driven by a deeply international mindset, Ellington speaks to a clientele without borders — fluent in French, English and Dutch, with strong relationships across a network of international partners.",
-      body2: "Choosing Ellington means partnering with a trusted advisor who combines deep local roots, international reach, and excellence in service.",
+      // About redesign (step 19): Figma "07 About" copy
+      introTitle: "Small by choice, local by nature.",
+      introSubtitle: "A young, independent agency for exceptional homes on the Riviera.",
       stats: [
-        { value: "30+", label: "Years on the Riviera" },
-        { value: "10+", label: "Countries worldwide" },
-        { value: "9", label: "Exclusive regions" },
-        { value: "3", label: "Languages spoken" },
+        { value: "2023", label: "Founded in the Golfe" },
+        { value: "3", label: "Languages · FR, EN, NL" },
+        { value: "9", label: "Villages in the Golfe" },
+        { value: "Monthly", label: "Written owner reports" },
       ],
-      valuesEyebrow: "Our values",
-      valuesTitleBefore: "Our",
-      valuesTitleAccent: "Values",
-      commitTitle: "What we stand for",
+      storyEyebrow: "Our story",
+      storySubtitle: "Founded in the Golfe de Saint-Tropez by two partners with a passion for property and architecture.",
+      story: [
+        "Ellington was founded in 2023 by two partners with a shared passion for property and architecture. From our office in Gassin we cover the Golfe de Saint-Tropez, from Les Issambres to Le Lavandou, and take on exceptional properties further along the Riviera.",
+        "Our clients come from all over the world. We work in French, English and Dutch, so nothing gets lost between buyer, seller and notary.",
+        "Our approach is simple: be available, be discreet, and give honest advice. If we think a price is wrong, we say so — the decision always stays with you.",
+      ] as string[],
+      storyAlt: "A street in the village of Gassin",
+      valuesEyebrow: "What we stand for",
       values: [
         {
-          title: "Integrity",
-          body: "Complete transparency in every transaction, every conversation.",
-        },
-        {
-          title: "Excellence",
-          body: "Perfection in every detail, from the first consultation to the final signature.",
+          title: "Honesty",
+          body: "Straight answers on price and market, even when they are not the easy ones. You keep the final word.",
         },
         {
           title: "Discretion",
-          body: "Every enquiry handled with absolute confidentiality and professionalism.",
-        },
-        {
-          title: "Global reach",
-          body: "Our network connects you with the most qualified buyers worldwide.",
+          body: "Your plans, your property and your details stay between us — off the public portals if you prefer.",
         },
         {
           title: "Local roots",
-          body: "Three decades living and breathing the Riviera market.",
+          body: "We live and work in the Golfe and know its villages, domains and views.",
         },
-        {
-          title: "Bespoke service",
-          body: "Every client, every property, every strategy — entirely tailored.",
-        },
-      ],
-      teamEyebrow: "The team",
-      teamTitleBefore: "Agency",
-      teamTitleAccent: "Team",
+      ] as { title: string; body: string }[],
+      teamTitle: "The team",
       team: [
         {
           name: "Marc Mehagnoul",
           role: "Founder & CEO",
           photo: "/team/marc-mehagnoul-v3.jpg",
-          bio: "Founder of Ellington, Marc brings his intimate knowledge of the Gulf of Saint-Tropez and his commitment to excellence to an international clientele in search of exceptional properties.",
+          bio: "Founder of Ellington, Marc brings his intimate knowledge of the Golfe de Saint-Tropez and his commitment to excellence to an international clientele in search of exceptional properties.",
           email: "marc@ellington-international.com",
           phone: "+33 6 74 75 07 03",
         },
@@ -991,18 +955,17 @@ const dictRaw = {
         },
         {
           name: "Sophia Potentier",
-          role: "Commercial Operations Manager",
+          role: "Commercial operations manager",
           photo: "/team/sophia-potentier.jpg",
           bio: "At the heart of the client relationship, Sophia oversees Ellington's commercial operations with rigour and an eye for detail, ensuring a seamless experience at every step.",
           email: "",
           phone: "+33 6 14 54 71 30",
         },
       ],
+      // Still used on the article pages (BlogPostShell)
       ctaEyebrow: "A question?",
-      ctaTitleBefore: "Let's find your",
-      ctaTitleAccent: "property",
-      ctaBody:
-        "Whether you wish to buy, sell or value — our team is at your service.",
+      ctaTitle: "Let's find your property",
+      ctaBody: "Buying, selling or valuing — tell us what you have in mind.",
       ctaPrimary: "View properties",
     },
     contactPage: {
@@ -1581,57 +1544,40 @@ const dictRaw = {
         "Van de heuveldorpen Gassin en Ramatuelle tot de kanalen van Port Grimaud en de rustigere baaien van Cavalaire en Rayol-Canadel: elk dorp rond de Golfe heeft zijn eigen karakter, zijn eigen ritme en zijn eigen soort woning. Kies een dorp om te zien hoe het leven er is en welke woningen wij er momenteel vertegenwoordigen.",
     },
     aboutPage: {
-      eyebrow: "Over Ellington",
-      titleBefore: "Over",
-      titleAccent: "Ellington",
-      heroSubtitle:
-        "Geboren in het hart van de Golf van Saint-Tropez, gebouwd op vertrouwen.",
-      dividerLabel: "Onze signatuur",
-      bandSubtitle:
-        "Ellington is meer dan een vastgoedkantoor — het is een signatuur.",
-      storyTitle: "Ons verhaal",
-      lead: "Geboren in het hart van de Golf van Saint-Tropez is Ellington meer dan een vastgoedkantoor — het is een signatuur. De oprichter, opgegroeid in de regio, beschikt over een intieme en instinctieve kennis van elk gebied, elk adres en elk subtiel detail dat de waarde van een woning aan de Franse Rivièra bepaalt.",
-      body: "Gedreven door een diep internationale instelling spreekt Ellington een clientèle zonder grenzen aan — vloeiend in het Frans, Engels en Nederlands, met sterke relaties binnen een netwerk van internationale partners.",
-      body2: "Kiezen voor Ellington betekent samenwerken met een vertrouwde adviseur die diepe lokale wortels, internationaal bereik en uitmuntende service combineert.",
+      // About redesign (step 19). Figma copy is English; NL draft.
+      // TODO client review (NL draft)
+      introTitle: "Klein uit overtuiging, lokaal van nature.",
+      introSubtitle: "Een jong, onafhankelijk makelaarskantoor voor uitzonderlijke woningen aan de Rivièra.",
       stats: [
-        { value: "30+", label: "Jaar aan de Rivièra" },
-        { value: "10+", label: "Internationale landen" },
-        { value: "9", label: "Exclusieve regio's" },
-        { value: "3", label: "Gesproken talen" },
+        { value: "2023", label: "Opgericht in de Golfe" },
+        { value: "3", label: "Talen · FR, EN, NL" },
+        { value: "9", label: "Dorpen in de Golfe" },
+        { value: "Elke maand", label: "Schriftelijk rapport voor eigenaars" }, // two short words: "Maandelijks" is too wide for the column
       ],
-      valuesEyebrow: "Onze waarden",
-      valuesTitleBefore: "Onze",
-      valuesTitleAccent: "Waarden",
-      commitTitle: "Waar wij voor staan",
+      storyEyebrow: "Ons verhaal",
+      storySubtitle: "Opgericht in de Golfe de Saint-Tropez door twee partners met een passie voor vastgoed en architectuur.",
+      story: [
+        "Ellington werd in 2023 opgericht door twee partners die een passie delen voor vastgoed en architectuur. Vanuit ons kantoor in Gassin bestrijken we de Golfe de Saint-Tropez, van Les Issambres tot Le Lavandou, en nemen we ook uitzonderlijke woningen verder langs de Rivièra aan.",
+        "Onze klanten komen van over de hele wereld. We werken in het Frans, Engels en Nederlands, zodat er niets verloren gaat tussen koper, verkoper en notaris.",
+        "Onze aanpak is eenvoudig: bereikbaar zijn, discreet zijn en eerlijk advies geven. Als we vinden dat een prijs niet klopt, zeggen we dat — de beslissing ligt altijd bij u.",
+      ] as string[],
+      storyAlt: "Een straatje in het dorp Gassin",
+      valuesEyebrow: "Waar wij voor staan",
       values: [
         {
-          title: "Integriteit",
-          body: "Volledige transparantie in elke transactie, elk gesprek.",
-        },
-        {
-          title: "Uitmuntendheid",
-          body: "Perfectie in elk detail, van het eerste gesprek tot de definitieve handtekening.",
+          title: "Eerlijkheid",
+          body: "Duidelijke antwoorden over prijs en markt, ook als die niet de makkelijkste zijn. U houdt het laatste woord.",
         },
         {
           title: "Discretie",
-          body: "Elke aanvraag behandeld met absolute vertrouwelijkheid en professionaliteit.",
-        },
-        {
-          title: "Wereldwijd bereik",
-          body: "Ons netwerk verbindt u met de meest gekwalificeerde kopers wereldwijd.",
+          body: "Uw plannen, uw woning en uw gegevens blijven tussen ons — buiten de openbare portalen als u dat wenst.",
         },
         {
           title: "Lokale wortels",
-          body: "Drie decennia leven en ademen op de Rivièra-markt.",
+          body: "We wonen en werken in de Golfe en kennen de dorpen, domeinen en uitzichten.",
         },
-        {
-          title: "Bespoke service",
-          body: "Elke klant, elk pand, elke strategie — volledig op maat.",
-        },
-      ],
-      teamEyebrow: "Het team",
-      teamTitleBefore: "Het",
-      teamTitleAccent: "Team",
+      ] as { title: string; body: string }[],
+      teamTitle: "Het team",
       team: [
         {
           name: "Marc Mehagnoul",
@@ -1658,12 +1604,11 @@ const dictRaw = {
           phone: "+33 6 14 54 71 30",
         },
       ],
+      // Still used on the article pages (BlogPostShell)
       ctaEyebrow: "Een vraag?",
-      ctaTitleBefore: "Laten we samen uw",
-      ctaTitleAccent: "pand vinden",
-      ctaBody:
-        "Of u nu wilt kopen, verkopen of taxeren — ons team staat tot uw dienst.",
-      ctaPrimary: "Bekijk de panden",
+      ctaTitle: "Laten we uw woning vinden",
+      ctaBody: "Kopen, verkopen of laten waarderen — vertel ons wat u voor ogen heeft.",
+      ctaPrimary: "Bekijk woningen",
     },
     contactPage: {
       eyebrow: "Contact",
