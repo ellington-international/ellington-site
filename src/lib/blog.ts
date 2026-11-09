@@ -45,8 +45,11 @@ export function getPostsByCategory(category: BlogCategory): Post[] {
   return getAllPosts().filter((p) => p.category === category);
 }
 
+// "Keep reading": articles of the same category first, then the others
+// (newest first), so the section is never empty while other articles exist.
 export function getRelatedPosts(post: Post, n = 3): Post[] {
-  return getAllPosts()
-    .filter((p) => p.slug !== post.slug && p.category === post.category)
-    .slice(0, n);
+  const others = getAllPosts().filter((p) => p.slug !== post.slug);
+  const same = others.filter((p) => p.category === post.category);
+  const rest = others.filter((p) => p.category !== post.category);
+  return [...same, ...rest].slice(0, n);
 }

@@ -59,6 +59,11 @@ const dictRaw = {
       team: "Équipe Ellington",
       ctaTitle: "Échangez avec un conseiller Ellington",
       ctaText: "Une expertise confidentielle, off-market, sur l'ensemble du Golfe de Saint-Tropez.",
+      // Article page (Figma "08.1 Article"). TODO client review (FR draft)
+      bandTitle: "Échangez avec un conseiller Ellington",
+      bandSubtitle: "Des conseils confidentiels pour acheter dans tout le Golfe de Saint-Tropez.",
+      bandCta: "Demander une consultation",
+      keepReading: "À lire aussi",
     },
     village: {
       // Village page template (step 18). TODO client review (FR draft)
@@ -704,6 +709,11 @@ const dictRaw = {
       team: "Ellington team",
       ctaTitle: "Speak with one of our advisors",
       ctaText: "Confidential, off-market expertise across the Golfe de Saint-Tropez.",
+      // Article page (Figma "08.1 Article")
+      bandTitle: "Speak with an Ellington advisor",
+      bandSubtitle: "Confidential advice on buying across the Golfe de Saint-Tropez.",
+      bandCta: "Request a consultation",
+      keepReading: "Keep reading",
     },
     village: {
       // Village page template (step 18), Figma "06 Village" copy
@@ -1344,6 +1354,11 @@ const dictRaw = {
       team: "Team Ellington",
       ctaTitle: "Spreek met een van onze adviseurs",
       ctaText: "Discrete, off-market expertise in de hele Golfe de Saint-Tropez.",
+      // Article page (Figma "08.1 Article"). TODO client review (NL draft)
+      bandTitle: "Spreek met een adviseur van Ellington",
+      bandSubtitle: "Vertrouwelijk advies bij het kopen in de hele Golfe de Saint-Tropez.",
+      bandCta: "Vraag een adviesgesprek aan",
+      keepReading: "Lees verder",
     },
     village: {
       // Village page template (step 18). TODO client review (NL draft)
