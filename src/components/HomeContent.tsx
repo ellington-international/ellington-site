@@ -185,10 +185,10 @@ export function HomeContent({
 }
 
 // "Our signature". Desktop (from 1280px, where the Figma composition fits):
-// graphic (was a photo) in a 720px-high box bleeding to the left edge of the screen, text column
+// photo 720px high bleeding to the left edge of the screen, text column
 // 384px on the right (96px gap), white quote box (560px, padding 40 × 48,
 // quote in H2 italic) overlapping the photo's bottom by 140px, 460px into
-// the content area. Below 1280px (Figma mobile): graphic full width (its own proportions),
+// the content area. Below 1280px (Figma mobile): photo full width 460px high,
 // quote box overlapping its bottom by 90px (padding 28), text 75px below.
 function Signature() {
   const { t } = useLanguage();
@@ -205,24 +205,19 @@ function Signature() {
       </TextLink>
     </>
   );
-  // Client change: the Golfe graphic (brand/blue SVG, no empty margin)
-  // instead of the photo — shown whole (contain, no crop, no overlay),
-  // anchored top-left so it lines up with the text. Decorative.
   const photo = (
-    <Image src="/locations/golfe-graphic.svg" alt="" fill unoptimized className="object-contain object-left-top" />
+    <Image src="/home/signature.jpg" alt={h.signatureAlt} fill sizes="(min-width: 1280px) 60vw, 100vw" className="object-cover" />
   );
 
   return (
     <section className="bg-surface">
       {/* Mobile / tablet */}
       <div className="xl:hidden">
-        <div className="relative aspect-[1088/917]" {...reveal}>
+        <div className="relative h-[460px] md:h-[560px]" {...reveal}>
           {photo}
         </div>
         <div className="container-wrap">
-          {/* With the graphic (client change) the quote no longer overlaps its
-              bottom on mobile — it would hide the coastline: 12px below it. */}
-          <blockquote className="relative z-10 mt-[12px] bg-surface p-[28px]" {...reveal}>
+          <blockquote className="relative z-10 -mt-[90px] bg-surface p-[28px]" {...reveal}>
             <p className="type-h2">{h.signatureQuote}</p>
           </blockquote>
           <div className="mt-[75px] pb-[69px] flex flex-col items-start gap-[20px]">{text}</div>

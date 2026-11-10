@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { propertyDescription, propertyTitle } from "@/lib/property-text";
 import { getProperty, getProperties } from "@/lib/properties";
 import { getUserFavoriteIds } from "@/app/actions/favorites";
 import type { Metadata } from "next";
@@ -17,10 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const lang = asLang(raw);
   const p = await getProperty(id);
   if (!p) return { title: "Propriété introuvable" };
-  // Listing texts come from Apimo (French) in every language for now.
+  // Listing texts from Apimo in the page language (French fallback).
   return {
-    title: `${p.title} — ${p.city} | Ellington`,
-    description: p.description.slice(0, 155),
+    title: `${propertyTitle(p, lang)} — ${p.city}`,
+    description: propertyDescription(p, lang).slice(0, 155),
     alternates: languageAlternates(lang, `/properties/${p.id}`),
     openGraph: { url: `/${lang}/properties/${p.id}`, locale: OG_LOCALE[lang] },
   };
@@ -49,7 +50,7 @@ export default async function PropertyDetail({ params }: Props) {
           breadcrumbSchema([
             { name: HOME_LABEL[lang], path: `/${lang}` },
             { name: { fr: "Acheter", en: "Buy", nl: "Kopen" }[lang], path: `/${lang}/properties` },
-            { name: property.title, path: `/${lang}/properties/${property.id}` },
+            { name: propertyTitle(property, lang), path: `/${lang}/properties/${property.id}` },
           ]),
         ]}
       />

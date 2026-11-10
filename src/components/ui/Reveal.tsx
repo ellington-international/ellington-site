@@ -14,6 +14,14 @@ import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 // (see lib/reveal.ts). Never the hero or the header. Without JavaScript or
 // with "reduce motion", nothing is ever hidden.
 export const reveal = { "data-reveal": "" } as const;
+// Fade only (no movement), 900ms: for large full-bleed graphics.
+//   <div {...revealFade}>…</div>
+// An element can start later than its neighbours with --reveal-delay
+// (added to the stagger), per breakpoint if needed:
+//   <p className="xl:[--reveal-delay:200ms]" {...reveal}>…</p>
+// A marked element inside another marked element is not revealed on its own
+// (it comes in with its parent), so mark siblings to reveal them separately.
+export const revealFade = { "data-reveal": "fade" } as const;
 
 type RevealProps<T extends ElementType> = { as?: T; children?: ReactNode } & Omit<ComponentPropsWithoutRef<T>, "as">;
 

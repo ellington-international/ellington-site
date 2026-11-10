@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { reveal } from "@/components/ui/Reveal";
+import { GolfeBand } from "@/components/ui/GolfeBand";
+import { reveal, revealFade } from "@/components/ui/Reveal";
 import { PageHero } from "@/components/PageHero";
 import { useLanguage } from "@/components/LanguageProvider";
 import { Stat } from "@/components/ui/SmallParts";
@@ -10,13 +11,11 @@ import { ButtonLink } from "@/components/ui/Button";
 import { cardGridCls } from "@/components/ui/card";
 
 // Figma "07 About — Desktop" (13:2) / "— Mobile" (13:171).
-// The three white sections after the intro (Our story, What we stand for)
-// have no top padding: they follow the previous section's 144px (mobile 96)
-// bottom padding, as in Figma, so the gaps between them stay "reduced".
-
-// Figma photo strip caption (village names, the same in every language)
-const STRIP_VILLAGES =
-  "Saint-Tropez · Ramatuelle · Gassin · Grimaud · Port-Grimaud · Sainte-Maxime · Croix-Valmer · Cavalaire · Rayol-Canadel";
+// Section rhythm (Figma, client change): Intro white · Our story light blue
+// (surface/light) · What we stand for white · Golfe graphic · The team. Each
+// coloured section has its own 144px (mobile 96) top and bottom padding.
+// The mobile frame still shows Our story white; the client asked for the
+// light blue on mobile too.
 
 export default function AboutPage() {
   const { t } = useLanguage();
@@ -48,9 +47,10 @@ export default function AboutPage() {
           mobile 110, champagne) + "Our story" and subtitle; then a centred
           640px column: first paragraph with a drop-cap E (96 / 72px), the
           portrait photo (right-aligned, 80px from the edge; mobile full width),
-          then two paragraphs, 56px apart (mobile 40). */}
-      <section className="bg-surface">
-        <div className="container-wrap pb-section">
+          then two paragraphs, 56px apart (mobile 40). Light blue background
+          (surface/light), section padding 144 / 96 top and bottom. */}
+      <section className="bg-surface-light">
+        <div className="container-wrap section-y">
           <div className="flex flex-col md:flex-row md:items-center gap-[16px] md:gap-[48px]">
             <p className="font-serif font-bold italic text-[110px] md:text-[180px] leading-[0.9] text-brand-accent" aria-hidden {...reveal}>
               2023
@@ -86,9 +86,10 @@ export default function AboutPage() {
 
       {/* WHAT WE STAND FOR (2158:1514): eyebrow, three rows with hairlines:
           the word in H1 italic left, text (max 380) right-aligned; mobile
-          word above the text, 12px apart. */}
+          word above the text, 12px apart. White again after the light blue
+          Our story, so it has its own top padding (144 / 96). */}
       <section className="bg-surface">
-        <div className="container-wrap pb-section">
+        <div className="container-wrap section-y">
           <h2 className="type-eyebrow" {...reveal}>
             {a.valuesEyebrow}
           </h2>
@@ -107,12 +108,26 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* PHOTO STRIP (13:60): 480px (mobile 280), 30 % overlay, the village
-          names in Caps/Label white, 32px from the bottom. Photo from Figma. */}
-      <section className="relative h-[280px] md:h-[480px] overflow-hidden on-photo flex items-end" {...reveal}>
-        <Image src="/about/strip.jpg" alt="" fill sizes="100vw" className="object-cover" />
-        <div className="absolute inset-0 bg-black/30" aria-hidden />
-        <p className="relative container-wrap pb-[32px] type-label text-white">{STRIP_VILLAGES}</p>
+      {/* GOLFE GRAPHIC BAND (2342:4737 / mobile 2345:2344, client change:
+          replaces the village photo strip). Full-bleed graphic straight after
+          "What we stand for" (its 144 / 96 bottom padding above), the blue
+          crest on the white sea at the lower right: 211px wide from 68.75 %
+          (990/1440), top at 65.1 % (521/800); mobile 80px wide from 65.9 %
+          (257/390), top at 59 % (128/217). "The team" follows with its normal
+          section padding (no extra space below the graphic). */}
+      {/* Reveal: the graphic fades in (900ms, no movement), the crest
+          fades in 200ms after it. */}
+      <section className="bg-surface">
+        <GolfeBand crop="about">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static brand SVG */}
+          <img
+            src="/brand/crest-blue.svg"
+            alt=""
+            aria-hidden
+            {...revealFade}
+            className="absolute h-auto [--reveal-delay:200ms] w-[80px] md:w-[14.65%] md:max-w-[211px] left-[65.9%] top-[59%] md:left-[68.75%] md:top-[65.1%]"
+          />
+        </GolfeBand>
       </section>
 
       {/* THE TEAM (13:63): H2, cards 56px below (mobile 40): photo 4:5,

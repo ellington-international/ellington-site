@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { Fragment, useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 
 // Figma "Search field" (2068:275) = "Filter field" (5:47) + "Dropdown option"
@@ -24,7 +24,11 @@ import type { KeyboardEvent } from "react";
 // Keyboard: Enter / Space / ↓ / ↑ open; ↑ ↓ Home End move; Enter / Space
 // select; Esc closes; typing a letter jumps to the first option with it.
 
-export type DropdownOption = { value: string; label: string };
+// Options may carry a `group`: a small heading (Caps/Label, muted, hairline
+// above) is drawn before the first option of each group. Headings can't be
+// chosen and the keyboard skips them. (Not in Figma; used for "Other areas"
+// in the Location filter.)
+export type DropdownOption = { value: string; label: string; group?: string };
 
 export function Dropdown({
   label,
@@ -203,8 +207,16 @@ export function Dropdown({
           className="absolute left-0 right-0 top-full -mt-px z-30 max-h-[174px] overflow-y-auto overscroll-contain py-[4px] bg-surface border border-hairline shadow-[0_8px_24px_rgba(10,30,50,0.12)] outline-none"
         >
           {options.map((o, i) => (
+            <Fragment key={o.value}>
+            {o.group && o.group !== options[i - 1]?.group && (
+              <li
+                role="presentation"
+                className="type-label text-muted mt-[4px] px-[14px] pt-[12px] pb-[6px] border-t border-hairline"
+              >
+                {o.group}
+              </li>
+            )}
             <li
-              key={o.value}
               id={`${id}-opt-${i}`}
               data-index={i}
               role="option"
@@ -217,6 +229,7 @@ export function Dropdown({
             >
               {o.label}
             </li>
+            </Fragment>
           ))}
         </ul>
       )}

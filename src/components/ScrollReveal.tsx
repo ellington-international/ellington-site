@@ -27,6 +27,19 @@ const FRAMES: Keyframe[] = [
   { opacity: 0, transform: "translateY(80px)" },
   { opacity: 1, transform: "none" },
 ];
+// Fade-only variant (data-reveal="fade", revealFade): for large full-bleed
+// graphics, which would look heavy moving up. Opacity only, 900ms.
+const FADE_DURATION = 900;
+const FADE_FRAMES: Keyframe[] = [{ opacity: 0 }, { opacity: 1 }];
+
+/** Extra delay from the element's --reveal-delay (CSS, so it can differ per
+ *  breakpoint, e.g. xl:[--reveal-delay:200ms]), in ms; added to the stagger. */
+const extraDelay = (el: Element) => {
+  const v = getComputedStyle(el).getPropertyValue("--reveal-delay").trim();
+  const n = parseFloat(v);
+  if (!Number.isFinite(n)) return 0;
+  return v.endsWith("ms") ? n : v.endsWith("s") ? n * 1000 : n;
+};
 
 declare global {
   interface Window {
@@ -42,9 +55,16 @@ export function ScrollReveal() {
     if (!main) return;
     const seen = new WeakSet<Element>();
     const shown = new WeakSet<Element>();
-    const show = (el: Element, delay: number, duration = DURATION) => {
+    // duration 0 = show at once (already on screen / scrolled past)
+    const show = (el: Element, delay: number, duration?: number) => {
       shown.add(el);
-      el.animate(FRAMES, { duration, delay, easing: EASING, fill: "forwards" });
+      const fade = el.getAttribute("data-reveal") === "fade";
+      el.animate(fade ? FADE_FRAMES : FRAMES, {
+        duration: duration ?? (fade ? FADE_DURATION : DURATION),
+        delay: duration === 0 ? 0 : delay + extraDelay(el),
+        easing: EASING,
+        fill: "forwards",
+      });
     };
 
     if (!html.hasAttribute("data-reveal-on")) {

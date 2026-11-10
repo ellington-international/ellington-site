@@ -757,6 +757,8 @@ function applyFilters(list: Property[], filters?: PropertyFilters): Property[] {
     if (filters?.category && p.category !== filters.category) return false;
     if (filters?.city && p.city !== filters.city) return false;
     if (filters?.type && p.type !== filters.type) return false;
+    // A price filter leaves out "Price on request" listings
+    if ((filters?.minPrice || filters?.maxPrice) && !hasPrice(p)) return false;
     if (filters?.minPrice && p.price < filters.minPrice) return false;
     if (filters?.maxPrice && p.price > filters.maxPrice) return false;
     return true;
@@ -789,7 +791,8 @@ export async function getFeaturedProperties(): Promise<Property[]> {
     if (live && live.length > 0) {
       // Apimo has no native "featured" flag — pick the priciest 6 as a sane default.
       // Override later via a custom Apimo tag once the client confirms the convention.
-      return [...live].sort((a, b) => b.price - a.price).slice(0, 6);
+      // "Price on request" listings (price 0) sort last.
+      return [...live].sort((a, b) => (hasPrice(b) ? b.price : -1) - (hasPrice(a) ? a.price : -1)).slice(0, 6);
     }
   }
   return mockProperties.filter((p) => p.isFeatured);
@@ -797,7 +800,7 @@ export async function getFeaturedProperties(): Promise<Property[]> {
 
 export async function getCities(): Promise<string[]> {
   const list = await getProperties();
-  return [...new Set(list.map((p) => p.city))].filter(Boolean).sort();
+  return [...new Set(list.map((p) => p.city))].filter(Boolean).sort((a, b) => a.localeCompare(b, "fr"));
 }
 
 export function formatPrice(price: number, currency = "EUR"): string {
@@ -806,6 +809,12 @@ export function formatPrice(price: number, currency = "EUR"): string {
     currency,
     maximumFractionDigits: 0,
   }).format(price);
+}
+
+/** A listing has a price to show. 0 / missing (or hidden in Apimo, mapped
+ *  to 0) means "Price on request". */
+export function hasPrice(p: { price: number }): boolean {
+  return Number.isFinite(p.price) && p.price > 0;
 }
 
 export function formatPriceShort(price: number): string {

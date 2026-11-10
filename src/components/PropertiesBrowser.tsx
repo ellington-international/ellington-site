@@ -3,23 +3,20 @@
 import { useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { PropertyCard } from "./PropertyCard";
+import { hasPrice } from "@/lib/properties";
 import type { Property } from "@/lib/types";
 import { useLanguage } from "./LanguageProvider";
 import { Dropdown } from "./ui/Dropdown";
 import { reveal } from "./ui/Reveal";
 import { Button } from "./ui/Button";
 import { textLinkClasses } from "./ui/TextLink";
-import { PRICE_RANGES, filterOptions } from "@/lib/filters";
+import { PRICE_RANGES, filterOptions, normalizeCity } from "@/lib/filters";
 import { cardGridCls } from "@/components/ui/card";
 
-// Case- and accent-insensitive normalisation so "ramatuelle", "Ramatuelle"
-// and "RAMATUELLE" all match (client feedback).
-const normalize = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .trim();
+// Case- and accent-insensitive comparison so "ramatuelle", "Ramatuelle"
+// and "RAMATUELLE" all match (client feedback). Cities match exactly, so
+// "Grimaud" doesn't also show the Port Grimaud listings.
+const normalize = normalizeCity;
 
 export function PropertiesBrowser(props: {
   properties: Property[];
@@ -74,10 +71,11 @@ function PropertiesBrowserInner({
   const filtered = useMemo(() => {
     const range = PRICE_RANGES[priceIdx];
     return properties.filter((p) => {
-      if (city && !normalize(p.city).includes(normalize(city))) return false;
+      if (city && normalize(p.city) !== normalize(city)) return false;
       if (type && p.type !== type) return false;
       if (beds > 0 && p.bedrooms < beds) return false;
-      if (p.price < range.min || p.price > range.max) return false;
+      // A budget leaves out "Price on request" listings (they show under "All prices")
+      if (range.key !== "all" && (!hasPrice(p) || p.price < range.min || p.price > range.max)) return false;
       return true;
     });
   }, [properties, city, type, priceIdx, beds]);

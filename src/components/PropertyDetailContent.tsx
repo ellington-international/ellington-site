@@ -4,9 +4,10 @@ import { PropertyGallery } from "./PropertyGallery";
 import { PropertyCard } from "./PropertyCard";
 import { FavoriteButton } from "./FavoriteButton";
 import { EnergyDiagnostics } from "./EnergyDiagnostics";
-import { formatPriceShort } from "@/lib/properties";
+import { formatPriceShort, hasPrice } from "@/lib/properties";
 import { localizeFeature } from "@/lib/amenities";
 import { useLanguage } from "./LanguageProvider";
+import { propertyDescription, propertyTitle } from "@/lib/property-text";
 import type { Property } from "@/lib/types";
 import { cardGridCls, formatArea } from "@/components/ui/card";
 import { Stat, DetailRow, Tag, InfoBox } from "@/components/ui/SmallParts";
@@ -34,6 +35,7 @@ export function PropertyDetailContent({
   similarFavoredIds?: string[];
 }) {
   const { t, lang } = useLanguage();
+  const title = propertyTitle(property, lang);
   const pd = t.propertyDetail;
   const typeLabel = t.types[property.type as keyof typeof t.types] ?? property.type;
   const area = (n: number) => formatArea(n, lang);
@@ -73,16 +75,16 @@ export function PropertyDetailContent({
       <div className="mt-[32px] flex flex-col md:flex-row md:items-end md:justify-between gap-[16px] md:gap-[40px]">
         <div className="flex flex-col gap-[16px] max-w-[820px]">
           <p className="type-eyebrow text-brand-accent">{property.city}</p>
-          <h1 className="type-title">{property.title}</h1>
+          <h1 className="type-title">{title}</h1>
         </div>
-        <p className="type-title text-brand-accent whitespace-nowrap">{formatPriceShort(property.price)}</p>
+        <p className="type-title text-brand-accent whitespace-nowrap">{hasPrice(property) ? formatPriceShort(property.price) : t.priceOnRequest}</p>
       </div>
 
       {/* GALLERY */}
       <div className="mt-[36px]">
         <PropertyGallery
           pictures={property.pictures}
-          title={property.title}
+          title={title}
           overlay={<FavoriteButton propertyId={property.id} initialFavored={initialFavored} variant="detail" />}
         />
       </div>
@@ -110,7 +112,7 @@ export function PropertyDetailContent({
 
           <section className={sectionCls}>
             <h2 className="type-h2" {...reveal}>{pd.description}</h2>
-            <p className="type-body whitespace-pre-line" {...reveal}>{property.description}</p>
+            <p className="type-body whitespace-pre-line" {...reveal}>{propertyDescription(property, lang)}</p>
           </section>
 
           {property.features.length > 0 && (

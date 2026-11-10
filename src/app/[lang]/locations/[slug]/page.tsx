@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { locations, getProperties } from "@/lib/properties";
 import { LocationDetail } from "@/components/LocationDetail";
+import { normalizeCity } from "@/lib/filters";
 import { VILLAGE_CONTENT } from "@/lib/village-content";
 import { JsonLd } from "@/components/JsonLd";
 import { placeSchema, breadcrumbSchema } from "@/lib/schema";
@@ -63,22 +64,11 @@ export default async function LocationPage({ params }: Props) {
   const loc = locations.find((l) => l.slug === slug);
   if (!loc) notFound();
 
-  // Properties shown in the "Properties in this region" section. Prefer exact
-  // city matches; fall back to a few sale listings so the section is never empty.
   // "Properties in this region": only this village's listings (Apimo or mock),
-  // up to 3; none → empty state. City names compared without accents,
-  // hyphens or a leading "La / Le" ("Le Rayol-Canadel-sur-Mer" = "Rayol-Canadel-sur-Mer").
+  // up to 3. City names compared exactly, ignoring accents, hyphens and a
+  // leading "La / Le" (normalizeCity, same as the Buy page filter).
   const all = await getProperties({ category: "sale" });
-  const norm = (s: string) =>
-    s
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[-'’]/g, " ")
-      .replace(/^(la|le|les) /, "")
-      .replace(/\s+/g, " ")
-      .trim();
-  const regionProperties = all.filter((p) => norm(p.city) === norm(loc.name)).slice(0, 3);
+  const villageProperties = all.filter((p) => normalizeCity(p.city) === normalizeCity(loc.name));
 
   return (
     <>
@@ -92,7 +82,7 @@ export default async function LocationPage({ params }: Props) {
           ]),
         ]}
       />
-      <LocationDetail location={loc} properties={regionProperties} />
+      <LocationDetail location={loc} properties={villageProperties.slice(0, 3)} total={villageProperties.length} />
     </>
   );
 }

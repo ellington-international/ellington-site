@@ -16,14 +16,45 @@ export const PROPERTY_TYPES = ["villa", "penthouse", "apartment", "estate"] as c
 
 export const BEDROOM_OPTIONS = [0, 1, 2, 3, 4, 5];
 
-export type FilterOption = { value: string; label: string };
+export type FilterOption = { value: string; label: string; group?: string };
 
-/** Option lists for the four dropdowns, in the current language. */
+/** City names compared without capitals, accents, hyphens/apostrophes or a
+ *  leading "La / Le / Les", so "le rayol-canadel-sur-mer" = "Rayol-Canadel-sur-Mer".
+ *  Used for exact city matching on the Buy page and the village pages. */
+export function normalizeCity(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[-'’]/g, " ")
+    .replace(/^(la|le|les) /, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/** Towns of the Golfe de Saint-Tropez (the 12 communes of the Communauté de
+ *  communes du Golfe de Saint-Tropez, plus Port Grimaud). Listings elsewhere
+ *  go under "Other areas" in the Location filter. */
+const GOLFE_TOWNS = new Set(
+  [
+    "Saint-Tropez", "Gassin", "Ramatuelle", "Grimaud", "Port Grimaud", "Cogolin",
+    "Sainte-Maxime", "La Croix-Valmer", "Cavalaire-sur-Mer", "Rayol-Canadel-sur-Mer",
+    "La Garde-Freinet", "La Mole", "Le Plan-de-la-Tour",
+  ].map(normalizeCity),
+);
+
+export const isGolfeTown = (city: string) => GOLFE_TOWNS.has(normalizeCity(city));
+
+/** Option lists for the four dropdowns, in the current language.
+ *  Location: Golfe towns first, then the other cities under "Other areas". */
 export function filterOptions(t: Dict, cities: string[]) {
+  const golfe = cities.filter(isGolfeTown);
+  const other = cities.filter((c) => !isGolfeTown(c));
   return {
     location: [
       { value: "", label: t.search.allLocations },
-      ...cities.map((c) => ({ value: c, label: c })),
+      ...golfe.map((c) => ({ value: c, label: c })),
+      ...other.map((c) => ({ value: c, label: c, group: t.search.otherAreas })),
     ] satisfies FilterOption[],
     type: [
       { value: "", label: t.search.allTypes },

@@ -6,6 +6,7 @@ import { PropertyCard } from "./PropertyCard";
 import { useLanguage } from "./LanguageProvider";
 import { reveal } from "./ui/Reveal";
 import { TextLink } from "./ui/TextLink";
+import { ButtonLink } from "./ui/Button";
 import { Stat } from "./ui/SmallParts";
 import { Band } from "./ui/Band";
 import { cardGridCls } from "./ui/card";
@@ -23,14 +24,20 @@ import type { Location, Property } from "@/lib/types";
 //     Experiences, Our favourites (hidden while not provided), Investment &
 //     market (Saint-Tropez only). Backgrounds alternate light / white.
 //   Blue band "Your local expert in this region" + Request a consultation.
-//   Properties in this region: up to 3 listings of this village, or the
-//     empty state.
+//   Properties in this region: up to 3 listings of this village. "View all
+//     properties in [village]" (Buy page filtered on the village) only when
+//     the village has more listings than shown. No listings: off-market text
+//     + Contact button (consultation request for this village).
 export function LocationDetail({
   location: loc,
   properties = [],
+  total = properties.length,
 }: {
   location: Location;
+  /** The listings shown (up to 3) */
   properties?: Property[];
+  /** All listings in this village */
+  total?: number;
 }) {
   const { t, lang } = useLanguage();
   const v = t.village;
@@ -110,9 +117,11 @@ export function LocationDetail({
         <div className="container-wrap section-y">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-[20px]">
             <h2 className="type-h2" {...reveal}>{v.propertiesTitle}</h2>
-            <TextLink href={propsHref} className="self-start md:self-auto" {...reveal}>
-              {v.viewAll}
-            </TextLink>
+            {total > properties.length && (
+              <TextLink href={propsHref} className="self-start md:self-auto" {...reveal}>
+                {v.viewAllIn(loc.name)}
+              </TextLink>
+            )}
           </div>
           {properties.length > 0 ? (
             <div className={`${cardGridCls} mt-[40px] md:mt-[56px]`}>
@@ -121,9 +130,16 @@ export function LocationDetail({
               ))}
             </div>
           ) : (
-            <p className="type-body mt-[40px] md:mt-[56px]" {...reveal}>
-              {v.empty}
-            </p>
+            <div className="mt-[40px] md:mt-[56px] flex flex-col items-start gap-[24px] md:gap-[32px]">
+              <p className="type-subtitle max-w-[640px]" {...reveal}>
+                {v.offMarket(loc.name)}
+              </p>
+              <div {...reveal}>
+                <ButtonLink href={consultHref} variant="primary">
+                  {v.offMarketCta}
+                </ButtonLink>
+              </div>
+            </div>
           )}
         </div>
       </section>

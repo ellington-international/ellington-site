@@ -3,7 +3,8 @@
 import Link from "@/components/LocaleLink";
 import Image from "next/image";
 import type { Property } from "@/lib/types";
-import { formatPriceShort } from "@/lib/properties";
+import { formatPriceShort, hasPrice } from "@/lib/properties";
+import { propertyTitle } from "@/lib/property-text";
 import { useLanguage } from "./LanguageProvider";
 import { FavoriteButton } from "./FavoriteButton";
 import {
@@ -18,8 +19,9 @@ import {
 // 2 lines), price, specs on a hairline. Specs = icon + number, as on the
 // Figma pages; the full words are read out to screen readers.
 // Spacing ≈ ¾ of Figma on client request (photo → text 15, lines 10). The
-// title only takes the lines it needs; price + specs sit at the bottom of the
-// card (mt-auto) so they line up across a row of cards.
+// title box is always two lines high and the hairline + specs row is always
+// drawn, so price and hairline line up across a row of cards (client
+// feedback: Apimo listings without details or with one-line titles).
 // Kept from before (not drawn in Figma): the favourite heart and the
 // "Exclusive" label on the photo.
 export function PropertyCard({
@@ -35,6 +37,7 @@ export function PropertyCard({
 }) {
   const { t, lang } = useLanguage();
   const cover = property.pictures[0];
+  const title = propertyTitle(property, lang);
 
   const specs = [
     property.bedrooms > 0 && { icon: "bedrooms", value: String(property.bedrooms), label: t.propertyDetail.bedrooms },
@@ -49,7 +52,7 @@ export function PropertyCard({
         {cover && (
           <Image
             src={cover.url}
-            alt={cover.alt ?? property.title}
+            alt={cover.alt ?? title}
             fill
             sizes={sizes}
             priority={priority}
@@ -67,33 +70,40 @@ export function PropertyCard({
         </div>
       </div>
 
-      <div className="flex flex-col gap-[10px] flex-1">
-        <p className="type-eyebrow text-muted">{property.city}</p>
-        <h3 className={`type-h3 line-clamp-2 ${cardTitleHoverCls}`}>
-          {property.title}
-        </h3>
-        <div className="mt-auto flex flex-col gap-[10px]">
+      <div className="flex flex-col gap-[10px]">
+        <p className="type-eyebrow text-muted truncate">{property.city}</p>
+        {/* Always two lines high (a one-line title is centred in it), so the
+            price, hairline and specs start at the same height on every card
+            of a row. The wrapper carries type-h3 so 2lh = two title lines. */}
+        <div className="type-h3 min-h-[2lh] flex items-center">
+          <h3 className={`type-h3 line-clamp-2 ${cardTitleHoverCls}`}>{title}</h3>
+        </div>
         <p className="type-price">
-          {formatPriceShort(property.price)}
-          {property.pricePeriod && (
+          {hasPrice(property) ? formatPriceShort(property.price) : t.priceOnRequest}
+          {hasPrice(property) && property.pricePeriod && (
             <span>
               {" "}/{property.pricePeriod === "week" ? t.priceUnit.week : t.priceUnit.month}
             </span>
           )}
         </p>
-        {specs.length > 0 && (
-          <ul className="border-t border-hairline pt-[10px] flex flex-wrap gap-x-[16px] gap-y-[6px]">
-            {specs.map((s) => (
+        {/* Hairline + specs always drawn; without any spec an invisible
+            placeholder keeps the row's height. */}
+        <ul className="border-t border-hairline pt-[10px] flex flex-wrap gap-x-[16px] gap-y-[6px]">
+          {specs.length > 0 ? (
+            specs.map((s) => (
               <li key={s.icon} className="type-small flex items-center gap-[6px] whitespace-nowrap">
                 {/* eslint-disable-next-line @next/next/no-img-element -- 16px static icon from Figma */}
                 <img src={`/ui/icons/${s.icon}.svg`} alt="" width={16} height={16} className="shrink-0" />
                 <span className="sr-only">{s.label}: </span>
                 {s.value}
               </li>
-            ))}
-          </ul>
-        )}
-        </div>
+            ))
+          ) : (
+            <li aria-hidden className="type-small flex items-center gap-[6px] invisible">
+              <span className="size-[16px] shrink-0" />0
+            </li>
+          )}
+        </ul>
       </div>
     </Link>
   );

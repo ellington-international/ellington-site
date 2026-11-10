@@ -1,4 +1,6 @@
 import { SITE_URL } from "./site";
+import { propertyDescription, propertyTitle } from "./property-text";
+import { hasPrice } from "./properties";
 import type { Lang } from "./i18n";
 
 const IN_LANGUAGE: Record<Lang, string> = { fr: "fr-FR", en: "en", nl: "nl" };
@@ -77,7 +79,7 @@ export function propertySchema(p: Property, lang: Lang) {
 
   const about: Record<string, unknown> = {
     "@type": residenceType(p.type),
-    name: p.title,
+    name: propertyTitle(p, lang),
     address: {
       "@type": "PostalAddress",
       addressLocality: p.city,
@@ -105,13 +107,13 @@ export function propertySchema(p: Property, lang: Lang) {
   const node: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "RealEstateListing",
-    name: p.title,
+    name: propertyTitle(p, lang),
     url,
-    description: p.description.slice(0, 300),
+    description: propertyDescription(p, lang).slice(0, 300),
     about,
   };
   if (images.length) node.image = images;
-  if (p.price > 0) {
+  if (hasPrice(p)) {
     node.offers = {
       "@type": "Offer",
       price: p.price,

@@ -85,6 +85,10 @@ const dictRaw = {
       propertiesTitle: "Biens dans cette région",
       viewAll: "Tout voir →",
       empty: "Aucun bien dans cette région pour le moment.",
+      // TODO client review
+      offMarket: (village: string) => `Beaucoup de nos biens à ${village} se vendent hors marché. Dites-nous ce que vous recherchez.`,
+      offMarketCta: "Nous contacter", // TODO client review
+      viewAllIn: (village: string) => `Voir tous les biens à ${village} →`, // TODO client review
     },
     heroes: {
       // Photo heroes of the inner pages (PageHero). TODO client review (FR draft)
@@ -177,6 +181,7 @@ const dictRaw = {
         `${n} bien${n > 1 ? "s" : ""} disponible${n > 1 ? "s" : ""}`,
       noResults: "Aucun bien ne correspond à votre recherche.",
       noResultsCta: "Réinitialiser les filtres",
+      otherAreas: "Autres secteurs", // TODO client review
     },
     types: {
       villa: "Villa",
@@ -254,6 +259,7 @@ const dictRaw = {
       week: "sem.",
       month: "mois",
     },
+    priceOnRequest: "Prix sur demande",
     propertiesPage: {
       eyebrow: "Portefeuille",
       titleBefore: "Propriétés",
@@ -786,6 +792,9 @@ const dictRaw = {
       propertiesTitle: "Properties in this region",
       viewAll: "View all →",
       empty: "No properties in this region at the moment.",
+      offMarket: (village: string) => `Many of our properties in ${village} are sold off-market. Tell us what you're looking for.`,
+      offMarketCta: "Contact us",
+      viewAllIn: (village: string) => `View all properties in ${village} →`,
     },
     heroes: {
       // Photo heroes of the inner pages (PageHero), Figma copy
@@ -873,6 +882,7 @@ const dictRaw = {
         `${n} propert${n === 1 ? "y" : "ies"} available`,
       noResults: "No property matches your search.",
       noResultsCta: "Reset filters",
+      otherAreas: "Other areas",
     },
     types: {
       villa: "Villa",
@@ -950,6 +960,7 @@ const dictRaw = {
       week: "wk",
       month: "mo",
     },
+    priceOnRequest: "Price on request",
     propertiesPage: {
       eyebrow: "Portfolio",
       titleBefore: "Properties",
@@ -1481,6 +1492,10 @@ const dictRaw = {
       propertiesTitle: "Woningen in deze regio",
       viewAll: "Alles bekijken →",
       empty: "Momenteel geen woningen in deze regio.",
+      // TODO client review
+      offMarket: (village: string) => `Veel van onze woningen in ${village} worden off-market verkocht. Vertel ons wat u zoekt.`,
+      offMarketCta: "Neem contact op", // TODO client review
+      viewAllIn: (village: string) => `Alle woningen in ${village} bekijken →`, // TODO client review
     },
     heroes: {
       // Photo heroes of the inner pages (PageHero). TODO client review (NL draft)
@@ -1569,6 +1584,7 @@ const dictRaw = {
         `${n} ${n === 1 ? "woning" : "woningen"} beschikbaar`,
       noResults: "Geen woning komt overeen met uw zoekopdracht.",
       noResultsCta: "Filters opnieuw instellen",
+      otherAreas: "Overige gebieden", // TODO client review
     },
     types: {
       villa: "Villa",
@@ -1646,6 +1662,7 @@ const dictRaw = {
       week: "wk",
       month: "mnd",
     },
+    priceOnRequest: "Prijs op aanvraag",
     propertiesPage: {
       eyebrow: "Portfolio",
       titleBefore: "Woningen",

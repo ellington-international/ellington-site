@@ -359,7 +359,7 @@ function mapStatus(s: ApimoNamed | number | undefined): PropertyStatus {
 
 function pickComment(
   comments: ApimoMultilingual[] | undefined,
-  lang: "fr" | "en",
+  lang: "fr" | "en" | "nl",
 ): { title?: string; description: string } {
   if (!comments || comments.length === 0) return { description: "" };
   // 1. exact language match, 2. french fallback, 3. first available
@@ -373,6 +373,20 @@ function pickComment(
       chosen.comment?.trim() ||
       "",
   };
+}
+
+// Title + description for each site language that Apimo has for this
+// listing (exact language only; the fallback happens at display time).
+function pickTexts(comments: ApimoMultilingual[] | undefined): Property["texts"] {
+  const out: NonNullable<Property["texts"]> = {};
+  for (const lang of ["fr", "en", "nl"] as const) {
+    const c = comments?.find((x) => x.language?.toLowerCase() === lang);
+    if (!c) continue;
+    const title = c.title?.trim() || undefined;
+    const description = c.comment_full?.trim() || c.comment?.trim() || undefined;
+    if (title || description) out[lang] = { title, description };
+  }
+  return out;
 }
 
 // Apimo area type codes that correspond to bath / shower / water rooms.
@@ -481,12 +495,14 @@ export function mapApimoToProperty(
     title: pickComment(p.comments, "fr").title || cityName || reference,
     subtitle: undefined,
     description,
+    texts: pickTexts(p.comments),
     city: cityName,
     region,
     district: p.city?.district?.name,
     country: p.city?.country ?? "FR",
     coordinates: lat && lng ? { lat, lng } : undefined,
-    price: p.price?.value ?? 0,
+    // 0 = "Price on request": no price, an invalid one, or hidden in Apimo
+    price: !p.price?.hide && Number(p.price?.value) > 0 ? Number(p.price?.value) : 0,
     currency: "EUR",
     pricePeriod: mapPricePeriod(p.price?.period),
     energyClass: reg.energyClass ?? mapDpeClass(p.dpe?.consumption_class, p.dpe?.letter),

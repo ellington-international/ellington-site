@@ -22,6 +22,9 @@ export interface Property {
   title: string;
   subtitle?: string;
   description: string;
+  /** Apimo texts per language (title + description); read them with
+   *  propertyTitle / propertyDescription (lib/property-text.ts). */
+  texts?: Partial<Record<"fr" | "en" | "nl", { title?: string; description?: string }>>;
 
   city: string;
   region: string; // e.g. "Côte d'Azur"
