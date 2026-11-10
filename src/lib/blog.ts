@@ -4,7 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import type { BlogCategory, Post, PostFrontmatter } from "./blog-shared";
+import type { Post, PostFrontmatter } from "./blog-shared";
 
 export type { BlogCategory, Post, PostFrontmatter } from "./blog-shared";
 export { CATEGORY_LABELS, formatDate } from "./blog-shared";
@@ -40,11 +40,6 @@ export function getAllPosts(): Post[] {
 export function getPost(slug: string): Post | undefined {
   return getAllPosts().find((p) => p.slug === slug);
 }
-
-export function getPostsByCategory(category: BlogCategory): Post[] {
-  return getAllPosts().filter((p) => p.category === category);
-}
-
 // "Keep reading": articles of the same category first, then the others
 // (newest first), so the section is never empty while other articles exist.
 export function getRelatedPosts(post: Post, n = 3): Post[] {

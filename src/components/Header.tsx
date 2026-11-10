@@ -23,6 +23,8 @@ export function Header() {
   // The page without its language prefix: "/en/sell" → "/sell", "/en" → "/"
   const path = splitLang(pathname).path;
   const [scrolled, setScrolled] = useState(false);
+  // Past 80px: compact logo (crest only; on mobile centred), see LogoLockup
+  const [compact, setCompact] = useState(false);
   // The menu remembers the page it was opened on, so it is closed
   // automatically as soon as the route changes (no effect needed).
   const [openOn, setOpenOn] = useState<string | null>(null);
@@ -32,7 +34,10 @@ export function Header() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
+      setCompact(window.scrollY > 80);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -95,10 +100,11 @@ export function Header() {
             : "bg-surface border-hairline"
         }`}
       >
-        <div className={`container-wrap h-nav flex items-center justify-between ${tone}`}>
+        {/* @container: lets the logo find the centre of this row (LogoLockup) */}
+        <div className={`@container container-wrap h-nav flex items-center justify-between ${tone}`}>
           <Link
             href="/"
-            aria-label="Ellington Properties"
+            aria-label={t.nav.logoLabel}
             onClick={(e) => {
               if (path === "/") {
                 e.preventDefault();
@@ -107,7 +113,7 @@ export function Header() {
             }}
             className="shrink-0 hover:opacity-80 transition-opacity"
           >
-            <LogoLockup tone={overImage ? "white" : "blue"} />
+            <LogoLockup tone={overImage ? "white" : "blue"} compact={compact} />
           </Link>
 
           {/* Desktop: links (Figma "Links", gap 40) */}

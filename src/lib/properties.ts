@@ -410,7 +410,7 @@ export const locations: Location[] = [
       "Événements saisonniers et régates",
     ],
     activitiesEn: [
-      "Sailing and yachting in the Gulf of Saint-Tropez",
+      "Sailing and yachting in the Golfe de Saint-Tropez",
       "Coastal walks and scenic viewpoints",
       "Cultural visits (Citadel, museums, galleries)",
       "Beach clubs and seaside relaxation",
@@ -434,11 +434,11 @@ export const locations: Location[] = [
     description:
       "Au cœur du Golfe de Saint-Tropez, Grimaud séduit par son village médiéval perché, ses ruelles pavées et ses villas en bord de mer. Une adresse confidentielle et préservée de la Côte d'Azur.",
     descriptionEn:
-      "At the heart of the Gulf of Saint-Tropez, Grimaud charms with its perched medieval village, its cobbled lanes and its waterfront villas — a confidential, preserved address on the French Riviera.",
+      "At the heart of the Golfe de Saint-Tropez, Grimaud charms with its perched medieval village, its cobbled lanes and its waterfront villas — a confidential, preserved address on the French Riviera.",
     longDescription:
       "Dominé par les ruines du Château des Grimaldi (XIᵉ siècle), Grimaud déroule ses ruelles pavées entre maisons en pierre, fontaines et passages voûtés. Le village offre depuis ses hauteurs une vue plongeante sur le Golfe de Saint-Tropez. En contrebas, les hameaux résidentiels et les domaines en pinède dessinent un cadre de vie alliant authenticité provençale et confort contemporain. Une alternative confidentielle aux adresses plus exposées du Golfe.",
     longDescriptionEn:
-      "Crowned by the ruins of the Grimaldi Castle (11th century), Grimaud unfolds its cobbled lanes between stone houses, fountains and vaulted passages. The hilltop village offers a sweeping view over the Gulf of Saint-Tropez. Below, residential hamlets and pine-shaded estates create a setting that blends Provençal authenticity with contemporary comfort — a confidential alternative to the Gulf's more exposed addresses.",
+      "Crowned by the ruins of the Grimaldi Castle (11th century), Grimaud unfolds its cobbled lanes between stone houses, fountains and vaulted passages. The hilltop village offers a sweeping view over the Golfe de Saint-Tropez. Below, residential hamlets and pine-shaded estates create a setting that blends Provençal authenticity with contemporary comfort — a confidential alternative to the Golfe's more exposed addresses.",
     highlights: [
       "Château des Grimaldi (XIᵉ siècle)",
       "Vue panoramique sur le Golfe",
@@ -447,7 +447,7 @@ export const locations: Location[] = [
     ],
     highlightsEn: [
       "Grimaldi Castle (11th century)",
-      "Panoramic view over the Gulf",
+      "Panoramic view over the Golfe",
       "Residential hamlets in pinewoods",
       "10 min from Saint-Tropez and Port Grimaud",
     ],
@@ -477,7 +477,7 @@ export const locations: Location[] = [
     longDescription:
       "Inscrite au Patrimoine du XXᵉ siècle, Port Grimaud déploie 7 km de canaux navigables sur lesquels chaque maison dispose de son propre anneau d'amarrage. L'architecture, signée François Spoerry et inspirée des villages de pêcheurs italiens, mêle façades aux tons pastel, tuiles romaines et placettes intimistes. Cette singularité urbaine — chaque acquéreur est aussi propriétaire d'un poste à quai — fait de Port Grimaud l'une des adresses les plus convoitées du Golfe pour les amateurs de plaisance.",
     longDescriptionEn:
-      "Listed as 20th-century heritage, Port Grimaud unfolds 7 km of navigable canals where each home has its own private mooring. The architecture, designed by François Spoerry and inspired by Italian fishing villages, combines pastel façades, Roman tiles and intimate squares. This urban singularity — every buyer also owns a private berth — makes Port Grimaud one of the Gulf's most coveted addresses for sailing enthusiasts.",
+      "Listed as 20th-century heritage, Port Grimaud unfolds 7 km of navigable canals where each home has its own private mooring. The architecture, designed by François Spoerry and inspired by Italian fishing villages, combines pastel façades, Roman tiles and intimate squares. This urban singularity — every buyer also owns a private berth — makes Port Grimaud one of the Golfe's most coveted addresses for sailing enthusiasts.",
     highlights: [
       "7 km de canaux navigables",
       "Anneau d'amarrage privé inclus",
@@ -516,7 +516,7 @@ export const locations: Location[] = [
     longDescription:
       "Étendue sur 2 700 hectares dont la moitié est classée Natura 2000, Ramatuelle conjugue le mythe de Pampelonne — 5 km de sable fin et de plages mythiques (Club 55, Nikki Beach, La Réserve) — et l'authenticité d'un village médiéval perché à 136 m. Les vignobles AOP Côtes-de-Provence, les pinèdes et les domaines confidentiels font de Ramatuelle l'un des marchés les plus prisés du Golfe pour les acquéreurs en quête de discrétion et d'espace.",
     longDescriptionEn:
-      "Spanning 2,700 hectares — half of it Natura 2000 protected — Ramatuelle combines the Pampelonne myth (5 km of fine sand, Club 55, Nikki Beach, La Réserve) with the authenticity of a hilltop village perched at 136 m. AOP Côtes-de-Provence vineyards, pinewoods and confidential estates make Ramatuelle one of the Gulf's most sought-after markets for buyers seeking discretion and space.",
+      "Spanning 2,700 hectares — half of it Natura 2000 protected — Ramatuelle combines the Pampelonne myth (5 km of fine sand, Club 55, Nikki Beach, La Réserve) with the authenticity of a hilltop village perched at 136 m. AOP Côtes-de-Provence vineyards, pinewoods and confidential estates make Ramatuelle one of the Golfe's most sought-after markets for buyers seeking discretion and space.",
     highlights: [
       "5 km de plages de Pampelonne",
       "Vignobles AOP Côtes-de-Provence",
@@ -551,11 +551,11 @@ export const locations: Location[] = [
     description:
       "Classé parmi les Plus Beaux Villages de France, Gassin couronne une colline avec vue à 360° sur le Golfe de Saint-Tropez, les Maures et la Méditerranée. Villas de prestige et propriétés viticoles s'épanouissent dans un cadre préservé.",
     descriptionEn:
-      "Listed among the Most Beautiful Villages of France, Gassin crowns a hilltop with 360° views over the Gulf of Saint-Tropez, the Maures range and the Mediterranean. Prestigious villas and vineyard estates thrive in a preserved setting.",
+      "Listed among the Most Beautiful Villages of France, Gassin crowns a hilltop with 360° views over the Golfe de Saint-Tropez, the Maures range and the Mediterranean. Prestigious villas and vineyard estates thrive in a preserved setting.",
     longDescription:
       "Perché à 200 mètres d'altitude, Gassin offre l'une des vues les plus spectaculaires du Var : Golfe de Saint-Tropez, île de Porquerolles, massif des Maures et, par temps clair, jusqu'aux Alpes. Le village médiéval, classé parmi les « Plus Beaux Villages de France », alterne ruelles fleuries, terrasses de pierre et placettes ombragées. Autour, les vignobles AOP et les domaines en hauteur attirent une clientèle en quête de panoramas exceptionnels et de tranquillité absolue, à 10 minutes seulement de Saint-Tropez.",
     longDescriptionEn:
-      "Perched at 200 metres, Gassin offers one of Provence's most spectacular vistas — the Gulf of Saint-Tropez, the island of Porquerolles, the Maures range, and on clear days, the Alps beyond. The medieval village, listed among France's Most Beautiful Villages, alternates flowered lanes, stone terraces and shaded squares. Around it, AOP vineyards and hillside estates attract buyers seeking exceptional panoramas and absolute quiet, just 10 minutes from Saint-Tropez.",
+      "Perched at 200 metres, Gassin offers one of Provence's most spectacular vistas — the Golfe de Saint-Tropez, the island of Porquerolles, the Maures range, and on clear days, the Alps beyond. The medieval village, listed among France's Most Beautiful Villages, alternates flowered lanes, stone terraces and shaded squares. Around it, AOP vineyards and hillside estates attract buyers seeking exceptional panoramas and absolute quiet, just 10 minutes from Saint-Tropez.",
     highlights: [
       "Plus Beaux Villages de France",
       "Vue 360° sur le Golfe",
@@ -564,7 +564,7 @@ export const locations: Location[] = [
     ],
     highlightsEn: [
       "Most Beautiful Villages of France",
-      "360° view over the Gulf",
+      "360° view over the Golfe",
       "AOP vineyards on the hillside",
       "10 min from Saint-Tropez",
     ],
@@ -577,7 +577,7 @@ export const locations: Location[] = [
     metaDescription:
       "Immobilier de prestige à Gassin, Plus Beaux Villages de France. Villas vue 360° sur le Golfe, propriétés viticoles, par Ellington.",
     metaDescriptionEn:
-      "Luxury real estate in Gassin, Most Beautiful Villages of France. Villas with 360° Gulf views and vineyard estates, by Ellington.",
+      "Luxury real estate in Gassin, Most Beautiful Villages of France. Villas with 360° Golfe views and vineyard estates, by Ellington.",
     image: "/locations/gassin.jpg",
     coordinates: { lat: 43.235, lng: 6.586 },
   },
@@ -590,11 +590,11 @@ export const locations: Location[] = [
     description:
       "Face à Saint-Tropez sur le Golfe, Sainte-Maxime allie élégance balnéaire et authenticité provençale. Plages de sable fin, villas contemporaines et propriétés historiques en font une destination privilégiée.",
     descriptionEn:
-      "Facing Saint-Tropez across the Gulf, Sainte-Maxime combines seaside elegance with Provençal authenticity. Fine sandy beaches, contemporary villas and historic properties make it a privileged destination.",
+      "Facing Saint-Tropez across the Golfe, Sainte-Maxime combines seaside elegance with Provençal authenticity. Fine sandy beaches, contemporary villas and historic properties make it a privileged destination.",
     longDescription:
       "Sainte-Maxime conjugue 11 km de plages plein sud avec un arrière-pays vallonné où s'épanouissent les domaines de prestige. La ville offre tous les services d'une station moderne — port, golf, casino, marché provençal — tout en préservant un urbanisme à taille humaine. Sa position face à Saint-Tropez, accessible en 10 minutes par bateau-navette ou 20 minutes par la corniche, en fait une alternative privilégiée pour ceux qui cherchent l'art de vivre du Golfe avec un meilleur rapport surface/budget.",
     longDescriptionEn:
-      "Sainte-Maxime combines 11 km of south-facing beaches with a hillside hinterland where prestigious estates flourish. The town offers every service of a modern resort — port, golf, casino, Provençal market — while preserving a human-scale urban fabric. Its position facing Saint-Tropez, reached in 10 minutes by shuttle boat or 20 minutes along the corniche, makes it a privileged alternative for those seeking Gulf living with a better space/budget ratio.",
+      "Sainte-Maxime combines 11 km of south-facing beaches with a hillside hinterland where prestigious estates flourish. The town offers every service of a modern resort — port, golf, casino, Provençal market — while preserving a human-scale urban fabric. Its position facing Saint-Tropez, reached in 10 minutes by shuttle boat or 20 minutes along the corniche, makes it a privileged alternative for those seeking Golfe living with a better space/budget ratio.",
     highlights: [
       "11 km de plages plein sud",
       "Port, golf et casino",
@@ -629,11 +629,11 @@ export const locations: Location[] = [
     description:
       "Entre Saint-Tropez et le Lavandou, La Croix-Valmer déroule des plages de sable fin protégées, des vignobles AOP Côtes-de-Provence et un arrière-pays sauvage. Une adresse confidentielle pour qui cherche la quiétude méditerranéenne loin de l'effervescence du Golfe.",
     descriptionEn:
-      "Between Saint-Tropez and Le Lavandou, La Croix-Valmer unfolds protected sandy beaches, AOP Côtes-de-Provence vineyards and a wild hinterland — a confidential address for those seeking Mediterranean quiet, away from the Gulf's bustle.",
+      "Between Saint-Tropez and Le Lavandou, La Croix-Valmer unfolds protected sandy beaches, AOP Côtes-de-Provence vineyards and a wild hinterland — a confidential address for those seeking Mediterranean quiet, away from the Golfe's bustle.",
     longDescription:
       "Aux portes du Cap Lardier et du Cap Taillat — sites classés du Conservatoire du Littoral — La Croix-Valmer est une enclave préservée du Var. Ses plages de Gigaro, du Débarquement et du Sylvabelle offrent un littoral encore sauvage, prisé par une clientèle internationale en quête d'authenticité. Le marché immobilier mêle villas contemporaines vue mer, mas viticoles et propriétés en bord de mer, avec un excellent rapport qualité/prix par rapport aux adresses voisines du Golfe.",
     longDescriptionEn:
-      "At the gates of Cap Lardier and Cap Taillat — protected coastal sites — La Croix-Valmer is a preserved enclave of the Var. Its beaches at Gigaro, Le Débarquement and Sylvabelle offer a wild shoreline coveted by an international clientele seeking authenticity. The property market combines contemporary sea-view villas, wine estates and waterfront homes, with excellent value compared with neighbouring Gulf addresses.",
+      "At the gates of Cap Lardier and Cap Taillat — protected coastal sites — La Croix-Valmer is a preserved enclave of the Var. Its beaches at Gigaro, Le Débarquement and Sylvabelle offer a wild shoreline coveted by an international clientele seeking authenticity. The property market combines contemporary sea-view villas, wine estates and waterfront homes, with excellent value compared with neighbouring Golfe addresses.",
     highlights: [
       "Plages préservées (Gigaro, Sylvabelle)",
       "Cap Lardier et Cap Taillat protégés",
@@ -802,15 +802,6 @@ export async function getCities(): Promise<string[]> {
   const list = await getProperties();
   return [...new Set(list.map((p) => p.city))].filter(Boolean).sort((a, b) => a.localeCompare(b, "fr"));
 }
-
-export function formatPrice(price: number, currency = "EUR"): string {
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(price);
-}
-
 /** A listing has a price to show. 0 / missing (or hidden in Apimo, mapped
  *  to 0) means "Price on request". */
 export function hasPrice(p: { price: number }): boolean {
@@ -825,20 +816,6 @@ export function formatPriceShort(price: number): string {
   if (price >= 1_000) return `€${Math.round(price / 1_000)}K`;
   return `€${price}`;
 }
-
-export function propertyTypeLabel(type: string): string {
-  const labels: Record<string, string> = {
-    villa: "Villa",
-    penthouse: "Penthouse",
-    apartment: "Appartement",
-    estate: "Domaine",
-    chalet: "Chalet",
-    townhouse: "Maison de ville",
-    land: "Terrain",
-  };
-  return labels[type] ?? type;
-}
-
 /** Village tagline in the page language (NL falls back to EN, then FR). */
 export function villageTagline(loc: Location, lang: "fr" | "en" | "nl"): string | undefined {
   if (lang === "en") return loc.taglineEn ?? loc.tagline;

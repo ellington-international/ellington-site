@@ -33,12 +33,6 @@ export function writeConsent(choice: Omit<ConsentChoice, "essential" | "timestam
   };
   window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(value));
 }
-
-export function clearConsent() {
-  if (typeof window === "undefined") return;
-  window.localStorage.removeItem(CONSENT_STORAGE_KEY);
-}
-
 export function openConsentBanner() {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new Event(OPEN_CONSENT_EVENT));

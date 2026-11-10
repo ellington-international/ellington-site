@@ -13,27 +13,6 @@
   --surface-white: #ffffff;     /* surface/white — page background */
   --surface-light: #e8eef4;     /* surface/light — light blue bands: page heads, closing bands */
   --line-hairline: #d5dee7;     /* line/hairline — hairlines, borders, input outlines */
-
-  /* ── Legacy aliases (pre-redesign names) ─────────────────────────────────
-     Kept so existing components keep working while they are redone.
-     Each alias is deleted once nothing uses it (REDESIGN-PLAN.md, Phases 2–5).
-     Do NOT use these names in new code — use the Figma names above. */
-  --background: var(--surface-white);
-  --background-elev: var(--surface-white);
-  --background-card: var(--surface-white);
-  --panel: var(--surface-light);
-  --foreground: var(--brand-blue);       /* was navy #1a2744; used for titles/links */
-  --muted: var(--muted-text);            /* was grey #9a9a9a */
-  --muted-strong: var(--body-text);      /* was #5a6b86 (secondary copy) */
-  --border: var(--line-hairline);
-  --border-strong: var(--line-hairline); /* Figma has a single hairline colour */
-  --accent: var(--brand-blue);
-  --accent-hover: var(--brand-blue-deep);
-  --link: var(--brand-blue);             /* old bright blue #004bc1 is not in Figma */
-  --link-hover: var(--brand-blue-deep);
-  --gold: var(--brand-accent);           /* gold #c9a96e → champagne */
-  --gold-hover: var(--brand-accent);     /* no hover shade in Figma; buttons redone in step 5 */
-  --brand-navy: var(--brand-blue);
 }
 
 @theme inline {
@@ -47,24 +26,7 @@
   --color-surface: var(--surface-white);
   --color-surface-light: var(--surface-light);
   --color-hairline: var(--line-hairline);
-
-  /* Legacy utilities (text-foreground, bg-accent, text-link, …) */
-  --color-background: var(--background);
-  --color-background-elev: var(--background-elev);
-  --color-background-card: var(--background-card);
-  --color-panel: var(--panel);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-strong: var(--muted-strong);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-link: var(--link);
-  --color-link-hover: var(--link-hover);
-  --color-gold: var(--gold);
-  --color-gold-hover: var(--gold-hover);
-  --color-brand-navy: var(--brand-navy);
+  --color-muted: var(--muted-text);
   --font-sans: var(--font-inter);
   --font-serif: var(--font-cormorant);
   /* Type sizes are NOT Tailwind tokens: use the .type-* classes below, which
@@ -299,25 +261,6 @@ html, body {
   }
   .nav-link:hover,
   .nav-link[aria-current="page"] { border-bottom-color: var(--brand-accent); }
-
-  /* ── Legacy class names (pre-redesign) mapped to the nearest Figma style.
-     Removed once the components using them are redone (Phases 2 + 4). */
-  .type-h4,
-  .type-card-title { /* → Heading/H3 (Figma card titles and small headings) */
-    font-family: var(--font-serif), Georgia, serif;
-    font-size: var(--fs-h3); font-weight: 500; font-style: normal;
-    line-height: 1.25; letter-spacing: 0; color: var(--tone-heading);
-  }
-  .type-nav { /* → Caps/Button (Figma nav links) */
-    font-family: var(--font-sans), system-ui, sans-serif;
-    font-size: var(--fs-button); font-weight: 400; line-height: 1;
-    letter-spacing: 0.2em; text-transform: uppercase;
-  }
-  .type-subhead { /* → Text/Subtitle (Figma section intro lines) */
-    font-family: var(--font-serif), Georgia, serif;
-    font-size: var(--fs-subtitle); font-weight: 500; font-style: normal;
-    line-height: 1.3; letter-spacing: 0; color: var(--tone-heading);
-  }
 }
 
 /* ── Defaults for elements without a .type-* class or size utility ────────
@@ -340,14 +283,7 @@ html, body {
   }
 }
 
-.tracking-luxury {
-  letter-spacing: 0.18em;
-}
-
-.fade-in {
-  animation: fadeIn 0.8s ease-out both;
-}
-
+/* Mobile menu fade (Header: animate-[fadeIn_0.25s_ease-out]) */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -376,7 +312,7 @@ html[data-reveal-on] main .article-prose > :not([data-reveal] *) {
 }
 
 ::selection {
-  background: var(--accent);
+  background: var(--brand-blue);
   color: #ffffff;
 }
 
@@ -385,7 +321,7 @@ input:focus, button:focus, select:focus {
 }
 
 input::placeholder {
-  color: var(--muted);
+  color: var(--muted-text);
 }
 
 /* ── Article text (Figma "08.1–08.3 Article" › Column max 720) ──────────

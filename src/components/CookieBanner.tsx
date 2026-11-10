@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/components/LocaleLink";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useLanguage } from "./LanguageProvider";
 import { Button } from "./ui/Button";
 import {
@@ -10,15 +10,32 @@ import {
   writeConsent,
 } from "@/lib/cookie-consent";
 
+// "No choice saved yet", read from localStorage as an external store: false
+// on the server and during hydration (so the HTML matches), the real value
+// right after. Updates when another tab saves a choice ("storage" event).
+const subscribeConsent = (onChange: () => void) => {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+};
+const needsConsentNow = () => readConsent() === null;
+const needsConsentOnServer = () => false;
+
 export function CookieBanner() {
   const { t } = useLanguage();
-  const [open, setOpen] = useState(false);
+  const needsConsent = useSyncExternalStore(subscribeConsent, needsConsentNow, needsConsentOnServer);
+  // Reopened from "Manage cookies" (footer), or closed after a choice
+  const [reopened, setReopened] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const open = reopened || (needsConsent && !dismissed);
+  const setOpen = (value: boolean) => {
+    setReopened(value);
+    if (!value) setDismissed(true);
+  };
   const [expanded, setExpanded] = useState(false);
   const [analytics, setAnalytics] = useState(false);
   const [marketing, setMarketing] = useState(false);
 
   useEffect(() => {
-    if (!readConsent()) setOpen(true);
     const onOpen = () => {
       const current = readConsent();
       setAnalytics(current?.analytics ?? false);

@@ -18,7 +18,6 @@ const dictRaw = {
       properties: "Propriétés",
       buy: "Acheter",
       rentals: "Locations",
-      regions: "Nos régions",
       regionsNav: "Régions",
       sell: "Vendre",
       journal: "Journal",
@@ -28,6 +27,7 @@ const dictRaw = {
       favorites: "Favoris",
       menu: "Menu",
       close: "Fermer", // TODO client review
+      logoLabel: "Ellington — Accueil", // TODO client review
     },
     thankYou: {
       // TODO client review (FR draft)
@@ -58,7 +58,6 @@ const dictRaw = {
       readingTime: "{n} min de lecture",
       team: "Équipe Ellington",
       ctaTitle: "Échangez avec un conseiller Ellington",
-      ctaText: "Une expertise confidentielle, off-market, sur l'ensemble du Golfe de Saint-Tropez.",
       // Article page (Figma "08.1 Article"). TODO client review (FR draft)
       bandTitle: "Échangez avec un conseiller Ellington",
       bandSubtitle: "Des conseils confidentiels pour acheter dans tout le Golfe de Saint-Tropez.",
@@ -83,8 +82,6 @@ const dictRaw = {
       bandSubtitle: "Nous vivons et travaillons dans le Golfe — posez-nous toutes vos questions sur ce village.",
       bandCta: "Demander une consultation",
       propertiesTitle: "Biens dans cette région",
-      viewAll: "Tout voir →",
-      empty: "Aucun bien dans cette région pour le moment.",
       // TODO client review
       offMarket: (village: string) => `Beaucoup de nos biens à ${village} se vendent hors marché. Dites-nous ce que vous recherchez.`,
       offMarketCta: "Nous contacter", // TODO client review
@@ -110,11 +107,8 @@ const dictRaw = {
       addFavorite: "Ajouter aux favoris",
       removeFavorite: "Retirer des favoris",
       contactUs: "Nous contacter",
-      callUs: "+33 4 93 12 34 56",
-      readMore: "Découvrir →",
       swipeHint: "← Faites glisser →",
       loading: "...",
-      send: "Envoyer le message",
       sending: "Envoi…",
       reset: "Réinitialiser",
     },
@@ -123,7 +117,6 @@ const dictRaw = {
       // TODO client review (FR draft)
       title: "Là où la Riviera devient chez vous",
       subtitle: "Villas, domaines et maisons les pieds dans l'eau autour de Saint-Tropez.",
-      heroAlt: "Jardin d'une villa avec vue sur le Golfe de Saint-Tropez",
       scroll: "Défiler",
       whyEyebrow: "Le standard Ellington",
       whyStatement: "Des conseils honnêtes, un ancrage local et un compte rendu écrit chaque mois.",
@@ -160,20 +153,15 @@ const dictRaw = {
         "Recevez en exclusivité nos nouveaux biens et nos analyses du marché immobilier.",
       newsletterPlaceholder: "Votre adresse email",
       newsletterSubmit: "S'inscrire",
-      // Still used on the About page until its redesign (step 21)
-      expertTitle: "Un expert local pas comme les autres.",
     },
     search: {
       buy: "Achat",
-      rent: "Location",
       location: "Localisation",
       type: "Type de bien",
       budget: "Budget",
       sort: "Trier par",
       allLocations: "Toutes",
       allTypes: "Tous types",
-      allBudgets: "Tous budgets",
-      allPrices: "Tous les prix",
       bedrooms: "Chambres",
       allBedrooms: "Toutes",
       submit: "Rechercher",
@@ -191,12 +179,6 @@ const dictRaw = {
       chalet: "Chalet",
       townhouse: "Maison de ville",
       land: "Terrain",
-    },
-    sort: {
-      newest: "Plus récents",
-      priceDesc: "Prix décroissant",
-      priceAsc: "Prix croissant",
-      areaDesc: "Surface décroissante",
     },
     priceRanges: {
       all: "Tous les prix",
@@ -222,23 +204,18 @@ const dictRaw = {
       description: "Description",
       features: "Prestations",
       location: "Localisation",
-      mapUnavailable: "Carte indisponible",
       addressNote:
         "Adresse précise communiquée sur demande, dans le respect de la confidentialité de notre client.",
       interestedTitle: "Intéressé ?",
       interestedBody:
         "Contactez-nous pour plus d'informations ou planifier une visite privée.",
       yourAdvisor: "Votre conseiller",
-      advisorRole: "Directeur du portefeuille",
       phone: "Téléphone",
       email: "Email",
       confidentialTitle: "Service confidentiel",
       confidentialBody:
         "Toutes les demandes sont traitées avec la plus stricte discrétion. Notre clientèle internationale apprécie notre exigence de confidentialité.",
       similar: "Biens",
-      similarAccent: "similaires",
-      shortBed: "ch.",
-      shortBath: "sdb.",
       energyTitle: "Performance énergétique",
       // Energy block (Figma "Energy performance"). TODO client review (FR draft)
       energyClass: "Classe énergie (DPE)",
@@ -260,13 +237,6 @@ const dictRaw = {
       month: "mois",
     },
     priceOnRequest: "Prix sur demande",
-    propertiesPage: {
-      eyebrow: "Portefeuille",
-      titleBefore: "Propriétés",
-      titleAccent: "à vendre",
-      subtitle:
-        "Découvrez les biens d'exception sélectionnés par Ellington sur l'ensemble de la Côte d'Azur.",
-    },
     locationsPage: {
       // Locations redesign (step 17). TODO client review (FR draft)
       eyebrow: "Le Golfe de Saint-Tropez",
@@ -334,8 +304,6 @@ const dictRaw = {
           phone: "+33 6 14 54 71 30",
         },
       ],
-      // Still used on the article pages (BlogPostShell)
-      ctaEyebrow: "Une question ?",
       ctaTitle: "Trouvons votre bien",
       ctaBody: "Acheter, vendre ou estimer — dites-nous ce que vous avez en tête.",
       ctaPrimary: "Voir les biens",
@@ -351,26 +319,15 @@ const dictRaw = {
         "Remplissez le formulaire ci-dessous et un membre de notre équipe vous répondra sous 24 heures.",
       detailsTitle: "Coordonnées",
       hoursTitle: "Horaires",
-      advisorBlock: {
-        eyebrow: "Votre interlocuteur",
-        role: "Directeur du portefeuille",
-        intro:
-          "Chaque échange est traité personnellement, dans la plus stricte discrétion. N'hésitez pas à m'écrire, je vous recontacte sous 24 heures.",
-        signature: "— Marc",
-      },
       address: "Espace Lemarquis\nQuartier Bertaud\n83580 Gassin — France",
       monFri: "Lundi – Vendredi",
       sat: "Samedi",
       sun: "Dimanche",
-      sunHours: "Sur RDV",
       monFriHours: "9h – 18h",
       satHours: "10h – 16h",
       confidentialTitle: "Service confidentiel",
       confidentialBody:
         "Toutes vos demandes sont traitées avec la plus stricte discrétion, conformément à notre engagement de confidentialité.",
-      thanks: "Merci.",
-      successBody:
-        "Votre message a bien été reçu. Un conseiller vous recontactera sous 24 heures, en toute confidentialité.",
       firstName: "Prénom",
       lastName: "Nom",
       emailField: "Email",
@@ -379,15 +336,6 @@ const dictRaw = {
       lastNamePh: "Dupont",
       emailPh: "jean.dupont@exemple.com",
       phonePh: "+33 6 12 34 56 78",
-      subject: "Objet *",
-      subjectPlaceholder: "Sélectionnez un objet",
-      subjects: [
-        "Acquisition d'un bien",
-        "Estimation d'un bien",
-        "Vente d'un bien",
-        "Location saisonnière",
-        "Autre demande",
-      ],
       messageLabel: "Message",
       messagePlaceholder: "Décrivez votre demande en détail…",
       disclaimer:
@@ -405,8 +353,6 @@ const dictRaw = {
       msgConsultationIn: (place: string) => `Je souhaite échanger avec un conseiller au sujet de ${place}.`,
       msgProperty: (ref: string) => `Je suis intéressé(e) par le bien ${ref}.`,
       sendError: "Une erreur est survenue. Réessayez ou écrivez-nous directement.",
-      consent:
-        "J'accepte que mes informations soient utilisées pour me recontacter dans le cadre de ma demande.",
     },
     rentalsPage: {
       eyebrow: "Locations saisonnières",
@@ -476,7 +422,6 @@ const dictRaw = {
       explore: "Explorer",
       contact: "Contact",
       hours: "Horaires",
-      regions: "Nos régions",
       monFri: "Lundi – Vendredi · 9h – 18h",
       sat: "Samedi · 10h – 16h",
       sun: "Dimanche · sur rendez-vous",
@@ -507,7 +452,6 @@ const dictRaw = {
       passwordShort: "Le mot de passe doit contenir au moins 8 caractères.",
       invalidCredentials: "Adresse email ou mot de passe incorrect.",
       alreadyRegistered: "Un compte existe déjà avec cette adresse email.",
-      genericError: "Une erreur est survenue. Réessayez.",
     },
     favoritesPage: {
       eyebrow: "Espace personnel",
@@ -533,8 +477,7 @@ const dictRaw = {
       refuse: "Tout refuser",
       customize: "Personnaliser",
       save: "Enregistrer mes choix",
-      learnMore: "En savoir plus",
-      manage: "Gérer mes préférences",
+      learnMore: "Lire notre politique de confidentialité", // TODO client review
       essentialLabel: "Cookies essentiels",
       essentialDesc:
         "Nécessaires au fonctionnement du site (authentification, préférences de langue). Toujours actifs.",
@@ -546,7 +489,6 @@ const dictRaw = {
         "Permettent de mesurer l'efficacité de nos communications et de personnaliser certains contenus.",
     },
     legalPage: {
-      metaTitle: "Mentions légales",
       metaDescription: "Mentions légales du site Ellington Properties.",
       eyebrow: "Informations légales",
       titleBefore: "Mentions",
@@ -579,7 +521,6 @@ const dictRaw = {
         "Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés modifiée, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et d'opposition concernant vos données personnelles. Pour exercer ces droits, contactez-nous à ",
     },
     privacyPage: {
-      metaTitle: "Politique de confidentialité",
       metaDescription:
         "Politique de confidentialité et de protection des données personnelles d'Ellington Properties.",
       eyebrow: "Protection de vos données",
@@ -726,7 +667,6 @@ const dictRaw = {
       properties: "Properties",
       buy: "Buy",
       rentals: "Rentals",
-      regions: "Our regions",
       regionsNav: "Locations",
       sell: "Sell",
       journal: "Journal",
@@ -736,6 +676,7 @@ const dictRaw = {
       favorites: "Favorites",
       menu: "Menu",
       close: "Close",
+      logoLabel: "Ellington — Home",
     },
     thankYou: {
       requestEyebrow: "Request received",
@@ -765,7 +706,6 @@ const dictRaw = {
       readingTime: "{n} min read",
       team: "Ellington team",
       ctaTitle: "Speak with one of our advisors",
-      ctaText: "Confidential, off-market expertise across the Golfe de Saint-Tropez.",
       // Article page (Figma "08.1 Article")
       bandTitle: "Speak with an Ellington advisor",
       bandSubtitle: "Confidential advice on buying across the Golfe de Saint-Tropez.",
@@ -790,8 +730,6 @@ const dictRaw = {
       bandSubtitle: "We live and work in the Golfe — ask us anything about this village.",
       bandCta: "Request a consultation",
       propertiesTitle: "Properties in this region",
-      viewAll: "View all →",
-      empty: "No properties in this region at the moment.",
       offMarket: (village: string) => `Many of our properties in ${village} are sold off-market. Tell us what you're looking for.`,
       offMarketCta: "Contact us",
       viewAllIn: (village: string) => `View all properties in ${village} →`,
@@ -816,11 +754,8 @@ const dictRaw = {
       addFavorite: "Add to favorites",
       removeFavorite: "Remove from favorites",
       contactUs: "Contact us",
-      callUs: "+33 4 93 12 34 56",
-      readMore: "Discover →",
       swipeHint: "← Swipe →",
       loading: "...",
-      send: "Send message",
       sending: "Sending…",
       reset: "Reset",
     },
@@ -828,7 +763,6 @@ const dictRaw = {
       // Home redesign (step 13): Figma "01 Home" copy (approved).
       title: "Where the Riviera becomes home",
       subtitle: "Villas, estates and waterfront houses around Saint-Tropez.",
-      heroAlt: "Villa garden overlooking the Golfe de Saint-Tropez",
       scroll: "Scroll",
       whyEyebrow: "The Ellington standard",
       whyStatement: "Honest advice, local roots, and a written update every month.",
@@ -861,20 +795,15 @@ const dictRaw = {
       newsletterSubtitle: "Receive exclusive updates on new properties and market insights.",
       newsletterPlaceholder: "Your email address",
       newsletterSubmit: "Subscribe",
-      // Still used on the About page until its redesign (step 21)
-      expertTitle: "Not Your Ordinary Local Expert.",
     },
     search: {
       buy: "Buy",
-      rent: "Rent",
       location: "Location",
       type: "Property type",
       budget: "Budget",
       sort: "Sort by",
       allLocations: "All",
       allTypes: "All types",
-      allBudgets: "All budgets",
-      allPrices: "All prices",
       bedrooms: "Bedrooms",
       allBedrooms: "All",
       submit: "Search",
@@ -892,12 +821,6 @@ const dictRaw = {
       chalet: "Chalet",
       townhouse: "Townhouse",
       land: "Land",
-    },
-    sort: {
-      newest: "Newest",
-      priceDesc: "Price: high to low",
-      priceAsc: "Price: low to high",
-      areaDesc: "Largest area",
     },
     priceRanges: {
       all: "All prices",
@@ -923,23 +846,18 @@ const dictRaw = {
       description: "Description",
       features: "Features",
       location: "Location",
-      mapUnavailable: "Map unavailable",
       addressNote:
         "Exact address shared on request, in respect of our client's confidentiality.",
       interestedTitle: "Interested?",
       interestedBody:
         "Contact us for more information or to schedule a private viewing.",
       yourAdvisor: "Your advisor",
-      advisorRole: "Portfolio director",
       phone: "Phone",
       email: "Email",
       confidentialTitle: "Confidential service",
       confidentialBody:
         "All enquiries are handled with the strictest discretion. Our international clientele values our commitment to confidentiality.",
       similar: "Similar",
-      similarAccent: "properties",
-      shortBed: "bd.",
-      shortBath: "ba.",
       energyTitle: "Energy performance",
       // Energy block (Figma "Energy performance")
       energyClass: "Energy class (DPE)",
@@ -961,13 +879,6 @@ const dictRaw = {
       month: "mo",
     },
     priceOnRequest: "Price on request",
-    propertiesPage: {
-      eyebrow: "Portfolio",
-      titleBefore: "Properties",
-      titleAccent: "for sale",
-      subtitle:
-        "Discover the exceptional properties curated by Ellington across the entire French Riviera.",
-    },
     locationsPage: {
       // Locations redesign (step 17): Figma "05 Locations" copy
       eyebrow: "The Golfe de Saint-Tropez",
@@ -1034,8 +945,6 @@ const dictRaw = {
           phone: "+33 6 14 54 71 30",
         },
       ],
-      // Still used on the article pages (BlogPostShell)
-      ctaEyebrow: "A question?",
       ctaTitle: "Let's find your property",
       ctaBody: "Buying, selling or valuing — tell us what you have in mind.",
       ctaPrimary: "View properties",
@@ -1051,26 +960,15 @@ const dictRaw = {
         "Fill out the form below and a member of our team will respond within 24 hours.",
       detailsTitle: "Contact information",
       hoursTitle: "Office hours",
-      advisorBlock: {
-        eyebrow: "Your contact",
-        role: "Portfolio director",
-        intro:
-          "Every enquiry is handled personally, in the strictest discretion. Reach out — I will get back to you within 24 hours.",
-        signature: "— Marc",
-      },
       address: "Espace Lemarquis\nQuartier Bertaud\n83580 Gassin — France",
       monFri: "Monday – Friday",
       sat: "Saturday",
       sun: "Sunday",
-      sunHours: "By appointment",
       monFriHours: "9am – 6pm",
       satHours: "10am – 4pm",
       confidentialTitle: "Confidential service",
       confidentialBody:
         "All your enquiries are handled with the strictest discretion, in line with our commitment to confidentiality.",
-      thanks: "Thank you.",
-      successBody:
-        "Your message has been received. An advisor will contact you within 24 hours, in full confidentiality.",
       firstName: "First name",
       lastName: "Last name",
       emailField: "Email address",
@@ -1079,15 +977,6 @@ const dictRaw = {
       lastNamePh: "Smith",
       emailPh: "john.smith@example.com",
       phonePh: "+33 6 12 34 56 78",
-      subject: "Subject *",
-      subjectPlaceholder: "Select a subject",
-      subjects: [
-        "Property acquisition",
-        "Property valuation",
-        "Property sale",
-        "Seasonal rental",
-        "Other enquiry",
-      ],
       messageLabel: "Message",
       messagePlaceholder: "Please provide details about your inquiry...",
       disclaimer:
@@ -1105,8 +994,6 @@ const dictRaw = {
       msgConsultationIn: (place: string) => `I would like to speak with an advisor about ${place}.`,
       msgProperty: (ref: string) => `I am interested in property ${ref}.`,
       sendError: "Sorry, something went wrong. Please try again or email us directly.",
-      consent:
-        "I agree that my information may be used to contact me in connection with my enquiry.",
     },
     rentalsPage: {
       eyebrow: "Seasonal rentals",
@@ -1175,7 +1062,6 @@ const dictRaw = {
       explore: "Explore",
       contact: "Contact",
       hours: "Hours",
-      regions: "Our regions",
       monFri: "Monday – Friday · 9am – 6pm",
       sat: "Saturday · 10am – 4pm",
       sun: "Sunday · by appointment",
@@ -1207,7 +1093,6 @@ const dictRaw = {
       passwordShort: "The password must contain at least 8 characters.",
       invalidCredentials: "Incorrect email address or password.",
       alreadyRegistered: "An account already exists with this email address.",
-      genericError: "Something went wrong. Please try again.",
     },
     favoritesPage: {
       eyebrow: "Personal space",
@@ -1232,8 +1117,7 @@ const dictRaw = {
       refuse: "Refuse all",
       customize: "Customize",
       save: "Save my choices",
-      learnMore: "Learn more",
-      manage: "Manage my preferences",
+      learnMore: "Read our privacy policy",
       essentialLabel: "Essential cookies",
       essentialDesc:
         "Required for the site to work (authentication, language preferences). Always active.",
@@ -1245,7 +1129,6 @@ const dictRaw = {
         "Allow us to measure the effectiveness of our communications and personalise some content.",
     },
     legalPage: {
-      metaTitle: "Legal notice",
       metaDescription: "Legal notice for the Ellington Properties website.",
       eyebrow: "Legal information",
       titleBefore: "Legal",
@@ -1277,7 +1160,6 @@ const dictRaw = {
         "In accordance with the General Data Protection Regulation (GDPR) and the amended French Data Protection Act, you have a right of access, rectification, erasure, restriction and objection regarding your personal data. To exercise these rights, contact us at ",
     },
     privacyPage: {
-      metaTitle: "Privacy policy",
       metaDescription:
         "Privacy policy and personal data protection of Ellington Properties.",
       eyebrow: "Protecting your data",
@@ -1424,7 +1306,6 @@ const dictRaw = {
       properties: "Woningen",
       buy: "Kopen",
       rentals: "Verhuur",
-      regions: "Onze regio's",
       regionsNav: "Locaties",
       sell: "Verkopen",
       journal: "Journaal",
@@ -1434,6 +1315,7 @@ const dictRaw = {
       favorites: "Favorieten",
       menu: "Menu",
       close: "Sluiten", // TODO client review
+      logoLabel: "Ellington — Home", // TODO client review
     },
     thankYou: {
       // TODO client review (NL draft)
@@ -1465,7 +1347,6 @@ const dictRaw = {
       readingTime: "{n} min leestijd",
       team: "Team Ellington",
       ctaTitle: "Spreek met een van onze adviseurs",
-      ctaText: "Discrete, off-market expertise in de hele Golfe de Saint-Tropez.",
       // Article page (Figma "08.1 Article"). TODO client review (NL draft)
       bandTitle: "Spreek met een adviseur van Ellington",
       bandSubtitle: "Vertrouwelijk advies bij het kopen in de hele Golfe de Saint-Tropez.",
@@ -1490,8 +1371,6 @@ const dictRaw = {
       bandSubtitle: "We wonen en werken in de Golfe — vraag ons alles over dit dorp.",
       bandCta: "Vraag een adviesgesprek aan",
       propertiesTitle: "Woningen in deze regio",
-      viewAll: "Alles bekijken →",
-      empty: "Momenteel geen woningen in deze regio.",
       // TODO client review
       offMarket: (village: string) => `Veel van onze woningen in ${village} worden off-market verkocht. Vertel ons wat u zoekt.`,
       offMarketCta: "Neem contact op", // TODO client review
@@ -1517,11 +1396,8 @@ const dictRaw = {
       addFavorite: "Toevoegen aan favorieten", // TODO client review
       removeFavorite: "Verwijderen uit favorieten", // TODO client review
       contactUs: "Neem contact op",
-      callUs: "+33 4 93 12 34 56",
-      readMore: "Ontdekken →",
       swipeHint: "← Veeg →",
       loading: "...",
-      send: "Bericht versturen",
       sending: "Versturen…",
       reset: "Opnieuw instellen",
     },
@@ -1530,7 +1406,6 @@ const dictRaw = {
       // TODO client review (NL draft)
       title: "Waar de Rivièra thuis wordt",
       subtitle: "Villa's, landgoederen en huizen aan het water rond Saint-Tropez.",
-      heroAlt: "Tuin van een villa met uitzicht op de Golfe de Saint-Tropez",
       scroll: "Scroll",
       whyEyebrow: "De Ellington-standaard",
       whyStatement: "Eerlijk advies, lokale wortels en elke maand een schriftelijke update.",
@@ -1563,20 +1438,15 @@ const dictRaw = {
       newsletterSubtitle: "Ontvang exclusieve updates over nieuwe woningen en marktinzichten.",
       newsletterPlaceholder: "Uw e-mailadres",
       newsletterSubmit: "Inschrijven",
-      // Still used on the About page until its redesign (step 21)
-      expertTitle: "Geen gewone lokale expert.",
     },
     search: {
       buy: "Kopen",
-      rent: "Huren",
       location: "Locatie",
       type: "Type woning",
       budget: "Budget",
       sort: "Sorteren op",
       allLocations: "Alle",
       allTypes: "Alle types",
-      allBudgets: "Alle budgetten",
-      allPrices: "Alle prijzen",
       bedrooms: "Slaapkamers", // TODO client review
       allBedrooms: "Alle",
       submit: "Zoeken",
@@ -1594,12 +1464,6 @@ const dictRaw = {
       chalet: "Chalet",
       townhouse: "Herenhuis",
       land: "Grond",
-    },
-    sort: {
-      newest: "Nieuwste",
-      priceDesc: "Prijs: hoog naar laag",
-      priceAsc: "Prijs: laag naar hoog",
-      areaDesc: "Grootste oppervlakte",
     },
     priceRanges: {
       all: "Alle prijzen",
@@ -1625,23 +1489,18 @@ const dictRaw = {
       description: "Omschrijving",
       features: "Voorzieningen",
       location: "Locatie",
-      mapUnavailable: "Kaart niet beschikbaar",
       addressNote:
         "Exact adres wordt op verzoek gedeeld, uit respect voor de vertrouwelijkheid van onze cliënt.",
       interestedTitle: "Geïnteresseerd?",
       interestedBody:
         "Neem contact met ons op voor meer informatie of om een privébezichtiging te plannen.",
       yourAdvisor: "Uw adviseur",
-      advisorRole: "Portfoliodirecteur",
       phone: "Telefoon",
       email: "E-mail",
       confidentialTitle: "Vertrouwelijke service",
       confidentialBody:
         "Alle aanvragen worden met de grootste discretie behandeld. Onze internationale clientèle waardeert onze toewijding aan vertrouwelijkheid.",
       similar: "Vergelijkbare",
-      similarAccent: "woningen",
-      shortBed: "slpk.",
-      shortBath: "badk.",
       energyTitle: "Energieprestatie",
       // Energy block (Figma "Energy performance"). TODO client review (NL draft)
       energyClass: "Energieklasse (DPE)",
@@ -1663,13 +1522,6 @@ const dictRaw = {
       month: "mnd",
     },
     priceOnRequest: "Prijs op aanvraag",
-    propertiesPage: {
-      eyebrow: "Portfolio",
-      titleBefore: "Woningen",
-      titleAccent: "te koop",
-      subtitle:
-        "Ontdek de uitzonderlijke woningen die Ellington over de hele Franse Rivièra heeft samengesteld.",
-    },
     locationsPage: {
       // Locations redesign (step 17). TODO client review (NL draft)
       eyebrow: "De Golfe de Saint-Tropez",
@@ -1737,8 +1589,6 @@ const dictRaw = {
           phone: "+33 6 14 54 71 30",
         },
       ],
-      // Still used on the article pages (BlogPostShell)
-      ctaEyebrow: "Een vraag?",
       ctaTitle: "Laten we uw woning vinden",
       ctaBody: "Kopen, verkopen of laten waarderen — vertel ons wat u voor ogen heeft.",
       ctaPrimary: "Bekijk woningen",
@@ -1754,26 +1604,15 @@ const dictRaw = {
         "Vul onderstaand formulier in en een lid van ons team reageert binnen 24 uur.",
       detailsTitle: "Contactgegevens",
       hoursTitle: "Openingstijden",
-      advisorBlock: {
-        eyebrow: "Uw contactpersoon",
-        role: "Portfoliodirecteur",
-        intro:
-          "Elke aanvraag wordt persoonlijk behandeld, in de grootste discretie. Neem contact op — ik kom binnen 24 uur bij u terug.",
-        signature: "— Marc",
-      },
       address: "Espace Lemarquis\nQuartier Bertaud\n83580 Gassin — France",
       monFri: "Maandag – Vrijdag",
       sat: "Zaterdag",
       sun: "Zondag",
-      sunHours: "Op afspraak",
       monFriHours: "9.00 – 18.00",
       satHours: "10.00 – 16.00",
       confidentialTitle: "Vertrouwelijke service",
       confidentialBody:
         "Al uw aanvragen worden met de grootste discretie behandeld, in lijn met onze toewijding aan vertrouwelijkheid.",
-      thanks: "Dank u.",
-      successBody:
-        "Uw bericht is ontvangen. Een adviseur neemt binnen 24 uur contact met u op, in volledige vertrouwelijkheid.",
       firstName: "Voornaam",
       lastName: "Achternaam",
       emailField: "E-mailadres",
@@ -1782,15 +1621,6 @@ const dictRaw = {
       lastNamePh: "Jansen",
       emailPh: "jan.jansen@voorbeeld.nl",
       phonePh: "+33 6 12 34 56 78",
-      subject: "Onderwerp *",
-      subjectPlaceholder: "Selecteer een onderwerp",
-      subjects: [
-        "Aankoop van een woning",
-        "Taxatie van een woning",
-        "Verkoop van een woning",
-        "Seizoensverhuur",
-        "Andere aanvraag",
-      ],
       messageLabel: "Bericht",
       messagePlaceholder: "Geef alstublieft details over uw aanvraag...",
       disclaimer:
@@ -1808,8 +1638,6 @@ const dictRaw = {
       msgConsultationIn: (place: string) => `Ik wil graag met een adviseur spreken over ${place}.`,
       msgProperty: (ref: string) => `Ik ben geïnteresseerd in woning ${ref}.`,
       sendError: "Er ging iets mis. Probeer het opnieuw of mail ons rechtstreeks.",
-      consent:
-        "Ik ga ermee akkoord dat mijn gegevens worden gebruikt om contact met mij op te nemen in verband met mijn aanvraag.",
     },
     rentalsPage: {
       eyebrow: "Seizoensverhuur",
@@ -1879,7 +1707,6 @@ const dictRaw = {
       explore: "Verkennen",
       contact: "Contact",
       hours: "Openingstijden",
-      regions: "Onze regio's",
       monFri: "Maandag – Vrijdag · 9.00 – 18.00",
       sat: "Zaterdag · 10.00 – 16.00",
       sun: "Zondag · op afspraak",
@@ -1911,7 +1738,6 @@ const dictRaw = {
       passwordShort: "Het wachtwoord moet minimaal 8 tekens bevatten.",
       invalidCredentials: "Onjuist e-mailadres of wachtwoord.",
       alreadyRegistered: "Er bestaat al een account met dit e-mailadres.",
-      genericError: "Er ging iets mis. Probeer het opnieuw.",
     },
     favoritesPage: {
       eyebrow: "Persoonlijke ruimte",
@@ -1936,8 +1762,7 @@ const dictRaw = {
       refuse: "Alles weigeren",
       customize: "Aanpassen",
       save: "Mijn keuzes opslaan",
-      learnMore: "Meer informatie",
-      manage: "Mijn voorkeuren beheren",
+      learnMore: "Lees ons privacybeleid", // TODO client review
       essentialLabel: "Essentiële cookies",
       essentialDesc:
         "Vereist om de site te laten werken (authenticatie, taalvoorkeuren). Altijd actief.",
@@ -1949,7 +1774,6 @@ const dictRaw = {
         "Stellen ons in staat de effectiviteit van onze communicatie te meten en bepaalde inhoud te personaliseren.",
     },
     legalPage: {
-      metaTitle: "Wettelijke vermeldingen",
       metaDescription:
         "Wettelijke vermeldingen van de website van Ellington Properties.",
       eyebrow: "Wettelijke informatie",
@@ -1983,7 +1807,6 @@ const dictRaw = {
         "In overeenstemming met de Algemene Verordening Gegevensbescherming (AVG) en de gewijzigde Franse wet op de gegevensbescherming beschikt u over een recht op inzage, rectificatie, wissing, beperking en bezwaar met betrekking tot uw persoonsgegevens. Om deze rechten uit te oefenen, neemt u contact met ons op via ",
     },
     privacyPage: {
-      metaTitle: "Privacybeleid",
       metaDescription:
         "Privacybeleid en bescherming van persoonsgegevens van Ellington Properties.",
       eyebrow: "Bescherming van uw gegevens",

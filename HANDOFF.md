@@ -205,41 +205,131 @@ npm run dev                  # http://localhost:3000
 
 ## 12. Code map — developer notes
 
-Quick reference for where the main things live in the code.
+Quick reference for where the main things live in the code (state after the
+redesign, November 2026). The full redesign log and its decisions are in
+`REDESIGN-PLAN.md` (§6 = decisions, don't re-open them).
 
-### Styles & design
-- `src/app/globals.css` — all design tokens (colours, type scale). Brand palette:
-  navy `#1a2744`, gold `#c9a96e`. Typographic scale defined as `.type-h1`,
-  `.type-h2`, `.type-card-title`, etc.
-- **Tailwind CSS 4** — configured directly in `globals.css` (`@theme inline`,
-  `@layer`), there is no `tailwind.config.js`.
-- **Fonts** — loaded in `src/app/layout.tsx` via `next/font/google`:
+### Design system (from Figma)
+- **Source:** Figma file `HuwxKn1GP5t95FTtrBwtEK`, pages "Website — Desktop" and
+  "Website — Mobile". Every colour, size and spacing comes from its variables
+  and text styles. Don't invent new ones.
+- `src/app/globals.css` holds all design tokens. **Tailwind CSS 4** is configured
+  there (`@theme inline`, `@layer`), there is no `tailwind.config.js`.
+  - **Colours** (Figma "Color" collection, the only real values):
+    brand/blue `#154166`, brand/blue-deep `#0f3352`, brand/accent (champagne)
+    `#978a7a`, text/body `#3d5670`, text/muted `#5b7189`, surface/white,
+    surface/light `#e8eef4`, line/hairline `#d5dee7`.
+    Utilities: `bg-brand-blue`, `text-brand-accent`, `text-body-text`,
+    `text-muted`, `bg-surface`, `bg-surface-light`, `border-hairline`.
+    The old navy/gold palette and its alias names were removed in step 24.
+  - **Text styles:** one class per Figma style, desktop and mobile sizes built
+    in: `.type-h1`, `.type-h2`, `.type-title`, `.type-h3`, `.type-subtitle`,
+    `.type-price`, `.type-figure`, `.type-number`, `.type-body`, `.type-value`,
+    `.type-input`, `.type-small`, `.type-eyebrow`, `.type-label`, `.type-button`.
+    Don't use Tailwind font-size utilities for text.
+  - **Layout** (Figma "Layout" collection, switches at 768px): content max 1240,
+    side margin 100 / 28, section padding 144 / 96, nav 80 / 68.
+    Utilities: `container-wrap`, `section-y`, `py-section`, `px-margin`,
+    `gap-gap`, `gap-stack`, `h-nav`…
+- **Fonts:** loaded in `src/app/[lang]/layout.tsx` via `next/font/google`:
   **Cormorant Garamond** (serif, headings) and **Inter** (sans, body).
-- Scroll-reveal animations: `src/components/ScrollReveal.tsx` + the
-  `[data-reveal]` / `.is-visible` rules in `globals.css`.
+- **Shared components** in `src/components/ui/`: `Button` / `ButtonLink`,
+  `TextLink`, `Dropdown` (filters, with option groups), `SectionHeader`,
+  `Band`, `SmallParts` (Tag, Stat, DetailRow, InfoBox, Chip), `TextPage`,
+  `GolfeBand` (full-bleed Golfe graphic, Locations + About), `ScrollCue`,
+  `Reveal`, `card.ts` (card grid), `input.ts` (form fields).
+- **Header** (`src/components/Header.tsx` + `Logo.tsx`): transparent over hero
+  photos, white after 24px of scroll. After 80px the wordmark fades out; on
+  mobile the crest slides to the centre. No animation with "reduce motion".
+- **Scroll reveal:** `src/components/ui/Reveal.tsx` (`{...reveal}`, or
+  `{...revealFade}` for a fade only, plus an optional `--reveal-delay`) and
+  the engine `src/components/ScrollReveal.tsx` (one observer in the layout).
+  CSS in `globals.css` › "Scroll reveal". Card grids (`reveal-grid`) and
+  article text are revealed automatically. ⚠️ The standard reveal is still the
+  temporary "very obvious" setting (80px over 1.5s, `DURATION` in
+  `ScrollReveal.tsx` + the distance in `FRAMES`), to be toned down to
+  20px / 700ms once the client confirms.
 
-### Translations (FR / EN / NL)
-- `src/lib/i18n.ts` — the single dictionary for the whole UI. Languages are
-  `"fr" | "en" | "nl"` (`LANGS`), all UI strings live in the `dict` object,
-  one entry per language. **To change UI wording, edit this file.**
-- `src/components/LanguageProvider.tsx` — holds the current language, persisted
-  in the browser `localStorage`. Components read it with `useLanguage()`.
-- `src/components/LanguageToggle.tsx` — the FR | EN | NL switch in the header.
-- ⚠️ **Property descriptions are NOT translated in the code.** They come straight
-  from Apimo. Multilingual property text is managed on the Apimo side
-  (Apimo multilingual fields) — the website just displays what the API returns.
+### Language system (FR / EN / NL)
+- **The language is in the URL**: every page is `/en/…`, `/fr/…` or `/nl/…`
+  (`src/app/[lang]/…`). `src/proxy.ts` redirects the bare domain `/` to `/en`
+  (or `/fr` / `/nl` for a French / Dutch browser, the only place the browser
+  language is used), old unprefixed URLs with a 301 to `/fr/…`, and blog
+  articles to `/fr/blog/…` (articles are French-only, MDX in `content/blog/`).
+  Static files are never redirected.
+- `src/lib/i18n.ts` is the single UI dictionary: one entry per language,
+  same keys in all three (TypeScript checks it). **To change UI wording, edit
+  this file**, always in all three languages. The approved copy is English;
+  French / Dutch drafts are marked `// TODO client review`.
+- `src/components/LanguageProvider.tsx` gives components `useLanguage()`
+  (`{ lang, t }`), with the language taken from the URL. `LanguageToggle.tsx`
+  switches to the same page under another prefix.
+- The region is always called **"Golfe de Saint-Tropez"**, in every language.
 
 ### Property listings (Apimo)
-- `src/lib/apimo.ts` — talks to the Apimo API. `fetchApimoProperties()` (the
-  list) and `fetchApimoProperty(id)` (one property). Reads the credentials from
-  the `APIMO_PROVIDER` / `APIMO_TOKEN` / `APIMO_AGENCY` env vars (see §5).
-  Responses are cached for 10 minutes (ISR `revalidate: 600`).
-- `src/lib/properties.ts` — the layer the pages call: `getProperties()`,
-  `getProperty(id)`, `getFeaturedProperties()`. **Fallback:** if the Apimo env
-  vars are missing, the site automatically serves the demo dataset
-  (`mockProperties`) so it never breaks.
-- Pages: `src/app/properties/page.tsx` (list) and
-  `src/app/properties/[id]/page.tsx` (detail). Images are served from Apimo's
+- `src/lib/apimo.ts` talks to the Apimo API: `fetchApimoProperties()` (list) and
+  `fetchApimoProperty(id)` (one listing), with the `APIMO_PROVIDER` /
+  `APIMO_TOKEN` / `APIMO_AGENCY` env vars. Responses are cached for 10 minutes
+  (`revalidate: 600`).
+- `src/lib/properties.ts` is the layer pages call: `getProperties()`,
+  `getProperty(id)`, `getFeaturedProperties()`, `getCities()`. **Fallback:**
+  without the Apimo env vars, the site serves the demo dataset
+  (`mockProperties`).
+- **Listing texts are per language:** Apimo's title and description are kept
+  for FR, EN and NL (`src/lib/property-text.ts`: `propertyTitle()`,
+  `propertyDescription()`). If a language is missing, the site falls back to
+  French, then to any language the listing has. Missing translations are
+  fixed in Apimo, not in the code.
+- **Price on request:** a price of 0, missing, or hidden in Apimo shows "Price
+  on request" (FR/EN/NL) instead of a price. Such listings appear under "All
+  prices" but not in a budget range, and sort last (`hasPrice()` in
+  `properties.ts`).
+- **Location filter (Buy + Home search):** cities match exactly, ignoring
+  capitals, accents, hyphens and a leading "La / Le" (`normalizeCity()` in
+  `src/lib/filters.ts`). Golfe towns come first, the other cities under
+  "Other areas" (list `GOLFE_TOWNS` in `filters.ts`).
+- Pages: `src/app/[lang]/properties/page.tsx` (Buy) and
+  `src/app/[lang]/properties/[id]/page.tsx` (detail). Images come from Apimo's
   CDN through Vercel's image optimizer.
-- Known data quirks (come from Apimo, not bugs in the code): a few listings show
-  a `€0` price or an all-caps title — fixed by correcting the data in Apimo.
+
+### Villages
+- 9 village pages, one template: `src/components/LocationDetail.tsx`. Texts:
+  `src/lib/village-content.ts` (client PDFs, EN / FR + NL drafts); names,
+  photos and slugs: `locations` in `src/lib/properties.ts`. Figures (average
+  price, number of properties) are static text there.
+- "Properties in this region" shows up to 3 listings of that village. With
+  more, a "View all properties in [village]" link opens Buy filtered on it.
+  With none, an off-market text and a Contact button.
+
+### Checks before a release
+- `npm run lint` and `npm run build` must pass with no errors or warnings
+  (both clean at step 24).
+- Step 24 results: all 76 pages (every page × FR / EN / NL, plus an article)
+  load with no hydration warnings or console errors, at 1440px and 390px, with
+  no horizontal scrolling (tested on the dev server). Unknown addresses return
+  404 with the translated "Page not found" page (checked on the production
+  build).
+- Lighthouse at step 24 (local production build; Vercel will differ):
+
+  | Page | Performance (mobile / desktop) | Accessibility | Best practices | SEO |
+  |---|---|---|---|---|
+  | Home | 75–79 / 86 | 100 | 100 | 100 |
+  | Property | 77 / 77 | 96 (champagne contrast, see below) | 100 | 100 |
+
+  CLS is 0 everywhere. Mobile time is mostly JavaScript start-up and the size
+  of the Apimo photos.
+
+### Known open points
+- **Contrast:** the champagne city line above a property title
+  (`type-eyebrow text-brand-accent` on white) is below the WCAG AA contrast
+  ratio for small text. That's a Figma decision; ask the designer before
+  changing it.
+- **Dev server only:** the 404 page logs one React warning ("Encountered a
+  script tag…") because Next.js re-renders the layout's inline reveal script
+  in the browser there. Production is not affected. Leave it: moving the
+  script to `next/script` would run it too late and let content flash.
+- **Apimo data:** REF-1073 (Monaco) exists in English only, so it shows in
+  English on `/fr` and `/nl`. A Grimaud listing is titled "Port-Grimaud…";
+  if it really is in Port Grimaud, correct its city in Apimo.
+- **Mobile Figma frame** for About still shows "Our story" on white; the site
+  uses light blue on mobile too, as the client asked.

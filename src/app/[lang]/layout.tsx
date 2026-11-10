@@ -113,7 +113,7 @@ export default async function RootLayout({
         {/* Scroll reveal: switch on before the first paint (lib/reveal.ts) */}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_HEAD_SCRIPT }} />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="min-h-full flex flex-col bg-surface text-brand-blue">
         <JsonLd data={[organizationSchema(), websiteSchema(lang)]} />
         <LanguageProvider lang={lang}>
           <Header />

@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       // Keep private / auth-only pages out of the index (in every language).
       disallow: [
-        ...LOCALES.flatMap((l) => [`/${l}/mes-favoris`, `/${l}/login`, `/${l}/signup`, `/${l}/styleguide`]),
+        ...LOCALES.flatMap((l) => [`/${l}/mes-favoris`, `/${l}/login`, `/${l}/signup`]),
         "/auth/",
       ],
     },
