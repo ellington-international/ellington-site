@@ -21,6 +21,11 @@ import { ScrollCue } from "./ui/ScrollCue";
 // Figma fill: e.g. Buy is zoomed to 123 % and anchored to the top so the sky
 // stays behind the title); `position` is the object-position on phones.
 // The header is transparent over it (see Header › hasImageHero).
+// Touch tablets (iPad, from 768px with a touch screen): instead of the fixed
+// 820px with the text at 282px, the hero is at least the visible screen high
+// (100svh, so Safari's toolbars never cut it and portrait leaves no white
+// band below) and the text is centred between the navigation (+32px) and the
+// Scroll cue (120px); it grows if the text needs more room.
 export type HeroCrop = { top: number; left: number; width: number; height: number };
 
 export function PageHero({
@@ -49,7 +54,7 @@ export function PageHero({
   const { t } = useLanguage();
   return (
     <>
-      <section className="relative h-[760px] md:h-[820px] overflow-hidden on-photo">
+      <section className="relative h-[760px] md:h-[820px] md:pointer-coarse:h-auto md:pointer-coarse:min-h-svh md:pointer-coarse:flex md:pointer-coarse:flex-col md:pointer-coarse:justify-center md:pointer-coarse:pt-[calc(var(--spacing-nav)+32px)] md:pointer-coarse:pb-[120px] overflow-hidden on-photo">
         <div
           className={`absolute inset-0 ${
             crop ? "md:inset-auto md:top-[var(--crop-t)] md:left-[var(--crop-l)] md:w-[var(--crop-w)] md:h-[var(--crop-h)]" : ""
@@ -78,7 +83,7 @@ export function PageHero({
         </div>
         <div className="absolute inset-0 bg-black/30" aria-hidden />
 
-        <div className="relative z-10 container-wrap pt-[272px] md:pt-[282px] flex flex-col items-center gap-[24px] text-center">
+        <div className="relative z-10 container-wrap pt-[272px] md:pt-[282px] md:pointer-coarse:pt-0 flex flex-col items-center gap-[24px] text-center">
           {eyebrow && <p className="type-eyebrow">{eyebrow}</p>}
           <h1 className={titleSize === "h2" ? "type-h2" : "type-h1"}>{title}</h1>
           {subtitle && <p className="type-subtitle max-w-[600px]">{subtitle}</p>}

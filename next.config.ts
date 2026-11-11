@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Trailing slashes are removed by src/proxy.ts, in the same hop as the
+  // language redirects (old "/about/" → "/fr/about" directly, not 308 + 301).
+  skipTrailingSlashRedirect: true,
   // Dev only (ignored in production): let a phone on the local network load
   // the dev server's JavaScript via the Mac's network address. Without it,
   // Next.js blocks those requests and the page never becomes interactive.

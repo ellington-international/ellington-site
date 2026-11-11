@@ -294,12 +294,13 @@ html, body {
    REVEAL_SELECTOR in src/lib/reveal.ts (keep them in step): marked
    elements, cards of card grids, article text blocks. Hidden from the first
    paint while html[data-reveal-on] is set (head script); <ScrollReveal>
-   fades them in with a Web Animation that keeps its end state. Without
+   fades them in with a Web Animation, then marks them data-revealed
+   (no longer hidden) and drops the animation. Without
    JavaScript or with "reduce motion" the attribute is never set, so
    nothing is hidden. */
-html[data-reveal-on] main [data-reveal]:not([data-reveal] *),
-html[data-reveal-on] main .reveal-grid > :not([data-reveal] *),
-html[data-reveal-on] main .article-prose > :not([data-reveal] *) {
+html[data-reveal-on] main [data-reveal]:not([data-reveal] *):not([data-revealed]),
+html[data-reveal-on] main .reveal-grid > :not([data-reveal] *):not([data-revealed]),
+html[data-reveal-on] main .article-prose > :not([data-reveal] *):not([data-revealed]) {
   opacity: 0; /* the movement (distance, duration) is set in ScrollReveal.tsx only */
 }
 @media (prefers-reduced-motion: reduce) {

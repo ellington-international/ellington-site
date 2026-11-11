@@ -5,8 +5,8 @@ import { LOCALES } from "./locale";
 // Per-language metadata (redesign step 12). Every public page gets:
 //   canonical = its own language version, e.g. /en/sell
 //   hreflang  = en / fr / nl versions + x-default
-// x-default: the bare domain "/" for the home page (it picks the visitor's
-// language); for inner pages the English version (the site's default language).
+// x-default: the English version (the site's default language). Not the bare
+// domain "/": it is a 301 to /en, and hreflang should not point at a redirect.
 
 export const OG_LOCALE: Record<Lang, string> = { fr: "fr_FR", en: "en_GB", nl: "nl_NL" };
 
@@ -15,7 +15,7 @@ export function languageAlternates(lang: Lang, path: string, only: readonly Lang
   const url = (l: Lang) => (path === "/" ? `/${l}` : `/${l}${path}`);
   const languages: Record<string, string> = {};
   for (const l of only) languages[l] = url(l);
-  if (only.length > 1) languages["x-default"] = path === "/" ? "/" : url("en");
+  if (only.length > 1) languages["x-default"] = url("en");
   return { canonical: url(lang), languages };
 }
 

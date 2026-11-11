@@ -22,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       alternates: {
         languages: {
           ...Object.fromEntries(LOCALES.map((l) => [l, url(l, path)])),
-          "x-default": path === "/" ? SITE_URL : url("en", path),
+          "x-default": url("en", path), // "/" is a 301 to /en: point at /en itself
         },
       },
     }));

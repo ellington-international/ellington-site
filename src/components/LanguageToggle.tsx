@@ -12,8 +12,9 @@ import { useLanguage } from "./LanguageProvider";
 //
 // The URL is the only source of the language. Each language is a plain link to
 // the same page under the other prefix (/en/sell → /fr/sell). A click:
-//   1. stores the choice in the "lang" cookie — read ONLY when someone opens
-//      the bare domain "/", never on a prefixed page;
+//   1. stores the choice in the "lang" cookie — read only by the login
+//      callback (to return the visitor to their language); "/" always goes
+//      to /en and never reads it;
 //   2. loads that address as a full page (filters in the query string kept),
 //      so the server renders everything fresh in the new language and nothing
 //      from the previous language is reused from the client-side cache.

@@ -240,7 +240,13 @@ redesign, November 2026). The full redesign log and its decisions are in
   `Reveal`, `card.ts` (card grid), `input.ts` (form fields).
 - **Header** (`src/components/Header.tsx` + `Logo.tsx`): transparent over hero
   photos, white after 24px of scroll. After 80px the wordmark fades out; on
-  mobile the crest slides to the centre. No animation with "reduce motion".
+  the mobile bar the crest slides to the centre. No animation with "reduce
+  motion". The desktop links need 1280px: below that (phones, iPads up to
+  iPad Air / Pro 11" landscape) the mobile bar with the menu icon is shown.
+- **Heroes on touch tablets** (`HomeContent` hero, `PageHero`): from 768px
+  with a touch screen (`md:pointer-coarse:`), at least the visible screen high
+  (`100svh`) with the text centred below the navigation, instead of the fixed
+  Figma 820px. Desktop keeps 820px, phones 760px.
 - **Scroll reveal:** `src/components/ui/Reveal.tsx` (`{...reveal}`, or
   `{...revealFade}` for a fade only, plus an optional `--reveal-delay`) and
   the engine `src/components/ScrollReveal.tsx` (one observer in the layout).
@@ -253,10 +259,18 @@ redesign, November 2026). The full redesign log and its decisions are in
 ### Language system (FR / EN / NL)
 - **The language is in the URL**: every page is `/en/…`, `/fr/…` or `/nl/…`
   (`src/app/[lang]/…`). `src/proxy.ts` redirects the bare domain `/` to `/en`
-  (or `/fr` / `/nl` for a French / Dutch browser, the only place the browser
-  language is used), old unprefixed URLs with a 301 to `/fr/…`, and blog
-  articles to `/fr/blog/…` (articles are French-only, MDX in `content/blog/`).
-  Static files are never redirected.
+  (always: English is the default, visitors switch to FR / NL themselves), old
+  unprefixed URLs (pre-redesign site) with a 301 to the same page under
+  `LEGACY_LANG` (`src/lib/locale.ts`), and blog articles to `/fr/blog/…`
+  (articles are French-only, MDX in `content/blog/`). A trailing slash is
+  removed in the same hop. Static files are never redirected.
+- **Redirect check:** `node scripts/check-redirects.mjs <base URL>` tests every
+  old URL (the pre-redesign sitemap + other old pages). Run it on the Vercel
+  preview before launch and on the live site right after.
+- **Rentals** are switched off for now (`RENTALS_ENABLED = false` in
+  `src/lib/locale.ts`): the page and its code stay, `/rentals` and
+  `/<lang>/rentals` redirect (307) to Buy. To switch back on: set it to `true`
+  and add the links (Header, Footer) and the sitemap entry again.
 - `src/lib/i18n.ts` is the single UI dictionary: one entry per language,
   same keys in all three (TypeScript checks it). **To change UI wording, edit
   this file**, always in all three languages. The approved copy is English;

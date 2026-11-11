@@ -8,11 +8,13 @@ import Image from "next/image";
  *
  * `compact` (header, scrolled past 80px): the wordmark fades out (300ms,
  * opacity only, so it keeps its width and nothing in the nav shifts); below
- * 1024px the crest also slides to the centre of the header bar. The centre
- * comes from container-query units: the header row is an @container, so
- * 50cqw = half its content width (side margins excluded) and the crest,
- * which starts at the row's left edge, moves by 50cqw − 16px (half its
- * width). "Reduce motion": switches instantly.
+ * 1280px (the mobile bar) the crest also slides to the centre of the header.
+ * The crest starts at the side margin, so it moves by half the screen width
+ * minus the margin minus half its own width (16px). Uses 50vw rather than a
+ * container query: `container-type` inside a fixed header is a suspect in
+ * the iPad Safari bug where the header vanished while scrolling. (On a
+ * desktop browser with a classic scrollbar, vw includes it: ~7px off centre.)
+ * "Reduce motion": switches instantly.
  */
 export function LogoLockup({
   tone = "blue",
@@ -33,7 +35,7 @@ export function LogoLockup({
         height={38}
         priority
         unoptimized
-        className={`h-[38px] w-auto shrink-0 ${motion} ${compact ? "max-lg:translate-x-[calc(50cqw-16px)]" : ""}`}
+        className={`h-[38px] w-auto shrink-0 ${motion} ${compact ? "max-xl:translate-x-[calc(50vw-var(--space-margin)-16px)]" : ""}`}
       />
       <span
         aria-hidden={compact || undefined}

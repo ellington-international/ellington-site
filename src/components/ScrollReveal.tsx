@@ -9,8 +9,9 @@ import { REVEAL_SELECTOR } from "@/lib/reveal";
 // faded in once, when it comes into view: opacity 0 → 1 and 20px up, 0.7s,
 // ease-out; elements arriving together follow each other 80ms apart (cards
 // of a grid one after another). The fade is a Web Animation that keeps its
-// end state, so nothing is written to the elements (React sees no
-// difference between server and client HTML).
+// end state until it finishes; then the element gets data-revealed and the
+// animation is dropped (see show()). Written after hydration only, so the
+// server and client HTML still match.
 // A MutationObserver picks up everything added later: cards after
 // filtering, Apimo results, the next page after client navigation. A
 // language switch reloads the page, so it starts fresh.
@@ -55,16 +56,28 @@ export function ScrollReveal() {
     if (!main) return;
     const seen = new WeakSet<Element>();
     const shown = new WeakSet<Element>();
-    // duration 0 = show at once (already on screen / scrolled past)
+    // duration 0 = show at once (already on screen / scrolled past).
+    // When the animation ends, the element is marked data-revealed (the CSS
+    // stops hiding it) and the animation is cancelled. A finished animation
+    // kept alive with fill: "forwards" holds its element on a compositing
+    // layer; with dozens of them (cards, photos) iPad Safari runs out of
+    // layer memory and stops painting some layers — including the fixed
+    // header while scrolling.
     const show = (el: Element, delay: number, duration?: number) => {
       shown.add(el);
       const fade = el.getAttribute("data-reveal") === "fade";
-      el.animate(fade ? FADE_FRAMES : FRAMES, {
+      const anim = el.animate(fade ? FADE_FRAMES : FRAMES, {
         duration: duration ?? (fade ? FADE_DURATION : DURATION),
         delay: duration === 0 ? 0 : delay + extraDelay(el),
         easing: EASING,
         fill: "forwards",
       });
+      anim.finished
+        .then(() => {
+          el.setAttribute("data-revealed", "");
+          anim.cancel();
+        })
+        .catch(() => {}); // cancelled elsewhere (element removed): nothing to do
     };
 
     if (!html.hasAttribute("data-reveal-on")) {

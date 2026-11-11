@@ -40,8 +40,12 @@ export function HomeContent({
       {/* HERO (9:3 / 9:269): photo with a flat 30 % black overlay, 820px high
           (mobile 760). Title H1, subtitle, the four search fields, Search link,
           Scroll cue at the bottom. No overflow-hidden on the section: an open
-          dropdown may reach below the hero, so the photo clips itself. */}
-      <section className="relative min-h-[760px] md:min-h-[820px] flex flex-col items-center justify-center gap-[24px] pt-nav md:pb-[110px] on-photo">
+          dropdown may reach below the hero, so the photo clips itself.
+          Touch tablets (iPad, from 768px with a touch screen): at least the
+          visible screen high (100svh: Safari's toolbars never cut it, and in
+          portrait no white band below), content centred 32px below the
+          navigation; the hero grows if the content needs more room. */}
+      <section className="relative min-h-[760px] md:min-h-[820px] md:pointer-coarse:min-h-svh flex flex-col items-center justify-center gap-[24px] pt-nav md:pointer-coarse:pt-[calc(var(--spacing-nav)+32px)] md:pb-[110px] on-photo">
         <div className="absolute inset-0 overflow-hidden" aria-hidden>
           <Image
             src="/home/hero-home.jpg"

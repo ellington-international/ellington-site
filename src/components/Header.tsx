@@ -14,7 +14,8 @@ import { splitLang } from "@/lib/locale";
 //   Transparent (over hero photo: white logo + text) / Solid (white bar,
 //   hairline bottom border, blue text) × Desktop (80px) / Mobile (68px).
 // Height = --nav-height, side padding = --space-margin (tokens, step 4).
-// Below 1024px the links don't fit, so the mobile bar (logo + menu icon) is
+// Below 1280px the links don't fit (at 1024 the groups touch; at 1180, iPad
+// Air landscape, FR / NL leave ~13px), so the mobile bar (logo + menu icon) is
 // shown and the links move to the full-screen menu, Figma frame
 // "00 Menu — Mobile" (2049:2442).
 export function Header() {
@@ -94,14 +95,15 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 inset-x-0 z-50 border-b transition-colors duration-500 ${
+        // transform-gpu: the fixed header gets its own compositing layer, the
+        // usual fix for fixed bars that vanish during scrolling on iPad Safari.
+        className={`fixed top-0 inset-x-0 z-50 border-b transition-colors duration-500 transform-gpu [backface-visibility:hidden] ${
           overImage
             ? "bg-transparent border-transparent"
             : "bg-surface border-hairline"
         }`}
       >
-        {/* @container: lets the logo find the centre of this row (LogoLockup) */}
-        <div className={`@container container-wrap h-nav flex items-center justify-between ${tone}`}>
+        <div className={`container-wrap h-nav flex items-center justify-between ${tone}`}>
           <Link
             href="/"
             aria-label={t.nav.logoLabel}
@@ -117,7 +119,7 @@ export function Header() {
           </Link>
 
           {/* Desktop: links (Figma "Links", gap 40) */}
-          <nav className="hidden lg:flex items-center gap-[40px]">
+          <nav className="hidden xl:flex items-center gap-[40px]">
             {navLinks.map((l) => (
               <Link
                 key={l.href}
@@ -131,7 +133,7 @@ export function Header() {
           </nav>
 
           {/* Desktop: language, Contact button, Login (Figma "Right", gap 28) */}
-          <div className="hidden lg:flex items-center gap-[28px]">
+          <div className="hidden xl:flex items-center gap-[28px]">
             <LanguageToggle overImage={overImage} />
             {/* Figma Button: Ghost over a photo, Outline on the solid nav,
                 with the nav's smaller padding (18 × 8). */}
@@ -153,7 +155,7 @@ export function Header() {
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen(true)}
-            className="lg:hidden size-[40px] flex flex-col items-center justify-center gap-[6px]"
+            className="xl:hidden size-[40px] flex flex-col items-center justify-center gap-[6px]"
           >
             <span className="block h-px w-[24px] bg-current" />
             <span className="block h-px w-[24px] bg-current" />
@@ -170,7 +172,7 @@ export function Header() {
           role="dialog"
           aria-modal="true"
           aria-label={t.nav.menu}
-          className="lg:hidden fixed inset-0 z-[65] bg-surface flex flex-col overflow-y-auto animate-[fadeIn_0.25s_ease-out]"
+          className="xl:hidden fixed inset-0 z-[65] bg-surface flex flex-col overflow-y-auto animate-[fadeIn_0.25s_ease-out]"
         >
           {/* Close (×) sits exactly where the menu icon was */}
           <div className="container-wrap h-nav shrink-0 flex items-center justify-end">

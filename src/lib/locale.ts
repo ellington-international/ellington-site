@@ -4,12 +4,18 @@
 import type { Lang } from "./i18n";
 
 export const LOCALES: readonly Lang[] = ["en", "fr", "nl"];
-/** Language of the bare domain when the visitor's browser prefers none of ours */
+/** Default language: the bare domain "/" always redirects here (client decision) */
 export const DEFAULT_LANG: Lang = "en";
-/** Old unprefixed URLs were French: they redirect (301) to /fr/… */
+/** Language that old unprefixed URLs (pre-redesign site) redirect to (301) */
 export const LEGACY_LANG: Lang = "fr";
-/** Cookie set by the language switch; only read for the bare-domain redirect */
+/** Cookie set by the language switch; read by the auth callback to return the
+ *  visitor to their language (no longer used for the "/" redirect) */
 export const LANG_COOKIE = "lang";
+/** Seasonal rentals page: off for now (client), kept in the code. While off,
+ *  /rentals and /<lang>/rentals redirect (307) to the Buy page, and the page is
+ *  in no navigation, footer or sitemap. Set to true to switch it back on (and
+ *  add the links / sitemap entry again). */
+export const RENTALS_ENABLED = false;
 
 export function isLang(value: unknown): value is Lang {
   return value === "en" || value === "fr" || value === "nl";
