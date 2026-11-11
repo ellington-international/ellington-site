@@ -214,7 +214,8 @@ Steps:
 | Incoming URL | Goes to | Type |
 |---|---|---|
 | `/` (bare domain) | always `/en/` (client decision, November 2026: English is the default; visitors switch to FR / NL themselves; browser language and cookie are no longer used) | **301 permanent** |
-| Any other unprefixed page URL (old site URLs: `/properties`, `/properties/123`, `/sell`, `/locations/gassin`, `/blog/<slug>`, …) | same path under `/fr/` (query string kept) | **301 permanent**, so the current French Google ranking moves to `/fr/` |
+| Any other unprefixed page URL (old site URLs: `/properties`, `/properties/123`, `/sell`, `/locations/gassin`, …) | same path under `/en/` (query string kept; `LEGACY_LANG` in `src/lib/locale.ts`) | **301 permanent**. Changed November 2026 from `/fr/`: the old site served French HTML but switched to English in the browser for every non-French/Dutch visitor, and Googlebot (an en-US browser) indexed the English text. |
+| Old article URLs `/blog/<slug>` | `/fr/blog/<slug>` in one hop (articles are French-only for now) | **301 permanent** |
 | `/en/blog/<slug>`, `/nl/blog/<slug>` | `/fr/blog/<slug>` | 301 (articles are French-only) |
 | `/rentals`, `/<lang>/rentals` | the Buy page `/<lang>/properties` (unprefixed: the old-URL language) while rentals are off (`RENTALS_ENABLED` in `src/lib/locale.ts`) | **307 temporary** |
 | Any URL ending in `/` | the same URL without it, in one hop with the rules above (`skipTrailingSlashRedirect` in `next.config.ts`) | 301 (308 for `/auth/…`) |
@@ -231,7 +232,7 @@ Implementation:
 4. `generateStaticParams` returns `en/fr/nl`. Every page gets `generateMetadata` per language with `alternates.canonical` and `alternates.languages` (hreflang `en`, `fr`, `nl`, plus `x-default` → the English version; not `/`, which is a redirect). The sitemap lists all three versions of every page (no unprefixed URLs, no `/rentals`).
 5. Internal links use a small helper `href(lang, "/properties")` so they keep their language.
 6. **Blog: French only.** Articles live only at `/fr/blog/[slug]`. `/en/blog` and `/nl/blog` show the journal index in EN/NL with the Figma notice "Articles are currently published in French only…", and the cards link to `/fr/blog/[slug]`. Articles are excluded from the EN/NL hreflang.
-7. SEO note: every old inner page keeps its French ranking through the 301 to `/fr/…`. The homepage `/` now goes to `/en/` with a 301 (English is the default). French searchers are pointed to `/fr/` by hreflang, but the French homepage may dip briefly while Google re-indexes. After launch: submit the new sitemap in Search Console and watch the "Pages" report for redirect errors.
+7. SEO note: every old inner page passes its ranking to the English version through the 301 to `/en/…` (what Google rendered and indexed on the old site; titles and descriptions were French, so French results may shift while Google re-indexes); old articles go to `/fr/blog/…`. The homepage `/` goes to `/en/` with a 301 (English is the default). French and Dutch searchers are pointed to `/fr/` and `/nl/` by hreflang. After launch: submit the new sitemap in Search Console and watch the "Pages" report for redirect errors.
 
 This moves folders one level deeper but keeps the same files, components and data sources.
 
@@ -241,7 +242,7 @@ This moves folders one level deeper but keeps the same files, components and dat
 
 | # | Topic | Decision |
 |---|---|---|
-| 1 | Language | **A3**: all three languages prefixed (`/en/`, `/fr/`, `/nl/`). The bare domain `/` always goes to `/en/` (301; changed November 2026: English is the default, no browser-language detection). Old unprefixed URLs redirect (301) to `/fr/`. Blog French-only under `/fr/blog`. Details in §5. |
+| 1 | Language | **A3**: all three languages prefixed (`/en/`, `/fr/`, `/nl/`). The bare domain `/` always goes to `/en/` (301; changed November 2026: English is the default, no browser-language detection). Old unprefixed URLs redirect (301) to `/en/` (changed November 2026 from `/fr/`, see §5); old article URLs to `/fr/blog/`. Blog French-only under `/fr/blog`. Details in §5. |
 | 2 | Type | Follow the Figma text styles (italic H1/H2, 80/48 and 56/40). Foundations notes are outdated. |
 | 3 | Mobile margin | 28 px. |
 | 4 | `/rentals` | Off for now, maybe later (November 2026): kept in the code, but in no navigation, footer or sitemap, and `/rentals` + `/<lang>/rentals` redirect (307) to the Buy page. Switch back on with `RENTALS_ENABLED` in `src/lib/locale.ts`. |

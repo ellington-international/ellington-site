@@ -4,13 +4,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
-import { LEGACY_LANG, isLang } from "@/lib/locale";
+import { DEFAULT_LANG, isLang } from "@/lib/locale";
 import type { Lang } from "@/lib/i18n";
 
 // Language of the page the form was sent from (hidden "lang" field).
 function formLang(formData: FormData): Lang {
   const l = formData.get("lang");
-  return isLang(l) ? l : LEGACY_LANG;
+  return isLang(l) ? l : DEFAULT_LANG;
 }
 
 // Only follow "next" to a page of this site ("/…", never "//other.site").
@@ -80,9 +80,9 @@ export async function signup(_prev: AuthState, formData: FormData): Promise<Auth
   redirect(`/${formLang(formData)}/login?signup=success`);
 }
 
-export async function logout(lang: Lang = LEGACY_LANG) {
+export async function logout(lang: Lang = DEFAULT_LANG) {
   const supabase = await createClient();
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
-  redirect(`/${isLang(lang) ? lang : LEGACY_LANG}`);
+  redirect(`/${isLang(lang) ? lang : DEFAULT_LANG}`);
 }

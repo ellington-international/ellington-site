@@ -260,9 +260,10 @@ redesign, November 2026). The full redesign log and its decisions are in
 - **The language is in the URL**: every page is `/en/…`, `/fr/…` or `/nl/…`
   (`src/app/[lang]/…`). `src/proxy.ts` redirects the bare domain `/` to `/en`
   (always: English is the default, visitors switch to FR / NL themselves), old
-  unprefixed URLs (pre-redesign site) with a 301 to the same page under
-  `LEGACY_LANG` (`src/lib/locale.ts`), and blog articles to `/fr/blog/…`
-  (articles are French-only, MDX in `content/blog/`). A trailing slash is
+  unprefixed URLs (pre-redesign site) with a 301 to the same page in English
+  (`LEGACY_LANG = "en"` in `src/lib/locale.ts`), and blog articles, old or
+  under `/en` / `/nl`, to `/fr/blog/…` in one hop (articles are French-only,
+  MDX in `content/blog/`). A trailing slash is
   removed in the same hop. Static files are never redirected.
 - **Redirect check:** `node scripts/check-redirects.mjs <base URL>` tests every
   old URL (the pre-redesign sitemap + other old pages). Run it on the Vercel

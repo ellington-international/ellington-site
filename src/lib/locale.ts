@@ -6,8 +6,10 @@ import type { Lang } from "./i18n";
 export const LOCALES: readonly Lang[] = ["en", "fr", "nl"];
 /** Default language: the bare domain "/" always redirects here (client decision) */
 export const DEFAULT_LANG: Lang = "en";
-/** Language that old unprefixed URLs (pre-redesign site) redirect to (301) */
-export const LEGACY_LANG: Lang = "fr";
+/** Language that old unprefixed URLs (pre-redesign site) redirect to (301).
+ *  English (November 2026): the old site's visible text, as Google rendered it,
+ *  was English. Journal articles are the exception: French-only, always /fr. */
+export const LEGACY_LANG: Lang = "en";
 /** Cookie set by the language switch; read by the auth callback to return the
  *  visitor to their language (no longer used for the "/" redirect) */
 export const LANG_COOKIE = "lang";
@@ -60,5 +62,5 @@ export function switchLangPath(pathname: string, target: Lang): string {
 
 /** Route param → Lang (the [lang] layout already 404s anything else). */
 export function asLang(value: string): Lang {
-  return isLang(value) ? value : LEGACY_LANG;
+  return isLang(value) ? value : DEFAULT_LANG;
 }

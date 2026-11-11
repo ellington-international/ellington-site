@@ -6,7 +6,8 @@ import { DEFAULT_LANG, LEGACY_LANG, RENTALS_ENABLED, isLang } from "@/lib/locale
 //   /                       → /en (always; visitors switch to FR / NL themselves)       301
 //   /properties, /sell, …   → /<LEGACY_LANG>/properties, … (old pre-redesign URLs)    301
 //                             (query string kept, e.g. ?city=Grimaud&type=villa)
-//   /en/blog/<slug>, /nl/…  → /fr/blog/<slug> (articles are French-only)               301
+//   /blog/<slug>, /en/blog/<slug>, /nl/… → /fr/blog/<slug> (articles are French-only;
+//                             old article URLs go there in one hop)                   301
 //   /rentals, /<lang>/rentals → the Buy page of that language, while rentals are off   307
 //   any path ending in "/"  → the same path without it, in ONE hop with the rules above
 //                             (next.config: skipTrailingSlashRedirect)                 301
@@ -41,8 +42,8 @@ export async function proxy(request: NextRequest) {
   // Rentals switched off (kept in the code): temporary, to that language's Buy page
   if (!RENTALS_ENABLED && rest === "/rentals") return redirect(`/${lang}/properties`, 307, false);
 
-  // Articles are French-only
-  if (hasLang && lang !== "fr" && /^\/blog\/[^/]+$/.test(rest)) return redirect(`/fr${rest}`, 301);
+  // Articles are French-only: old /blog/<slug> and /en|nl/blog/<slug> → /fr
+  if (lang !== "fr" && /^\/blog\/[^/]+$/.test(rest)) return redirect(`/fr${rest}`, 301);
 
   // Old unprefixed URL → same page under the legacy language
   if (!hasLang) return redirect(`/${LEGACY_LANG}${rest === "/" ? "" : rest}`, 301);
